@@ -1,0 +1,48 @@
+@import "functions";
+@import "_variables";
+@import "_mixins";
+
+@import "_reboot";
+@import "_grid";
+@import "_media";
+
+@import "_utilities";
+
+body{
+  background-color: #f0f2f5;
+  padding-top: 60px;
+}
+.list-text {
+  .list-group-item {
+
+    padding: 0.75rem 0rem;
+  }
+
+  .list-text-title {
+    margin-bottom: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .list-text-action {
+    span {
+      display: inline-block;
+      color: #909399;
+      margin-right: 16px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+.list-group-item {
+  border-bottom: 1px dashed #d1d5de;
+}
