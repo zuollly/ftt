@@ -48,7 +48,22 @@ const workshopRouter = {
     {
       path: 'achievementList', component: () => import('@/views/achievement/achievementList'), name: 'achievement', meta: { title: '成果展示', icon: '', requireAuth: true }},
     {
-      path: 'teachingList', component: () => import('@/views/teaching/teachingList'), name: 'teaching', meta: { title: '互动教研', icon: '', requireAuth: true }},
+      path: '/workshops/:id/teaching',
+      component: () => import('@/views/teaching/index'),
+      name: 'teaching',
+      redirect: '/workshops/:id/teaching/teachingList',
+      meta: { title: '互动教研', icon: '', requireAuth: true },
+      children: [
+        {
+          path: 'teachingList', component: () => import('@/views/teaching/teachingList'), name: 'teachingList', hidden: true, meta: { title: '互动教研', icon: '', requireAuth: true }},
+        {
+          path: 'teachingAdd', component: () => import('@/views/teaching/teachingAdd'), name: 'teachingAdd', hidden: true, meta: { title: '互动教研添加', icon: 'activity-add', requireAuth: true }
+        },
+        {
+          path: 'teachingShow/:activityId', component: () => import('@/views/teaching/teachingShow'), hidden: true, name: 'teachingShow', meta: { title: '活动详情', icon: 'activity-show', requireAuth: true }
+        }
+      ]
+    },
     {
       path: 'workshopEdit',
       component: () => import('@/views/workshops/WorkshopEdit'),

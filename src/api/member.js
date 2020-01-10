@@ -20,8 +20,8 @@ export function fetchApplyMemberPage(data) {
 export function verifyMember(data) {
   return request({
     url: '/user/project/insert/verify',
-    method: 'GET', // 请求方法
-    params: data
+    method: 'POST', // 请求方法
+    data: data
   })
 }
 // 根据工作室id获取工作室内成员活跃度排行

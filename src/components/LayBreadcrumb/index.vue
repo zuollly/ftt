@@ -26,7 +26,7 @@ export default {
     }
   },
   watch: {
-    $route() {
+    $route(val) {
       this.getBreadcrumb()
     }
   },
@@ -42,6 +42,7 @@ export default {
       //     }].concat(matched)
       //   }
       // }
+      console.log(this.$route, matched, 'matched--')
       this.levelList = matched
     }
   }

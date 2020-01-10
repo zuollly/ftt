@@ -5,6 +5,24 @@
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
           <div class="headWrapper">
             <p class="p">互动教研</p>
+            <el-button type="primary" size="mini" @click="addTeaching">新增教研</el-button>
+          </div>
+          <div class="activityContent">
+            <div v-for="(item, index) in workshopActivityList" :key="index">
+              <ActItem class="check-item" :workshopItem="item" @getList='getList'></ActItem>
+            </div>
+          </div>
+          <div class="pagination">
+            <el-pagination
+              background
+               @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              layout="total, sizes, prev, pager, next, jumper"
+              :page-sizes="[10, 20, 30]"
+              :current-page.sync="pageObj.pageCurrent"
+              :page-size="pageObj.pageSize"
+              :total.sync="pageObj.count">
+            </el-pagination>
           </div>
         </div>
       </el-col>
@@ -13,13 +31,21 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { fetchJyActivityPage } from '@/api/activity.js'
 export default {
-  name: 'Teaching',
+  name: 'TeachingList',
   components: {
+    ActItem: () => import('./modules/ActItem.vue')
   },
   data() {
     return {
-      noticeLoading: false // 是否显示加载中
+      noticeLoading: false, // 是否显示加载中
+      workshopActivityList: [],
+      pageObj: { // 分页信息
+        pageCurrent: 1,
+        pageSize: 10,
+        count: 0
+      }
     }
   },
   computed: {
@@ -31,8 +57,38 @@ export default {
   watch: {
   },
   methods: {
+    addTeaching() {
+      console.log(this.$route.params)
+      this.$router.push({
+        name: 'teachingAdd', query: { templateId: 'e005d2e35634c0e0548ee13000ced241' }})
+    },
+    handleCurrentChange(index) {
+      this.pageObj.pageCurrent = index
+      this.getJyActivityPage()
+    },
+    handleSizeChange(val) {
+      this.pageObj.pageSize = val
+      this.getJyActivityPage()
+    },
+    getList() {
+      this.getJyActivityPage()
+    },
+    getJyActivityPage() {
+      const data = {
+        groupId: this.$route.params.id,
+        pageCurrent: this.pageObj.pageCurrent,
+        pageSize: this.pageObj.pageSize,
+        activityThemeCode: '0_JATD1'
+      }
+      fetchJyActivityPage(data).then(res => {
+        console.log(res)
+        this.workshopActivityList = res.data.result.records ? res.data.result.records : []
+        this.pageObj.count = res.data.result.total
+      })
+    }
   },
   mounted() {
+    this.getJyActivityPage()
   }
 }
 </script>
@@ -44,7 +100,7 @@ export default {
       height: 50px;
       // padding-bottom: 10px;
       font-size: 14px;
-      color: #494949;
+      // color: #494949;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
@@ -52,7 +108,7 @@ export default {
       box-sizing: border-box;
       align-items: center;
       >>> .el-button {
-        color: #b8b8b8;
+        // color: #b8b8b8;
       }
       .p {
         height: 50px;
@@ -67,6 +123,9 @@ export default {
       flex-direction: column;
       .informationWrapper{
         min-height: 300px;
+        .activityContent{
+          padding-top: 20px;
+        }
       }
     }
     .bg-white{

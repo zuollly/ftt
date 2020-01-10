@@ -45,7 +45,14 @@ export function applyConference(params) {
     params: params
   })
 }
-
+// 更新会议信息
+export function updateConference(params) {
+  return request({
+    method: 'get',
+    url: '/tool/conference/relevance/update',
+    params: params
+  })
+}
 // 获取进入视频会议的链接
 export function intoConference(params) {
   return request({

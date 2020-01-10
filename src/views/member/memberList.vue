@@ -229,7 +229,8 @@ export default {
       const data = {
         groupId: this.$route.params.id,
         pageCurrent: this.pageObj.pageCurrent,
-        pageSize: this.pageObj.pageSize
+        pageSize: this.pageObj.pageSize,
+        verifyStatus: 0
       }
       fetchApplyMemberPage(data).then(res => {
         this.memberApplyList = res.data.result.list

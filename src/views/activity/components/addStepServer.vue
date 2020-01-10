@@ -353,7 +353,7 @@ export default {
         select = 'video_interaction'
         this.dialogTableVisible = false
       }
-      console.log(99)
+      console.log(this.value, select, 99)
       this.$emit('stepServer', { code: this.value, id: select })
     },
     /* axios---- */
