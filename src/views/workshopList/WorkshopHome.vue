@@ -36,27 +36,16 @@
               <p class="p">工作坊活跃度排行</p>
               <el-button type="text">查看更多</el-button>
             </div>
-            <div>工作坊资源</div>
+            <workshopByOrdersList :homeWorkByOrderList='workshopListByOrders'></workshopByOrdersList>
           </div>
           <div class="informationWrapper main-border bg-white mb-2 border-shadow">
             <div class="headWrapper">
               <p class="p">工作室活动</p>
               <el-button type="text">查看更多</el-button>
             </div>
-            <div>工作室活动动态</div>
+            <workshopActivityList :homeActivityList='workshopActivityList'></workshopActivityList>
           </div>
         </el-col>
-    </el-row>
-    <el-row class="workshop-homeMain-moduel">
-      <el-col class="home-details">
-        <div class="informationWrapper main-border bg-white mb-2 border-shadow">
-          <div class="headWrapper">
-            <p class="p">成果展示</p>
-            <el-button type="text">查看更多</el-button>
-          </div>
-          <pictureContent :achievementDataList='achievementDataList'></pictureContent>
-        </div>
-      </el-col>
     </el-row>
     <el-row class="workshop-homeMain-moduel">
       <el-col class="home-details">
@@ -69,18 +58,32 @@
         </div>
       </el-col>
     </el-row>
+    <el-row class="workshop-homeMain-moduel">
+      <el-col class="home-details">
+        <div class="informationWrapper main-border bg-white mb-2 border-shadow">
+          <div class="headWrapper">
+            <p class="p">成果展示</p>
+            <el-button type="text">查看更多</el-button>
+          </div>
+          <pictureContent :achievementDataList='achievementDataList'></pictureContent>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script>
 import { fetchContentPage } from '@/api/content.js'
 import { fetchDictInfo } from '@/api/dict.js'
-import { fetchGroupListPage } from '@/api/workshop.js'
+import { fetchGroupListPage, fetchWorkshopListByOrders } from '@/api/workshop.js'
+import { fetchJyActivityPage } from '@/api/activity.js'
 export default {
   components: {
-    WorkShopNotice: () => import('@/modules/notice/WorkShopNoticeList'),
-    WorkshopInformation: () => import('@/modules/information/WorkshopInformationList.vue'),
-    WorkshopList: () => import('@/modules/workshop/WorkshopList.vue'),
-    pictureContent: () => import('@/modules/pictureContent/index.vue')
+    WorkShopNotice: () => import('@/modules/notice/workShopNoticeList'),
+    WorkshopInformation: () => import('@/modules/information/workshopInformationList.vue'),
+    WorkshopList: () => import('@/modules/workshop/workshopList.vue'),
+    workshopByOrdersList: () => import('@/modules/workshop/workshopByOrdersList.vue'),
+    pictureContent: () => import('@/modules/pictureContent/index.vue'),
+    workshopActivityList: () => import('@/modules/activity/workshopActivityList.vue')
   },
   data() {
     return {
@@ -88,14 +91,18 @@ export default {
       homeNoticeList: [],
       informationList: [],
       workshopDataList: [],
+      workshopListByOrders: [],
       achievementDataList: [],
-      activeName1: 'first'
+      activeName1: 'first',
+      workshopActivityList: []
     }
   },
   mounted() {
     this.getNoticeList()
     this.getGroupListPage()
     this.getAchievementList()
+    this.getJyActivityPage()
+    this.getWorkshopListByOrders()
   },
   computed: {
   },
@@ -159,6 +166,34 @@ export default {
       }).catch(err => {
         console.log(err)
         this.$message({ type: 'warning', message: `${err}` })
+      })
+    },
+    getWorkshopListByOrders() {
+      const data = {
+        descs: [
+          'group_liveness'
+        ],
+        pageCurrent: 1,
+        pageSize: 8
+      }
+      fetchWorkshopListByOrders(data).then((result) => {
+        if (result.data.code === 200) {
+          this.workshopListByOrders = result.data.result.records
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$message({ type: 'warning', message: `${err}` })
+      })
+    },
+    getJyActivityPage() {
+      const data = {
+        groupId: this.$route.params.id,
+        pageCurrent: 1,
+        pageSize: 5
+      }
+      fetchJyActivityPage(data).then(res => {
+        console.log(res)
+        this.workshopActivityList = res.data.result.records ? res.data.result.records : []
       })
     },
     handleClick(tab) {
@@ -233,7 +268,7 @@ $name: 'workshop-homeMain-moduel';
         }
         >>> .el-button {
           color: #b8b8b8;
-          padding-top: 5px;
+          // padding-top: 5px;
         }
       }
     }

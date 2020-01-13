@@ -2,7 +2,7 @@
 import router from '@/router'
 import locals from '@/utils/storage/locals'
 import store from '@/store'
-import { Message } from 'element-ui'
+// import { Message } from 'element-ui'
 import { getToken } from '@/utils/storage/cookies'
 // import { windowSys } from './jquery/jquery'
 import { getMobile } from './browser/index'
@@ -32,6 +32,8 @@ if (store.getters.sysBasicConfig === '') {
 }
 console.log(store.getters, '----------')
 if (store.getters.isMobile === '') {
+  // var browserInfo = getMobileBrowser()
+  // store.dispatch('SetBrowserInfo', browserInfo)
   store.dispatch('SetIsMobile', getMobile())
 }
 router.beforeEach(async(to, from, next) => {
@@ -42,24 +44,24 @@ router.beforeEach(async(to, from, next) => {
   if (jumpToken || getToken()) {
     console.log(to, 1111111111)
     if (to.path === '/workshopHome') {
-      next()
+      next({ path: '/workshopHome' })
       NProgress.done()
     } else {
-      console.log(store.getters.userRoles, 'userRoles')
+      console.log(333333333333)
+      console.log(store.getters.userRoles)
       if (store.getters.userRoles.length === 0) { // 判断当前用户是否已拉取完user_info信息
-        await store.dispatch('getUserInfo').then(res => { // 拉取user_info
-          console.log(res, 'res==4')
-          // store.dispatch('getUserRolePower', res.data.result.userId).then(() => {
-          // })
-          next()
-        }).catch((err) => {
-          Message.error(err.data.msg)
-          next({ path: '/' })
-          // store.dispatch('FedLogOut').then(() => {
-          //   Message.error('Verification failed, please login again')
-          //   next({ path: '/WorkshopHome' })
-          // })
-        })
+        // await store.dispatch('getUserInfo').then(res => { // 拉取user_info
+        //   console.log(res, 'res==4')
+        //   store.dispatch('getUserRolePower', res.data.result.userId).then(() => {
+        //   })
+        //   next()
+        // }).catch(() => {
+        //   store.dispatch('FedLogOut').then(() => {
+        //     Message.error('Verification failed, please login again')
+        //     next({ path: '/WorkshopHome' })
+        //   })
+        // })
+        next({ path: '/WorkshopHome' })
       } else {
         next()
       }

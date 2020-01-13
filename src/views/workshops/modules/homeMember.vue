@@ -14,7 +14,8 @@
               <svg-icon v-if="index>3" style="width: 30px;height:30px" iconClass='more'></svg-icon>
             </div>
             <div style="width: 15%">
-              <img v-if="index<3" style="width: 20px;height:20px" :src="item.userImg" alt="">
+              <img v-if="item.userImg" style="width: 20px;height:20px" :src="item.userImg" alt="">
+              <img v-if="!item.userImg" style="width: 20px;height:20px" src="http://api.yx.nercel.cn/file/avator/default_avator.jpg" alt="">
             </div>
             <div style="width: 55%">
               <span class="text-muted">{{item.userName}}</span>

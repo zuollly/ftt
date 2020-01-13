@@ -67,7 +67,7 @@ export default {
   name: 'NoticeList',
   components: {
     chooseCard: () => import('@/views/notice/modules/chooseCard.vue'),
-    WorkshopInformation: () => import('@/modules/information/WorkshopInformationList.vue'),
+    WorkshopInformation: () => import('@/modules/information/workshopInformationList.vue'),
     editor: () => import('@/components/tinymce')
   },
   data() {
@@ -166,7 +166,8 @@ export default {
       const data = {
         pageCurrent: this.pageObj.pageCurrent,
         pageSize: this.pageObj.pageSize,
-        contentTypeCode: this.chooseType.dictKey
+        contentTypeCode: this.chooseType.dictKey,
+        moduleId: this.$route.params.id
       }
       fetchContentPage(data).then((result) => {
         console.log(result, 'result')

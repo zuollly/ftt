@@ -10,7 +10,7 @@
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
           <div class="headWrapper">
             <p class="p">成果展示</p>
-            <el-button @click="dialogVisible = true" type="primary" plain size="mini">发布成果展示</el-button>
+            <el-button @click="issueContent" type="primary" plain size="mini">发布成果展示</el-button>
           </div>
           <WorkShopAchievementList :homeAchievementList='homeAchievementList' @editContent='editContent' @getDeleteContent='getDeleteContent'></WorkShopAchievementList>
           <div class="pagination" v-if="homeAchievementList.length">
@@ -84,7 +84,7 @@ export default {
   name: 'Achievement',
   components: {
     chooseCard: () => import('@/views/notice/modules/chooseCard.vue'),
-    WorkShopAchievementList: () => import('@/modules/achievement/WorkShopAchievementList.vue'),
+    WorkShopAchievementList: () => import('@/modules/achievement/workShopAchievementList.vue'),
     editor: () => import('@/components/tinymce')
   },
   data() {
@@ -107,7 +107,7 @@ export default {
       typeList: [],
       addContentLoading: false,
       dialogVisible: false,
-      title: '发公告',
+      title: '发成果展示',
       opeType: 'add',
       itemCur: null
     }
@@ -162,7 +162,8 @@ export default {
         txt: this.contentForm.content,
         userId: this.uuid,
         relevance: {
-          contentTypeCode: this.contentForm.type
+          contentTypeCode: this.contentForm.type,
+          moduleId: this.$route.params.id
         }
       }
       let fn = null
@@ -186,7 +187,7 @@ export default {
     },
     issueContent() {
       this.dialogVisible = true
-      this.title = '发公告'
+      this.title = '发成果展示'
       this.opeType = 'add'
       this.contentForm = {}
       this.contentForm.content = ''
@@ -195,7 +196,7 @@ export default {
       console.log(item)
       this.itemCur = item
       this.dialogVisible = true
-      this.title = '编辑公告'
+      this.title = '编辑成果展示'
       this.opeType = 'edit'
       this.contentForm.title = item.title
       this.contentForm.type = item.contentTypeCode
@@ -235,7 +236,8 @@ export default {
       this.achievementLoading = true
       const data = {
         pageCurrent: this.pageObj.pageCurrent,
-        pageSize: this.pageObj.pageSize
+        pageSize: this.pageObj.pageSize,
+        moduleId: this.$route.params.id
       }
       if (this.chooseType.dictKey) {
         data.contentTypeCode = this.chooseType.dictKey

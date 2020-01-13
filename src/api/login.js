@@ -20,7 +20,7 @@ export function loginByUsername(data) {
 // 获取用户信息
 export function fetchUserInfo() {
   return request({
-    url: '/oauth/queryLogin',
+    url: '/oauth/login',
     method: 'get',
     params: {}
   })

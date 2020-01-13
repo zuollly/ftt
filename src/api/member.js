@@ -115,3 +115,20 @@ export function fetchActivityMember(data) {
     data: data
   })
 }
+// 修改用户在某个坊内的角色或者修改用户所在坊（支持批量修改）
+export function updateMemberRole(data) {
+  return request({
+    url: '/user/project/role/update',
+    method: 'post',
+    data: data
+  })
+}
+
+// 用户申请加入工作坊
+export function applyIntoWorkshop(data) {
+  return request({
+    url: '/user/project/insert/apply',
+    method: 'GET', // 请求方法
+    params: data
+  })
+}

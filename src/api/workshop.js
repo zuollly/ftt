@@ -27,6 +27,15 @@ export function fetchGroupById(data) {
     params: data
   })
 }
+
+// 查询工作室单表信息,主要用于排序
+export function fetchWorkshopListByOrders(data) {
+  return request({
+    url: '/workshop/group/queryByOrders',
+    method: 'post',
+    data: data
+  })
+}
 // 根据code查询联动关系
 export function getArea(code) {
   return request({

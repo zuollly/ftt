@@ -65,7 +65,7 @@ import { studyPhase } from '@/utils/reallyMixin'
 export default {
   name: 'Teaching',
   components: {
-    WorkshopList: () => import('@/modules/workshop/WorkshopList.vue')
+    WorkshopList: () => import('@/modules/workshop/workshopList.vue')
   },
   mixins: [studyPhase],
   data() {

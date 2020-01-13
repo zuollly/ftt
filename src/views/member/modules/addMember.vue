@@ -64,7 +64,7 @@
         <el-table-column property="schoolName" label="学校名称" min-width="200"></el-table-column>
         <el-table-column label="操作" width="150" fixed="right">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" v-if="selectIds.indexOf(scope.row.id) < 0" @click="appoint(scope.row)">添加</el-button>
+            <el-button type="primary" size="small" :loading="btnLoading" v-if="selectIds.indexOf(scope.row.id) < 0" @click="appoint(scope.row)">添加</el-button>
             <el-button type="warning" size="small" v-else @click="remove(scope.row)">移除</el-button>
           </template>
         </el-table-column>
@@ -122,7 +122,8 @@ export default {
       total: 0,
       selectMember: [],
       id: this.$route.params.id,
-      loading: false
+      loading: false,
+      btnLoading: false
     }
   },
   computed: {
@@ -197,6 +198,7 @@ export default {
       this.$emit('leaderInfo')
     },
     sure() {
+      this.btnLoading = true
       const params = this.selectMember.map(el => {
         return {
           roleCode: el.userRole,
@@ -206,6 +208,7 @@ export default {
       })
       this.loading = true
       insertMember(params).then(res => {
+        this.btnLoading = false
         if (res.data.code === 200) {
           this.$message.success('添加成功')
           this.$emit('leaderInfo', 1)

@@ -18,14 +18,18 @@
             <div class="memberCon" v-for="(item, idx) in memberList" :key="idx">
               <div class="settingBtn">
                 <el-tooltip class="item" effect="dark" content="删除成员" placement="top">
-                  <el-button type="danger" size="mini" @click="deleteMember(item, idx)" icon="el-icon-delete" circle></el-button>
+                  <el-button type="danger" size="mini" @click="deleteMember(item)" icon="el-icon-delete" circle></el-button>
                 </el-tooltip>
-                <el-tooltip class="item" effect="dark" content="设置助理" placement="top">
-                  <el-button type="primary" size="mini" icon="el-icon-setting" circle></el-button>
+                <el-tooltip v-if="item.roleCode!=='GROUP_ASSISTANT'" class="item" effect="dark" content="设置助理角色" placement="top">
+                  <el-button type="primary" size="mini" @click="settingMemberRole(item, 'GROUP_ASSISTANT')" icon="el-icon-setting" circle></el-button>
+                </el-tooltip>
+                <el-tooltip v-if="item.roleCode==='GROUP_ASSISTANT'" class="item" effect="dark" content="取消助理角色" placement="top">
+                  <el-button type="primary" size="mini" @click="settingMemberRole(item, 'GROUP_USER')" icon="el-icon-setting" circle></el-button>
                 </el-tooltip>
               </div>
               <div class="image">
-                <img :src="item.avatar" alt="">
+                <img class="img" v-if="item.avatar" :src="item.avatar" alt="">
+                <img class="img" v-if="!item.avatar" src="../../../static/images/default_avator.jpg" alt="">
               </div>
               <p class="label name">{{item.realname}}</p>
               <p class="label role">
@@ -83,7 +87,7 @@
                @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               layout="total, sizes, prev, pager, next, jumper"
-              :page-sizes="[10, 12, 15, 18]"
+              :page-sizes="[9, 12, 15, 18]"
               :current-page.sync="pageObj.pageCurrent"
               :page-size="pageObj.pageSize"
               :total.sync="pageObj.count">
@@ -96,7 +100,7 @@
   </div>
 </template>
 <script>
-import { fetchMemberPage, deleteMemberPage, fetchApplyMemberPage, verifyMember } from '@/api/member.js'
+import { fetchMemberPage, deleteMemberPage, fetchApplyMemberPage, verifyMember, updateMemberRole } from '@/api/member.js'
 import { mapGetters } from 'vuex'
 export default {
   components: {
@@ -112,7 +116,7 @@ export default {
       addMemberDialog: false,
       pageObj: { // 分页信息
         pageCurrent: 1,
-        pageSize: 10,
+        pageSize: 9,
         count: 0
       }
     }
@@ -160,7 +164,7 @@ export default {
         this.getMemberPage()
       }
     },
-    deleteMember(item, index) {
+    deleteMember(item) {
       console.log(item)
       this.$confirm(`确定移除“${item.realname}”?`, '提示', {
         confirmButtonText: '确定',
@@ -173,6 +177,39 @@ export default {
             this.getMemberPage()
           } else {
             this.$message.success('移除失败')
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消移除'
+        })
+      })
+    },
+    settingMemberRole(item, role) {
+      const data = [
+        {
+          roleCode: role,
+          id: item.id
+        }
+      ]
+      let tip = ''
+      if (role === 'GROUP_ASSISTANT') {
+        tip = `确定设置“${item.realname}”为“助理”?`
+      } else {
+        tip = `确定取消“${item.realname}”的“助理”身份?`
+      }
+      this.$confirm(tip, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        updateMemberRole(data).then(res => {
+          if (res.data.code === 200) {
+            this.$message.success('设置成功')
+            this.getMemberPage()
+          } else {
+            this.$message.success('设置失败')
           }
         })
       }).catch(() => {
@@ -337,7 +374,7 @@ export default {
               // height: 100px;
               text-align: center;
               // margin-top: 15px;
-              img{
+              .img{
                 width: 100px;
                 height: 100px;
                 border-radius: 50%;
@@ -350,11 +387,11 @@ export default {
               line-height: 30px;
             }
             .name{
-              font-size: 16px;
+              font-size: 22px;
             }
             .role{
-              font-size: 14px;
-              color: #cecece;
+              font-size: 16px;
+              color: gray;
             }
             .desc{
               position: absolute;

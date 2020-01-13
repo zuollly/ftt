@@ -30,6 +30,7 @@ const user = {
     },
     SET_TOKEN: (state, token) => {
       state.token = token
+      setToken(token)
     },
     SET_INTRODUCTION: (state, introduction) => {
       state.introduction = introduction
@@ -77,6 +78,9 @@ const user = {
     getUserInfo({ commit }) {
       return new Promise((resolve, reject) => {
         fetchUserInfo().then(response => {
+          if (response.data.code !== 200) {
+            reject(response)
+          }
           if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
             // reject('error')
           }

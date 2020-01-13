@@ -10,7 +10,7 @@
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
           <div class="headWrapper">
             <p class="p">教学资源</p>
-            <el-button @click="dialogVisible = true" type="primary" plain size="mini">发布教学资源</el-button>
+            <el-button @click="issueContent" type="primary" plain size="mini">发布教学资源</el-button>
           </div>
           <WorkShopResourceList :homeResourceList='homeResourceList' @editContent='editContent' @getDeleteContent='getDeleteContent'></WorkShopResourceList>
           <div class="pagination" v-if="homeResourceList.length">
@@ -84,7 +84,7 @@ export default {
   name: 'ResourceList',
   components: {
     chooseCard: () => import('@/views/notice/modules/chooseCard.vue'),
-    WorkShopResourceList: () => import('@/modules/resource/WorkShopResourceList.vue'),
+    WorkShopResourceList: () => import('@/modules/resource/workShopResourceList.vue'),
     editor: () => import('@/components/tinymce')
   },
   data() {
@@ -106,7 +106,10 @@ export default {
       src: '../../../static/images/resource.jpg',
       typeList: [],
       addContentLoading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      title: '发资源',
+      opeType: 'add',
+      itemCur: null
     }
   },
   computed: {
@@ -159,7 +162,8 @@ export default {
         txt: this.contentForm.content,
         userId: this.uuid,
         relevance: {
-          contentTypeCode: this.contentForm.type
+          contentTypeCode: this.contentForm.type,
+          moduleId: this.$route.params.id
         }
       }
       let fn = null
@@ -183,7 +187,7 @@ export default {
     },
     issueContent() {
       this.dialogVisible = true
-      this.title = '发公告'
+      this.title = '发资源'
       this.opeType = 'add'
       this.contentForm = {}
       this.contentForm.content = ''
@@ -192,7 +196,7 @@ export default {
       console.log(item)
       this.itemCur = item
       this.dialogVisible = true
-      this.title = '编辑公告'
+      this.title = '编辑资源'
       this.opeType = 'edit'
       this.contentForm.title = item.title
       this.contentForm.type = item.contentTypeCode
@@ -233,7 +237,8 @@ export default {
       this.resourceLoading = true
       const data = {
         pageCurrent: this.pageObj.pageCurrent,
-        pageSize: this.pageObj.pageSize
+        pageSize: this.pageObj.pageSize,
+        moduleId: this.$route.params.id
       }
       if (this.chooseType.dictKey) {
         data.contentTypeCode = this.chooseType.dictKey

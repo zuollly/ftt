@@ -29,7 +29,7 @@
           <p class="p">工作室活动</p>
           <el-button type="text">查看更多</el-button>
         </div>
-        <div>1</div>
+        <workshopActivityList :homeActivityList='workshopActivityList'></workshopActivityList>
       </div>
       <div class="informationWrapper main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
@@ -47,7 +47,8 @@
         <div class="personal-avatars-wrapper">
           <div class="personal-avatars">
             <div class="logo">
-              <img src="../../../static/images/avatar.jpg" alt="">
+              <img v-if="workshopInfo.groupLogo" :src="workshopInfo.groupLogo" alt="">
+              <img v-if="!workshopInfo.groupLogo" src="http://api.yx.nercel.cn/file/avator/default_avator.jpg" alt="">
             </div>
             <p class="name label">{{workshopInfo.adminUserName}}</p>
             <!-- <p class="subject label">初中数学</p> -->
@@ -68,16 +69,23 @@
           </div>
         </div>
         <div class="personal-button">
-          <el-button type="warning">申请加入工作室</el-button>
+          <el-button type="warning" @click="getApplyIntoWorkshop">申请加入工作室</el-button>
         </div>
 
       </div>
-      <div class="informationWrapper main-border bg-white mb-2 border-shadow">
+      <div class="staticInfoWrapper main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
           <p class="p">工作室活跃度</p>
           <!-- <el-button type="text">查看更多</el-button> -->
         </div>
-        <div>工作室活跃度</div>
+        <div class="staticsWrapper">
+          <div class="totalLinessW">
+            <p class="p">活跃度：<span>{{workshopBehaviour.totalLiness}}</span></p>
+            <img src="../../../static/images/statics.png" alt="">
+          </div>
+          <p class="p loginCountW">访问量：<span>{{workshopBehaviour.loginCount}}</span></p>
+
+        </div>
       </div>
       <div class="informationWrapper main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
@@ -109,15 +117,18 @@
 import { mapGetters } from 'vuex'
 import { fetchContentPage } from '@/api/content.js'
 import { fetchDictInfo } from '@/api/dict.js'
-import { fetchLinessRank } from '@/api/member.js'
+import { fetchLinessRank, applyIntoWorkshop } from '@/api/member.js'
 import { fetchBehaviourById } from '@/api/workshop.js'
+import { fetchJyActivityPage } from '@/api/activity.js'
+
 export default {
   name: 'Workshop',
   components: {
-    WorkShopNotice: () => import('@/modules/notice/WorkShopNoticeList'),
-    WorkshopInformation: () => import('@/modules/information/WorkshopInformationList.vue'),
-    WorkShopResourceList: () => import('@/modules/resource/WorkShopResourceList.vue'),
-    WorkShopAchievementList: () => import('@/modules/achievement/WorkShopAchievementList.vue'),
+    WorkShopNotice: () => import('@/modules/notice/workShopNoticeList.vue'),
+    WorkshopInformation: () => import('@/modules/information/workshopInformationList.vue'),
+    WorkShopResourceList: () => import('@/modules/resource/workShopResourceList.vue'),
+    WorkShopAchievementList: () => import('@/modules/achievement/workShopAchievementList.vue'),
+    workshopActivityList: () => import('@/modules/activity/workshopActivityList.vue'),
     homeMember: () => import('./modules/homeMember.vue')
   },
   data() {
@@ -128,8 +139,9 @@ export default {
       homeAchievementList: [],
       homeResourceList: [],
       showType: '0',
-      homeMemberList: [{}, {}, {}, {}, {}],
-      workshopBehaviour: {}
+      homeMemberList: [],
+      workshopBehaviour: {},
+      workshopActivityList: []
     }
   },
   computed: {
@@ -178,7 +190,8 @@ export default {
       const data = {
         pageCurrent: 1,
         pageSize: 5,
-        contentTypeCode: contentTypeCodeInfo.dictKey
+        contentTypeCode: contentTypeCodeInfo.dictKey,
+        moduleId: this.$route.params.id
       }
       fetchContentPage(data).then((result) => {
         if (result.data.code === 200) {
@@ -201,7 +214,8 @@ export default {
       const data = {
         pageCurrent: 1,
         pageSize: 5,
-        contentTypeCode: contentTypeCode
+        contentTypeCode: contentTypeCode,
+        moduleId: this.$route.params.id
       }
       fetchContentPage(data).then((result) => {
         if (result.data.code === 200) {
@@ -214,6 +228,17 @@ export default {
         }
       }).catch(err => {
         this.$message({ type: 'warning', message: `${err}` })
+      })
+    },
+    getJyActivityPage() {
+      const data = {
+        groupId: this.$route.params.id,
+        pageCurrent: 1,
+        pageSize: 5
+      }
+      fetchJyActivityPage(data).then(res => {
+        console.log(res)
+        this.workshopActivityList = res.data.result ? res.data.result.records : []
       })
     },
     handleClick(tab) {
@@ -236,6 +261,18 @@ export default {
           resolve(res)
         })
       })
+    },
+    getApplyIntoWorkshop() {
+      const data = {
+        groupId: this.$route.params.id,
+        userId: this.uuid
+      }
+      applyIntoWorkshop(data).then(res => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.$message.success('申请成功')
+        }
+      })
     }
   },
   mounted() {
@@ -244,6 +281,7 @@ export default {
     this.getContentList('CONTENT_ACHIEVEMENT')
     this.getMemberLinessRank()
     this.getWorkshopModuleSum()
+    this.getJyActivityPage()
   }
 }
 </script>
@@ -314,9 +352,29 @@ $name: 'workshop-homeMain-moduel';
         }
       }
     }
+    .staticInfoWrapper{
+      min-height: 230px;
+      .staticsWrapper{
+        .totalLinessW{
+          min-height: 100px;
+          padding: 20px 0px 10px 10px;
+          border-bottom: 1px solid #e5e5e5;
+          p{
+            margin-bottom: 10px;
+          }
+        }
+        .loginCountW{
+          padding: 10px 0px 10px 10px;
+        }
+        .p{
+          font-size: 20px;
+          color: gray;
+        }
+      }
+    }
     .personal-details{
       position: relative;
-      min-height: 395px;
+      min-height: 385px;
       .personal-banner{
         height: 100px;
         .personal-img{

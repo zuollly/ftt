@@ -32,7 +32,7 @@ import { fetchDictInfo } from '@/api/dict.js'
 export default {
   name: 'Teaching',
   components: {
-    WorkshopInformation: () => import('@/modules/information/WorkshopInformationList.vue')
+    WorkshopInformation: () => import('@/modules/information/workshopInformationList.vue')
   },
   data() {
     return {

@@ -32,7 +32,7 @@ import { fetchDictInfo } from '@/api/dict.js'
 export default {
   name: 'Teaching',
   components: {
-    WorkShopNotice: () => import('@/modules/notice/WorkShopNoticeList')
+    WorkShopNotice: () => import('@/modules/notice/workShopNoticeList')
   },
   data() {
     return {
