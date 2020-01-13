@@ -17,7 +17,7 @@ const getters = {
   userRolePower: state => state.user.userRolePower,
   userSetting: state => state.user.setting, // 登录用户个人的一设置，权限，等
   workshopInfo: state => state.workshop.workshopInfo,
-  workshopUserTotal: state => state.workshop.workshopUserTotal, // 当前工作坊用户总数
+  workshopBehaviour: state => state.workshop.workshopBehaviour, // 当前工作坊统计信息
   permission_routers: state => state.permission.routers,
   addRouters: state => state.permission.addRouters // 0-坊主 1-副坊主  2-参与人员  3-申请人员  4-报名未通过人员  5-没有参与工作坊的成员
 }

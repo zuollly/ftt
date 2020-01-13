@@ -71,7 +71,6 @@ import { mapGetters } from 'vuex'
 import { getToken } from '@/utils/storage/cookies'
 import store from '@/store'
 import { updatedWorkshop } from '@/api/workshop.js'
-import { getPicture } from '@/api/app'
 import appConfig from '../../../static/appConfig.js'
 export default {
   name: 'WorkshopEdit',

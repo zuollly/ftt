@@ -55,16 +55,16 @@
         </div>
         <div class="personal-statics">
           <div class="statics-label statics-line">
-            <p class="num">50</p>
+            <p class="num">{{workshopBehaviour.memberCount}}</p>
             <p class="type">成员</p>
           </div>
           <div class="statics-label statics-line">
-            <p class="num">50</p>
-            <p class="type">成员</p>
+            <p class="num">{{workshopBehaviour.actCount}}</p>
+            <p class="type">活动</p>
           </div>
           <div class="statics-label">
-            <p class="num">50</p>
-            <p class="type">成员</p>
+            <p class="num">{{workshopBehaviour.resourceCount}}</p>
+            <p class="type">教学资源</p>
           </div>
         </div>
         <div class="personal-button">
@@ -110,6 +110,7 @@ import { mapGetters } from 'vuex'
 import { fetchContentPage } from '@/api/content.js'
 import { fetchDictInfo } from '@/api/dict.js'
 import { fetchLinessRank } from '@/api/member.js'
+import { fetchBehaviourById } from '@/api/workshop.js'
 export default {
   name: 'Workshop',
   components: {
@@ -127,7 +128,8 @@ export default {
       homeAchievementList: [],
       homeResourceList: [],
       showType: '0',
-      homeMemberList: [{}, {}, {}, {}, {}]
+      homeMemberList: [{}, {}, {}, {}, {}],
+      workshopBehaviour: {}
     }
   },
   computed: {
@@ -139,6 +141,14 @@ export default {
     }
   },
   methods: {
+    getWorkshopModuleSum() {
+      fetchBehaviourById({ id: this.$route.params.id }).then(response => {
+        const data = response.data
+        if (data.code === 200) {
+          this.workshopBehaviour = data.result
+        }
+      })
+    },
     changeType(type) {
       this.showType = type
       this.getMemberLinessRank()
@@ -233,6 +243,7 @@ export default {
     this.getContentList('CONTENT_RESOURCE')
     this.getContentList('CONTENT_ACHIEVEMENT')
     this.getMemberLinessRank()
+    this.getWorkshopModuleSum()
   }
 }
 </script>

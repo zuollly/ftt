@@ -8,7 +8,7 @@
               <el-radio-button label="member">成员列表</el-radio-button>
               <el-radio-button label="apply">待审核列表</el-radio-button>
             </el-radio-group>
-            <el-button v-if="searchType==='member'" type="primary" size="small">邀请成员</el-button>
+            <el-button v-if="searchType==='member'" @click="addMember" type="primary" size="small">邀请成员</el-button>
             <div v-if="searchType==='apply'">
               <el-button type="primary" @click="opeSomeMember('pass')" size="small">通过</el-button>
               <el-button type="danger" @click="opeSomeMember('reject')" size="small">拒绝</el-button>
@@ -18,7 +18,7 @@
             <div class="memberCon" v-for="(item, idx) in memberList" :key="idx">
               <div class="settingBtn">
                 <el-tooltip class="item" effect="dark" content="删除成员" placement="top">
-                  <el-button type="danger" size="mini" icon="el-icon-delete" circle></el-button>
+                  <el-button type="danger" size="mini" @click="deleteMember(item, idx)" icon="el-icon-delete" circle></el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="设置助理" placement="top">
                   <el-button type="primary" size="mini" icon="el-icon-setting" circle></el-button>
@@ -92,12 +92,16 @@
         </div>
       </el-col>
     </el-row>
+    <addMember v-if="addMemberDialog" @leaderInfo='leaderInfo'></addMember>
   </div>
 </template>
 <script>
-import { fetchMemberPage, fetchApplyMemberPage, verifyMember } from '@/api/member.js'
+import { fetchMemberPage, deleteMemberPage, fetchApplyMemberPage, verifyMember } from '@/api/member.js'
 import { mapGetters } from 'vuex'
 export default {
+  components: {
+    addMember: () => import('./modules/addMember')
+  },
   data() {
     return {
       memberList: [],
@@ -105,6 +109,7 @@ export default {
       searchType: 'member',
       iconClass: 'upward',
       multipleSelection: [],
+      addMemberDialog: false,
       pageObj: { // 分页信息
         pageCurrent: 1,
         pageSize: 10,
@@ -144,6 +149,38 @@ export default {
   methods: {
     getRowKey(row) {
       return row.id
+    },
+    addMember() {
+      this.addMemberDialog = true
+    },
+    leaderInfo(val) {
+      this.addMemberDialog = false
+      // 刷新成员列表……和排行？
+      if (val) {
+        this.getMemberPage()
+      }
+    },
+    deleteMember(item, index) {
+      console.log(item)
+      this.$confirm(`确定移除“${item.realname}”?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteMemberPage([item.id]).then(res => {
+          if (res.data.code === 200) {
+            this.$message.success('移除成功')
+            this.getMemberPage()
+          } else {
+            this.$message.success('移除失败')
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消移除'
+        })
+      })
     },
     handleSelectionChange(val) {
       console.log(val)

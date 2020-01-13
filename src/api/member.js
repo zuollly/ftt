@@ -8,6 +8,15 @@ export function fetchMemberPage(data) {
     data: data
   })
 }
+
+// 根据ID删除某个坊内的成员（支持批量删除）
+export function deleteMemberPage(data) {
+  return request({
+    url: '/user/project/delete',
+    method: 'POST',
+    data: data
+  })
+}
 // 翻页查询工作坊申请人
 export function fetchApplyMemberPage(data) {
   return request({

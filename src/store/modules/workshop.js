@@ -2,14 +2,14 @@ import { fetchGroupById } from '@/api/workshop'
 const workshop = {
   state: {
     workshopInfo: {}, // 工作坊详情
-    workshopUserTotal: 0
+    workshopBehaviour: {}
   },
   mutations: {
     SET_WORKSHOPINFO: (state, workshopInfo) => {
       state.workshopInfo = workshopInfo
     },
-    SET_WORKSHOPUSERTOTAL: (state, workshopUserTotal) => {
-      state.workshopUserTotal = workshopUserTotal
+    SET_WORKSHOPBEHAVIOUR: (state, workshopBehaviour) => {
+      state.workshopBehaviour = workshopBehaviour
     }
   },
   actions: {
@@ -17,7 +17,7 @@ const workshop = {
     GetWorkshopDetails({ commit }, groupId) {
       return new Promise((resolve, reject) => {
         fetchGroupById(groupId).then(response => {
-          console.log(response, 'response')
+          console.log(response, 'response-1')
           const data = response.data
           if (data.code === 200) {
             commit('SET_WORKSHOPINFO', data.result)
@@ -31,10 +31,10 @@ const workshop = {
     // 当前工作坊模块数据总数统计
     // GetWorkshopModuleSum({ commit }, groupId) {
     //   return new Promise((resolve, reject) => {
-    //     getWorkshopModuleSum(groupId).then(response => {
+    //     fetchBehaviourById(groupId).then(response => {
     //       const data = response.data
     //       if (data.code === 200) {
-    //         commit('SET_WORKSHOPUSERTOTAL', data.result.groupUserCount)
+    //         commit('SET_WORKSHOPBEHAVIOUR', data.result)
     //       }
     //       resolve(data)
     //     }).catch(error => {

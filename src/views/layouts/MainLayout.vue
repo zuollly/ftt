@@ -60,7 +60,7 @@ export default {
       if (_this.workshopInfo.id || groupId !== _this.workshopInfo.id) {
         store.dispatch('GetWorkshopDetails', { id: groupId }).then(response => {
           if (response.code === 200) {
-            // store.dispatch('GetWorkshopModuleSum', { groupId: groupId })
+            // store.dispatch('GetWorkshopModuleSum', { id: groupId })
           } else {
             // _this.$message({ message: '此活动已被删除', type: 'success' })
             // _this.$router.push({ path: '/404' })

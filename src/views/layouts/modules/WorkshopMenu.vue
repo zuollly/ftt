@@ -2,11 +2,15 @@
   <div class="container mt-2">
     <div class="workshop-header">
       <div class="workshop-body">
-        <div class="workshop-banner" v-lazy-container="{ selector: 'img'}">
+        <div class="workshop-banner"  v-lazy-container="{ selector: 'img'}">
           <span class="img-set">
             <img class="banner-coer" :data-src="workshopInfo.groupImg" :data-error="workshopCoer" :data-loading="appConfig.cfg_img_loading">
           </span>
         </div>
+        <!-- <div class="workshop-banner">
+          <img class="corverImg" v-if="workshopInfo.groupImg" :src="workshopInfo.groupImg" alt="">
+          <img v-else class="loadImg" :src="appConfig.cfg_img_loading">
+        </div> -->
         <div class="workshop-details">
           <span class="details-header">{{workshopInfo.groupName}}&nbsp;<small>{{workshopInfo.adminUserName}}</small></span>
           <div class="workshop-type">
@@ -219,10 +223,16 @@ export default {
       -webkit-background-size: cover;
       -moz-background-size: cover;
       filter: brightness(0.8);
-      img{
-        /*width: 100%;*/
+      text-align: center;
+      .corverImg{
+        width: 100%;
+        height: 100%;
         border-top-right-radius: 5px;
         border-top-left-radius: 5px;
+      }
+      .loadImg{
+        width: 10%;
+        height: 10%;
       }
       img.banner-coer[lazy=loading]  {
         width: 30px;

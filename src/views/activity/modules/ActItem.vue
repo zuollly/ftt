@@ -146,6 +146,7 @@ export default {
   white-space: nowrap;
   line-height: 33px;
   color: #606266;
+  margin-bottom: 7px;
 }
 .media-content-mobile{
   display: none;
@@ -164,6 +165,7 @@ export default {
   }
 }
 .media-span {
+  margin-bottom: 7px;
   span {
     margin-left: 5px;
     font-size: 14px;
