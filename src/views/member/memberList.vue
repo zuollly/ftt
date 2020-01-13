@@ -5,10 +5,10 @@
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
           <div class="headWrapper">
             <el-radio-group v-model="searchType">
-              <el-radio-button label="member">成员列表</el-radio-button>
-              <el-radio-button label="apply">待审核列表</el-radio-button>
+              <el-radio-button label="member">所有成员</el-radio-button>
+              <el-radio-button label="apply">待审核成员</el-radio-button>
             </el-radio-group>
-            <el-button v-if="searchType==='member'" @click="addMember" type="primary" size="small">邀请成员</el-button>
+            <el-button v-if="searchType==='member'" @click="addMember" type="primary" plain size="mini">邀请成员</el-button>
             <div v-if="searchType==='apply'">
               <el-button type="primary" @click="opeSomeMember('pass')" size="small">通过</el-button>
               <el-button type="danger" @click="opeSomeMember('reject')" size="small">拒绝</el-button>

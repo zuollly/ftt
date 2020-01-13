@@ -46,3 +46,11 @@ export function fetchContentById(data) {
   })
 }
 
+// 审核（支持批量）
+export function verifyContentPage(data, status, userId) {
+  return request({
+    url: `/channel/content/relevance/verify?verifyStatus=${status}&userId=${userId}`,
+    method: 'POST', // 请求方法
+    data: data
+  })
+}

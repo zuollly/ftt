@@ -8,11 +8,19 @@
       </el-col>
       <el-col class="home-details" :xs="24" :sm="24" :md="16" :lg="17" :xl="18">
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
-          <div class="headWrapper">
+          <!-- <div class="headWrapper">
             <p class="p">成果展示</p>
-            <el-button @click="issueContent" type="primary" plain size="mini">发布成果展示</el-button>
+            <el-button @click="issueContent" type="primary" plain size="mini">发布成果</el-button>
+          </div> -->
+          <div class="headWrapper">
+            <el-radio-group v-model="searchType">
+              <el-radio-button label="1">所有成果</el-radio-button>
+              <el-radio-button label="mine">我发布的成果</el-radio-button>
+              <el-radio-button label="0">待审核成果</el-radio-button>
+            </el-radio-group>
+            <el-button @click="issueContent" type="primary" plain size="mini">发布成果</el-button>
           </div>
-          <WorkShopAchievementList :homeAchievementList='homeAchievementList' @editContent='editContent' @getDeleteContent='getDeleteContent'></WorkShopAchievementList>
+          <WorkShopAchievementList @getRefresh='getRefresh' :homeAchievementList='homeAchievementList' @editContent='editContent' @getDeleteContent='getDeleteContent'></WorkShopAchievementList>
           <div class="pagination" v-if="homeAchievementList.length">
             <el-pagination
               background
@@ -109,7 +117,8 @@ export default {
       dialogVisible: false,
       title: '发成果展示',
       opeType: 'add',
-      itemCur: null
+      itemCur: null,
+      searchType: '1'
     }
   },
   computed: {
@@ -120,6 +129,9 @@ export default {
     ])
   },
   watch: {
+    searchType: function() {
+      this.getAchievementList()
+    }
   },
   methods: {
     getDeleteContent(type, item) {
@@ -202,6 +214,9 @@ export default {
       this.contentForm.type = item.contentTypeCode
       this.getContentById(item.id)
     },
+    getRefresh() {
+      this.getAchievementList()
+    },
     getContentById(id) {
       const data = {
         id: id
@@ -238,6 +253,11 @@ export default {
         pageCurrent: this.pageObj.pageCurrent,
         pageSize: this.pageObj.pageSize,
         moduleId: this.$route.params.id
+      }
+      if (this.searchType === 'mine') {
+        data.userId = this.uuid
+      } else {
+        data.verifyStatus = this.searchType
       }
       if (this.chooseType.dictKey) {
         data.contentTypeCode = this.chooseType.dictKey

@@ -28,6 +28,8 @@
                 <div class="button">
                   <el-button type="success" plain size="mini" @click="opeNotice(scope.row, 'view')">查看</el-button>
                   <el-button type="primary" plain size="mini" @click="opeNotice(scope.row, 'edit')">编辑</el-button>
+                  <el-button type="warning" v-if="scope.row.verifyStatus === 0" plain size="mini" @click="opeNotice(scope.row, 'vertify')">审核</el-button>
+
                   <!-- <el-button type="warning" plain size="mini" v-if="scope.row.status !== 2" @click="opeNotice(scope.row, 'issue')">发布</el-button> -->
                   <el-button type="danger" plain size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
                 </div>
@@ -41,11 +43,8 @@
                       <el-dropdown-item>
                         <el-button type="primary" size="mini" @click="opeNotice(scope.row, 'edit')">编辑</el-button>
                       </el-dropdown-item>
-                      <!-- <el-dropdown-item>
-                        <el-button type="warning" size="mini" v-if="scope.row.status !== 2" @click="opeNotice(scope.row, 'issue')">发布</el-button>
-                      </el-dropdown-item> -->
                       <el-dropdown-item>
-                        <el-button type="warning" size="mini" v-if="scope.row.status === 2" @click="opeNotice(scope.row, 'withdraw')">撤回</el-button>
+                        <el-button type="warning" v-if="scope.row.verifyStatus === 0" plain size="mini" @click="opeNotice(scope.row, 'vertify')">审核</el-button>
                       </el-dropdown-item>
                       <el-dropdown-item>
                         <el-button type="danger" size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
@@ -58,23 +57,45 @@
           </el-table>
         </div>
       </div>
+      <el-dialog
+        title="审核资源"
+        :visible.sync="dialogVisible"
+        width="30%">
+        <el-form ref="form" :model="formChoose" label-width="80px">
+          <el-form-item label="状态">
+            <el-select v-model="formChoose.status">
+              <el-option label="通过" value="1"></el-option>
+              <el-option label="不通过" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click='sure'>确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
 </template>
 <script>
-import { insertRelevanceContent } from '@/api/content.js'
 import { mapGetters } from 'vuex'
+import { verifyContentPage } from '@/api/content.js'
 export default {
   components: {
     LayNotData: () => import('@/modules/LayNotData')
   },
   data() {
     return {
+      dialogVisible: false,
+      itemCur: {},
+      formChoose: {
+        status: ''
+      }
     }
   },
   props: ['homeResourceList', 'page', 'index'],
   computed: {
     ...mapGetters([
-      'workshopUserRoles'
+      'uuid'
     ])
   },
   filters: {
@@ -103,6 +124,7 @@ export default {
   },
   methods: {
     opeNotice(item, type) {
+      this.itemCur = item
       const workshopId = this.$route.params.id
       if (type === 'edit') {
         this.$emit('editContent', item)
@@ -112,39 +134,19 @@ export default {
           name: 'noticeShow', params: { id: workshopId, noticeId: item.id }, query: { index: this.index }
         })
       }
-      if (type === 'issue') {
-        this.issueOrWithdraw('issue', item)
-      }
-      if (type === 'withdraw') {
-        this.issueOrWithdraw('withdraw', item)
+      if (type === 'vertify') {
+        this.dialogVisible = true
       }
     },
-    // 发布还是撤回
-    issueOrWithdraw(type, item) {
-      const data = {
-        id: item.id
+    sure() {
+      var data = {
+        ids: [this.itemCur.id]
       }
-      let txt = null
-      if (type === 'issue') {
-        data.status = 2
-        txt = '发布'
-      } else if (type === 'withdraw') {
-        data.status = 3
-        txt = '撤回'
-      }
-      this.$confirm(`是否确认${txt}？`, {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        insertRelevanceContent(data).then((result) => {
-          if (result.data.code === 200) {
-            this.$message({ type: 'success', message: `操作成功` })
-            this.$emit('getNoticeList')
-          }
-        })
-      }).catch(() => {
-        this.$message({ type: 'warning', message: '已取消' })
+      verifyContentPage(data, this.formChoose.status * 1, this.uuid).then(res => {
+        if (res.data.code === 200) {
+          this.$message.success('操作成功')
+          this.$emit('getRefresh')
+        }
       })
     },
     // 删除公告

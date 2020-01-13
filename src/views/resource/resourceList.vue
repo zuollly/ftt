@@ -8,11 +8,19 @@
       </el-col>
       <el-col class="home-details" :xs="24" :sm="24" :md="16" :lg="17" :xl="18">
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
-          <div class="headWrapper">
+          <!-- <div class="headWrapper">
             <p class="p">教学资源</p>
             <el-button @click="issueContent" type="primary" plain size="mini">发布教学资源</el-button>
+          </div> -->
+          <div class="headWrapper">
+            <el-radio-group v-model="searchType">
+              <el-radio-button label="1">所有资源</el-radio-button>
+              <el-radio-button label="mine">我发布的资源</el-radio-button>
+              <el-radio-button label="0">待审核资源</el-radio-button>
+            </el-radio-group>
+            <el-button @click="issueContent" type="primary" plain size="mini">发布教学资源</el-button>
           </div>
-          <WorkShopResourceList :homeResourceList='homeResourceList' @editContent='editContent' @getDeleteContent='getDeleteContent'></WorkShopResourceList>
+          <WorkShopResourceList @getRefresh='getRefresh' :homeResourceList='homeResourceList' @editContent='editContent' @getDeleteContent='getDeleteContent'></WorkShopResourceList>
           <div class="pagination" v-if="homeResourceList.length">
             <el-pagination
               background
@@ -109,7 +117,8 @@ export default {
       dialogVisible: false,
       title: '发资源',
       opeType: 'add',
-      itemCur: null
+      itemCur: null,
+      searchType: '1'
     }
   },
   computed: {
@@ -120,6 +129,9 @@ export default {
     ])
   },
   watch: {
+    searchType: function() {
+      this.getResourceList()
+    }
   },
   methods: {
     getDeleteContent(type, item) {
@@ -202,6 +214,9 @@ export default {
       this.contentForm.type = item.contentTypeCode
       this.getContentById(item.id)
     },
+    getRefresh() {
+      this.getResourceList()
+    },
     getContentById(id) {
       const data = {
         id: id
@@ -239,6 +254,11 @@ export default {
         pageCurrent: this.pageObj.pageCurrent,
         pageSize: this.pageObj.pageSize,
         moduleId: this.$route.params.id
+      }
+      if (this.searchType === 'mine') {
+        data.userId = this.uuid
+      } else {
+        data.verifyStatus = this.searchType
       }
       if (this.chooseType.dictKey) {
         data.contentTypeCode = this.chooseType.dictKey
