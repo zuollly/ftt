@@ -225,6 +225,7 @@ export default {
       return this.oneActivityStep(params).then(res => { // 利用es7的async此处必须写return
         if (res.data.code === 200) {
           this.currentStepInfo = res.data.result
+          this.currentStepInfo.description = res.data.result.description ? res.data.result.description : ''
           // 起止时间改为当前
           // if (!this.activityId) {
           //   this.currentStepInfo.startTime = new Date()

@@ -1,6 +1,5 @@
 <template>
-<div class="container-fluid mt-3">
-  <div class="container">
+  <div class="">
     <div class="activityWrapper">
       <el-row v-if="hasHistory">
         <el-col>
@@ -60,7 +59,6 @@
       </el-row>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -227,10 +225,9 @@ export default {
       // border: solid 1px #dbdbdb;
       // box-sizing: border-box;
       padding-bottom: 20px;
-      min-height: 600px;
       overflow-y: auto;
       .activity-member{
-        height: 100%;
+        min-height: 600px;
         overflow-y: auto;
         background: #ffffff;
         .titles {

@@ -2,7 +2,7 @@
   <div>
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
       <el-tab-pane label="我的作业" name="first">
-        <div class="homeWork" v-if="homeWorkInfo.length <= 0 && !(workshopUserRoles.indexOf('GROUP_LEADER') > -1)">
+        <div class="homeWork" v-if="homeWorkInfo.length <= 0">
           <p>您还没有提交作业</p>
           <el-button type="primary" @click="tosubmitHomeWork">提交作业</el-button>
         </div>

@@ -1,6 +1,5 @@
 <template>
-  <div class="container-fluid mt-3">
-    <div class="container">
+  <div class="">
     <el-card shadow="never">
       <div class="apply-template">
         <!-- <div class="left">
@@ -12,7 +11,6 @@
         </div>
       </div>
     </el-card>
-  </div>
   </div>
 </template>
 

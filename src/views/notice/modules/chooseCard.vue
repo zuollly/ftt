@@ -1,7 +1,7 @@
 <template>
   <div class="informationCardWrapper">
       <div class="headImage">
-        <img src="../../../../static/images/banner.jpg" alt="">
+        <img :src="src" alt="">
       </div>
       <div class="listLabel">
         <p v-for="(item, idx) in list" :key="idx" class="plabel" @click="chooseMethods(item)" :class="{plabelActive: item.dictKey===chooseType.dictKey}">
@@ -22,7 +22,7 @@ export default {
   },
   computed: {
   },
-  props: ['chooseType', 'list', 'jumpType'],
+  props: ['chooseType', 'list', 'jumpType', 'src'],
   watch: {
   },
   methods: {

@@ -21,6 +21,11 @@ export default {
       dataTree: this.menuData
     }
   },
+  watch: {
+    currentRoute: function(val) {
+      console.log(val, 'currentRoute')
+    }
+  },
   props: {
     mode: {
       type: String,

@@ -27,6 +27,7 @@ export default {
   },
   watch: {
     $route(val) {
+      console.log(val, 'val')
       this.getBreadcrumb()
     }
   },
@@ -53,7 +54,8 @@ export default {
   .lay-breadcrumb.el-breadcrumb {
     display: inline-block;
     font-size: 14px;
-    line-height: 50px;
+    // line-height: 50px;
+    padding-top: 20px;
     margin-left: 10px;
     .no-redirect {
       color: #97a8be;

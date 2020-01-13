@@ -6,8 +6,12 @@
           <div class="d-flex">
             <div style="width: 15%">
               <!-- <span class="text-muted">{{item.projectName}}</span> -->
-              <img v-if="index<3" style="width: 20px;height:20px" src="../../../../static/images/avatar.jpg" alt="">
-              <span v-else>{{index + 1}}</span>
+              <!-- <img v-if="index<3" style="width: 20px;height:20px" src="../../../../static/images/avatar.jpg" alt=""> -->
+              <!-- <span v-else>{{index + 1}}</span> -->
+              <svg-icon v-if="index===0" style="width: 30px;height:30px" iconClass='one'></svg-icon>
+              <svg-icon v-if="index===1" style="width: 30px;height:30px" iconClass='two'></svg-icon>
+              <svg-icon v-if="index===2" style="width: 30px;height:30px" iconClass='three'></svg-icon>
+              <svg-icon v-if="index>3" style="width: 30px;height:30px" iconClass='more'></svg-icon>
             </div>
             <div style="width: 15%">
               <img v-if="index<3" style="width: 20px;height:20px" :src="item.userImg" alt="">

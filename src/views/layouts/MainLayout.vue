@@ -20,7 +20,7 @@ import LayFooter from './modules/LayFooter'
 import LayBackTop from './modules/LayBackTop'
 import workshop from '@/router/modules/workshop'
 import { mapGetters } from 'vuex'
-// import store from '@/store'
+import store from '@/store'
 import logoPic from '@/assets/logo.svg'
 import LayBreadcrumb from '@/components/LayBreadcrumb'
 export default {
@@ -46,7 +46,7 @@ export default {
     },
     isBread: function() {
       const routerName = this.$route.name
-      return (routerName === 'workshopEdit' || routerName === 'noticeAdd' || routerName === 'noticeEdit' || routerName === 'noticeShow' || routerName === 'activityAdd' || routerName === 'activityEdit' || routerName === 'activityShow' || routerName === 'bulletinAdd' || routerName === 'bulletinEdit' || routerName === 'bulletinShow')
+      return (routerName === 'activityAdd' || routerName === 'activityInfo' || routerName === 'teachingAdd' || routerName === 'teachingShow' || routerName === 'workshopEdit')
     }
   },
   mounted() {
@@ -58,15 +58,14 @@ export default {
       var _this = this
       const groupId = _this.$route.params.id
       if (_this.workshopInfo.id || groupId !== _this.workshopInfo.id) {
-        // store.dispatch('GetWorkshopDetails', { groupId: groupId }).then(response => {
-        //   if (response.code === 200) {
-        //     store.dispatch('GetWorkshopModuleSum', { groupId: groupId })
-        //     document.title = this.$route.meta.title + '-' + store.getters.workshopInfo.groupName
-        //   } else {
-        //     // _this.$message({ message: '此活动已被删除', type: 'success' })
-        //     // _this.$router.push({ path: '/404' })
-        //   }
-        // })
+        store.dispatch('GetWorkshopDetails', { id: groupId }).then(response => {
+          if (response.code === 200) {
+            // store.dispatch('GetWorkshopModuleSum', { groupId: groupId })
+          } else {
+            // _this.$message({ message: '此活动已被删除', type: 'success' })
+            // _this.$router.push({ path: '/404' })
+          }
+        })
       }
     }
   }

@@ -1,6 +1,5 @@
 <template>
-  <div class="container-fluid mt-3">
-    <div class="container">
+  <div class="">
     <el-card shadow="never">
       <div class="apply-template">
         <div class="left">
@@ -22,7 +21,6 @@
     </el-card>
     <!--  -->
     <add-step v-if="addStepShow" :stepNumber='stepList.length' @addStepSuccess='closeAddStep' :stageId='stageId'></add-step>
-  </div>
   </div>
 </template>
 

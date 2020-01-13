@@ -17,10 +17,10 @@ const workshopAdmin = {
       }
     },
     {
-      path: 'workshopAdminEdit/:id',
-      component: () => import('@/views/workshops/WorkshopEdit'),
-      name: 'workshopAdminEdit',
-      meta: { title: '修改工作坊', icon: '', requireAuth: true, roles: ['admin'], workshopRoles: [0, 1, 6]
+      path: 'workshopEdit/:id',
+      component: () => import('@/views/workshops/workshopEdit'),
+      name: 'workshopEdit',
+      meta: { title: '修改工作坊', icon: '', requireAuth: true
       }
     }
   ]

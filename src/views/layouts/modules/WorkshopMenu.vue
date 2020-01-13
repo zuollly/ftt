@@ -4,24 +4,21 @@
       <div class="workshop-body">
         <div class="workshop-banner" v-lazy-container="{ selector: 'img'}">
           <span class="img-set">
-            <img class="banner-coer" :data-src="workshopInfo.coverPic" :data-error="workshopCoer" :data-loading="appConfig.cfg_img_loading">
+            <img class="banner-coer" :data-src="workshopInfo.groupImg" :data-error="workshopCoer" :data-loading="appConfig.cfg_img_loading">
           </span>
         </div>
         <div class="workshop-details">
-          <span class="details-header">某某工作坊</span>
+          <span class="details-header">{{workshopInfo.groupName}}&nbsp;<small>{{workshopInfo.adminUserName}}</small></span>
           <div class="workshop-type">
             <span>
-              <svg-icon icon-class="subject" /> 创建时间：111111
+              <svg-icon icon-class="subject" /> 创建时间：{{workshopInfo.createTime}}
             </span>
             <span>
-              <el-tooltip class="item" effect="dark" content="科目" placement="bottom"><svg-icon icon-class="subject" /></el-tooltip> 语文
-            </span>
-            <span>
-              <svg-icon icon-class="subject" /> 人数：100人
+              <el-tooltip class="item" effect="dark" content="科目" placement="bottom"><svg-icon icon-class="subject" /></el-tooltip> {{workshopInfo.groupSegSubs?workshopInfo.groupSegSubs[0].segSubtName:''}}
             </span>
           </div>
         </div>
-        <el-button class="workshop-edit" type="primary" size="medium" icon="el-icon-edit" plain>编辑工作室资料</el-button>
+        <el-button class="workshop-edit" type="primary" size="medium" icon="el-icon-edit" @click="editWorkshop" plain>编辑工作室资料</el-button>
       </div>
       <div class="workshop-menu">
         <nav-menu mode="horizontal" :menuData="menuData" :currentRoute="currentRoute"></nav-menu>
@@ -46,7 +43,7 @@ export default {
   components: { NavMenu },
   data() {
     return {
-      workshopCoer: './static/images/banner.jpg',
+      workshopCoer: './static/images/topBanner.jpg',
       workshopDetailsDialogVisible: false,
       workshopId: this.$route.params.id,
       loading: false
@@ -58,9 +55,14 @@ export default {
     },
     workshopInfo: {
       type: Object,
-      default: () => {
+      default: function() {
         return {}
       }
+    }
+  },
+  watch: {
+    workshopInfo: function(val) {
+      console.log(val, 'workshopInfo')
     }
   },
   mounted() {
@@ -216,7 +218,7 @@ export default {
       background-size: cover;
       -webkit-background-size: cover;
       -moz-background-size: cover;
-      filter: brightness(0.5);
+      filter: brightness(0.8);
       img{
         /*width: 100%;*/
         border-top-right-radius: 5px;
@@ -233,9 +235,11 @@ export default {
       }
       img.banner-coer[lazy=error]  {
         width: 100%;
+        height: 100%;
       }
       img.banner-coer[lazy =loaded]  {
         width: 100%;
+        height: 100%;
       }
     }
     .workshop-banner-btn{

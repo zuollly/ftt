@@ -1,6 +1,5 @@
 <template>
-  <div class="container-fluid mt-3">
-    <div class="container">
+  <div class="">
     <el-card shadow="never">
       <div class="activity">
         <el-button @click="backTo" size="medium" style="float: right">返 回</el-button>
@@ -49,7 +48,6 @@
         </div>
       </div>
     </el-card>
-    </div>
   </div>
 </template>
 
@@ -92,7 +90,9 @@ export default {
       this.fetchActivityTheme().then(res => {
         console.log(res)
         if (res.data.code === 200) {
-          this.themeList = res.data.result
+          this.themeList = res.data.result.filter((item) => {
+            return item.themeCode !== '0_JATD1'
+          })
           this.themeList.push({ themeCode: '', themeName: '自定义' })
           this.select = Array(this.themeList.length).fill(false)
         }

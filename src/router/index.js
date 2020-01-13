@@ -9,7 +9,6 @@ import UserLayout from '@/views/layouts/UserLayout'
 // import activityRouter from './modules/activity'
 import workshopList from './modules/workshopList'
 import workshopRouter from './modules/workshop'
-import workshopAdmin from './modules/workshopAdmin'
 // import accountRouter from './modules/account'
 // formsRouter, listRouter, profileRouter, resultRouter, exceptionRouter, accountRouter,
 // 当设置 true 的时候该路由不会再侧边栏出现 如401，login等页面，或者如一些编辑页面/edit/1
@@ -37,7 +36,7 @@ import workshopAdmin from './modules/workshopAdmin'
 Vue.use(Router)
 
 export const constantRouterMap = [
-  workshopList, workshopRouter, workshopAdmin,
+  workshopList, workshopRouter,
   {
     path: '/user',
     component: UserLayout,

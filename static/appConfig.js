@@ -24,7 +24,7 @@ module.exports = {
   cfg_mediatype: '', // 允许的多媒体文件类型
   cfg_max_face: '', // 会员上传头像大小限制(单位：KB)
   cfg_workshop_Logo: './static/images/workshopLogo.png', // 工作坊默认LOGO
-  cfg_workshop_banner: './static/images/banner.jpg', // 工作坊默认LOGO
+  cfg_workshop_banner: './static/images/topBanner.jpg', // 工作坊默认LOGO
   cfg_user_face_not: './static/images/photoUserNot.svg', // 暂无或加载出错用户头像
   cfg_thumbnail_not: './static/images/photoNot.svg', // 暂无或加载出错缩略图
   cfg_data_not: './static/images/dataNot.svg', // 暂无数据图片

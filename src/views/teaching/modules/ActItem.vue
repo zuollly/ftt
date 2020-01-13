@@ -5,7 +5,7 @@
         <div class="grid-content bg-purple">
           <div class="media media-box">
             <!-- <div v-lazy-container="{ selector: 'img'}"><img :key="appConfig.cfg_up_path + shoplist.logo" class="mr-3 imgshow" :data-src="appConfig.cfg_up_path + shoplist.logo" data-error="./static/images/workshopLogo.png" data-loading="./static/images/loading.gif"></div> -->
-            <img class="mr-3" :src="shoplist.activityImg" alt="">
+            <img class="mr-3" :src="shoplist.activityImg || appConfig.cfg_workshop_Logo" alt="">
             <div class="media-list">
               <h5 class="mt-2 media-title" @click="enterActivity(workshopItem)">{{shoplist.activityName}}</h5>
               <div class="media-span">

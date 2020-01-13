@@ -1,62 +1,60 @@
 <template>
-<div class="container-fluid mt-3">
-  <div class="container">
-    <div class="activityWrapper">
-      <el-row v-if="hasHistory">
-        <el-col>
-          <BackSuperior></BackSuperior>
-        </el-col>
-      </el-row>
-      <el-row  class="contentWrapper" :gutter="15">
-        <el-col class="train-left" :span="6">
-          <ul class="ulWrapper">
-            <li>
-              <span class="list-1">活动信息</span>
-              <ul>
-                <li style="color: white; cursor: pointer" class="zh-bg-color-green active" @click="getBasicMessage">
-                  基本信息
-                </li>
-              </ul>
-            </li>
-            <li>
-              <span class="list-2">活动内容</span>
-              <ul class="ul-list2">
-                <li class="clearfix" :class="{'liActive': item.choose}" v-for="(item, index) in stepList" :key="index" @click="getActivityContent(item, index)">
-                  {{item.stepName}}
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </el-col>
-        <el-col class="train-right" :span="14">
-          <div class="divWrapper">
-            <component :currentStep.sync='currentStep' :is="activityComponent" :holderInfo="holder"></component>
+<div class="">
+  <div class="activityWrapper">
+    <el-row v-if="hasHistory">
+      <el-col>
+        <BackSuperior></BackSuperior>
+      </el-col>
+    </el-row>
+    <el-row  class="contentWrapper" :gutter="15">
+      <el-col class="train-left" :span="6">
+        <ul class="ulWrapper">
+          <li>
+            <span class="list-1">活动信息</span>
+            <ul>
+              <li style="color: white; cursor: pointer" class="zh-bg-color-green active" @click="getBasicMessage">
+                基本信息
+              </li>
+            </ul>
+          </li>
+          <li>
+            <span class="list-2">活动内容</span>
+            <ul class="ul-list2">
+              <li class="clearfix" :class="{'liActive': item.choose}" v-for="(item, index) in stepList" :key="index" @click="getActivityContent(item, index)">
+                {{item.stepName}}
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </el-col>
+      <el-col class="train-right" :span="14">
+        <div class="divWrapper">
+          <component :currentStep.sync='currentStep' :is="activityComponent" :holderInfo="holder"></component>
+        </div>
+      </el-col>
+      <el-col class="train-member" :span="4">
+        <div class="activity-member">
+          <div class="titles">
+            <span>活动成员</span>
+            <!-- <router-link class="more Right a-green" tag="a" :to="{ name: 'activity-member', query: { activityId: $route.params.activityId } }">
+              更多&gt;
+            </router-link> -->
           </div>
-        </el-col>
-        <el-col class="train-member" :span="4">
-          <div class="activity-member">
-            <div class="titles">
-              <span>活动成员</span>
-              <!-- <router-link class="more Right a-green" tag="a" :to="{ name: 'activity-member', query: { activityId: $route.params.activityId } }">
-                更多&gt;
-              </router-link> -->
-            </div>
-            <div class="member-contents">
-              <ul>
-                <li v-for="(item, index) in memberList" :key="index">
-                  <a>
-                    <img :src="item.userInfo.avatar">
-                    <p :title="item.userInfo.realname">
-                      {{item.userInfo.realname}}
-                    </p>
-                  </a>
-                </li>
-              </ul>
-            </div>
+          <div class="member-contents">
+            <ul>
+              <li v-for="(item, index) in memberList" :key="index">
+                <a>
+                  <img :src="item.userInfo.avatar">
+                  <p :title="item.userInfo.realname">
+                    {{item.userInfo.realname}}
+                  </p>
+                </a>
+              </li>
+            </ul>
           </div>
-        </el-col>
-      </el-row>
-    </div>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </div>
 </template>
@@ -197,9 +195,10 @@ export default {
       padding-bottom: 100px;
       // margin-right: 10px;
       // max-width: 250px;
-      ul {
+      .ulWrapper {
         padding: 0px 10px;
         background: #ffffff;
+        min-height: 600px;
         li{
           font-size: 16px;
           color: #96a3af;
@@ -236,12 +235,11 @@ export default {
       // border: solid 1px #dbdbdb;
       // box-sizing: border-box;
       padding-bottom: 20px;
-      height: 600px;
       overflow-y: auto;
       .activity-member{
-        height: 100%;
         overflow-y: auto;
         background: #ffffff;
+        min-height: 600px;
         .titles {
           background: #f3faff;
           height: 34px;

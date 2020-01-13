@@ -3,7 +3,7 @@
     <el-row class="resource-details-main" :gutter="10">
       <el-col class="home-details" :xs="24" :sm="24" :md="8" :lg="7" :xl="6">
         <div class="informationWrapper bg-white mb-2 border-shadow">
-          <chooseCard :chooseType='chooseType' @updateType='updateType' :list='chooseList'></chooseCard>
+          <chooseCard :src='src' :chooseType='chooseType' @updateType='updateType' :list='chooseList'></chooseCard>
         </div>
       </el-col>
       <el-col class="home-details" :xs="24" :sm="24" :md="16" :lg="17" :xl="18">
@@ -103,6 +103,7 @@ export default {
         title: '',
         content: ''
       },
+      src: '../../../static/images/resource.jpg',
       typeList: [],
       addContentLoading: false,
       dialogVisible: false

@@ -54,8 +54,8 @@
         <tinymce :value='form.activityDescription' v-model="form.activityDescription" :height='200'></tinymce>
       </el-form-item>
       <el-form-item :label-width="labelwidth">
-        <el-button type="primary" size="small" @click="addActivityInfo" v-if="!form.id && !isPreview">确 定</el-button>
-        <el-button type="primary" size="small" @click="editActivityInfo" v-if="form.id && !isPreview">确 定</el-button>
+        <el-button type="primary" size="small" :loading='btnLoading' @click="addActivityInfo" v-if="!form.id && !isPreview">确 定</el-button>
+        <el-button type="primary" size="small" :loading='btnLoading' @click="editActivityInfo" v-if="form.id && !isPreview">确 定</el-button>
         <el-button type="primary" size="small" @click="backTo">返回</el-button>
       </el-form-item>
     </el-form>
@@ -71,6 +71,7 @@ import { fetchTemplateById, insertActivity, insertActivityStage, applyTemplate, 
 import { html2Text } from '@/utils/filters'
 import { applyConference, updateConference } from '@/api/tool.js'
 import { mapGetters } from 'vuex'
+import { getToken } from '@/utils/storage/cookies'
 export default {
   components: {
     tinymce: () => import('@/components/tinymce'),
@@ -80,7 +81,7 @@ export default {
     return {
       headers: {
         'enctype': 'multipart/form-data',
-        'Authorization': 'Bearer 8c1e6fb0-c9ee-45bc-8572-9a8584c3b350'
+        'Authorization': `Bearer ${getToken()}`
       },
       form: { activityDescription: '' },
       labelwidth: '140px',
@@ -91,7 +92,8 @@ export default {
       activityScope: '1',
       workshopMemberIds: [],
       groupUser: [],
-      groupHostInfo: { userId: '' }
+      groupHostInfo: { userId: '' },
+      btnLoading: false
     }
   },
   props: ['activityId', 'stepInfo'],
@@ -108,13 +110,16 @@ export default {
     ...mapGetters(['uuid'])
   },
   watch: {
-    stepInfo: function(val) {
+    stepInfo: async function(val) {
       console.log(val, val.stageId, 'stepInfo-')
-      this.getVideoInteractionId().then(res => {
-        console.log(res)
+      await this.stepServer()
+      await this.resetActivityStep()
+      await this.getVideoInteractionId().then(res => {
+        if (!this.isEditActivity) {
+          this.$router.push({
+            name: 'teachingList' })
+        }
       })
-      this.stepServer()
-      this.resetActivityStep()
     }
   },
   mounted() {
@@ -186,7 +191,7 @@ export default {
       })
     },
     // 添加环节服务（互动教研）
-    stepServer(value) {
+    async stepServer(value) {
       console.log(value, 'value')
       const params = {
         serviceTypeCode: 'video_interaction',
@@ -195,7 +200,6 @@ export default {
       }
       this.insertStepServer([params]).then(res => {
         if (res.data.code === 200) {
-          this.$message.success('成功')
           // this.getOneActivityStepServerList({ id: this.stepInfo.id })
         } else {
           this.$message.warning('失败')
@@ -269,6 +273,7 @@ export default {
       if (!this.ruleCkeck()) {
         return
       }
+      this.btnLoading = true
       this.form.activityIntroduction = html2Text(this.form.activityDescription).substring(0, 150)
       this.form.groupId = this.$route.params.id
       this.form.activityManagerId = this.groupHostInfo.userId ? this.groupHostInfo.userId : ''
@@ -277,7 +282,7 @@ export default {
       await this.insertActivity(this.form).then(res => {
         console.log(res)
         if (res.data.code === 200) {
-          this.$message.success('填写成功')
+          this.$message.success('新增成功')
           this.form.id = res.data.result // 有id是编辑,没有id就是新增 活动id
           this.$emit('activityId', this.form.id)
           // 保险起见，保留
@@ -300,10 +305,12 @@ export default {
         }
       })
       await this.bindMember(this.form.id)
-      await this.bindActHolder(this.form.id, this.groupHostInfo.userId)
+      await this.bindActHolder(this.form.id, this.groupHostInfo.userId).then(() => {
+        this.btnLoading = false
+      })
     },
     // 修改环节名称 与活动名称同步
-    resetActivityStep() {
+    async resetActivityStep() {
       const params = Object.assign(this.stepInfo, {
         stepName: this.form.activityName,
         startTime: this.form.startTime,
@@ -312,16 +319,16 @@ export default {
       this.updatingActivityStep([params]).then(res => {
         console.log(res)
         if (res.data.code === 200) {
-          this.$message.success('成功')
         } else {
           this.$message.warning(res.data.msg)
         }
       })
     },
-    editActivityInfo() {
+    async editActivityInfo() {
       if (!this.ruleCkeck()) {
         return
       }
+      this.btnLoading = true
       this.form.activityIntroduction = html2Text(this.form.activityDescription).substring(0, 150)
       this.form.groupId = this.$route.params.id
       this.form.activityManagerId = this.groupHostInfo.userId ? this.groupHostInfo.userId : ''
@@ -336,11 +343,14 @@ export default {
           this.$message.warning('更新失败')
         }
       })
-      this.bindActHolder(this.form.id, this.groupHostInfo.userId)
+      await this.bindActHolder(this.form.id, this.groupHostInfo.userId)
+      await this.resetActivityStep()
       this.updatetVideoInteractionId().then(res => {
         console.log(res)
+        this.btnLoading = false
+        this.$router.push({
+          name: 'teachingList' })
       })
-      this.resetActivityStep()
     },
     async bindMember(actId) {
       await this.inviteMemberJoinActivity({

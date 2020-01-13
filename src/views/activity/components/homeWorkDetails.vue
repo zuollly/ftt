@@ -28,7 +28,7 @@ export default {
       fetchAssignmenthomeworkById(data).then(res => {
         console.log(res)
         if (res.data.code === 200) {
-          this.homeWorkDetails = res.data.result
+          this.homeWorkDetails = res.data.result ? res.data.result : {}
         } else {
           this.$message.error(res.data.msg)
         }

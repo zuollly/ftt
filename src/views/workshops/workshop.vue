@@ -42,15 +42,15 @@
     <el-col class="home-details" :xs="24" :sm="24" :md="8" :lg="7" :xl="6">
       <div class="informationWrapper personal-details radius-border bg-white mb-2 border-shadow">
         <div class="personal-banner radius-border">
-          <img class="personal-img radius-border" src="../../../static/images/banner.jpg" alt="">
+          <img class="personal-img radius-border" src="../../../static/images/avatarTop.jpg" alt="">
         </div>
         <div class="personal-avatars-wrapper">
           <div class="personal-avatars">
             <div class="logo">
               <img src="../../../static/images/avatar.jpg" alt="">
             </div>
-            <p class="name label">某某某</p>
-            <p class="subject label">初中数学</p>
+            <p class="name label">{{workshopInfo.adminUserName}}</p>
+            <!-- <p class="subject label">初中数学</p> -->
           </div>
         </div>
         <div class="personal-statics">
@@ -131,7 +131,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['workshopUserRoles', 'uuid'])
+    ...mapGetters(['workshopInfo', 'uuid'])
+  },
+  watch: {
+    workshopInfo: function(val) {
+      console.log(val, 'workshopInfo1')
+    }
   },
   methods: {
     changeType(type) {

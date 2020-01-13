@@ -343,8 +343,8 @@ export default {
       }
       fetchConferenceStatistics(data).then(res => {
         if (res.data.code === 200) {
-          this.videoStatus.attendCount = res.data.result.attendCount
-          this.videoStatus.liveCount = res.data.result.liveCount
+          this.videoStatus.attendCount = res.data.result ? res.data.result.attendCount : 0
+          this.videoStatus.liveCount = res.data.result ? res.data.result.liveCount : 0
         }
       })
     },

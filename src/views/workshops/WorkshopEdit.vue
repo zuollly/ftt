@@ -4,13 +4,15 @@
     <div class="top">
       <!-- 没有图片时的遮罩 -->
       <!-- <div class="cover" v-if="!hasCover"></div> -->
-      <p class="cvoerBgi" :style="{ backgroundImage: `url(${ coverUrl })` }"></p>
+      <p class="cvoerBgi">
+        <img :src="coverUrl" alt="">
+      </p>
       <!-- 上传的loading -->
       <span class="uploadLoading" v-if="coverLoading"><i class="el-icon-loading"></i></span>
       <!-- <img :src="coverUrl" alt="pic" v-if="coverUrl" > -->
       <el-upload
         class="uploadPic"
-        action="/api/sourceHandle/upload"
+        action="http://yx.nercel.cn/msapi/zuul/tool/file/upload"
         name="multipartFile"
         :show-file-list='false'
         :headers='headers'
@@ -27,78 +29,39 @@
       <div class="picture">
         <el-upload
           class="avatar-uploader"
-          action="/api/sourceHandle/upload"
+          action="http://yx.nercel.cn/msapi/zuul/tool/file/upload"
           name="multipartFile"
           :show-file-list="false"
           :on-error='errorFunction'
           :headers='headers'
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
-          <!-- <img v-if="imageUrl" :src="imageUrl" class="avatar"> -->
           <span class="uploadLoading" v-if="logoLoading"><i class="el-icon-loading"></i></span>
           <p class="cvoerLogo" :style="{ backgroundImage: `url(${imageUrl})` }"></p>
-          <!-- <p v-else>
-            <i class="el-icon-picture-outline"></i>
-            <span class="tip">修改工作坊Logo</span>
-          </p> -->
           <p class="mt-2"><el-button size="small" style="width: 100%">修改Logo</el-button></p>
         </el-upload>
       </div>
       <el-form ref="form" :model="form" label-width="240px">
         <el-form-item label="工作坊名称" required>
           <el-col :span="12">
-            <el-input v-model="form.shopName" v-if="isAdmin" class="input"></el-input>
-            <p v-else-if="isShoper">{{form.shopName}}</p>
+            <el-input v-model="form.shopName" class="input"></el-input>
           </el-col>
         </el-form-item>
         <el-form-item label="关联学段学科" required>
           <el-col :span="12">
-            <faculty @faculty='subject' :selected='facultyParam' v-if="isAdmin"></faculty>
-            <p v-else-if="isShoper">{{faculty.facultyName}} -- {{faculty.subjectName}}</p>
+            <faculty @faculty='subject' :selected='facultyParam'></faculty>
           </el-col>
-        </el-form-item>
-         <el-form-item label="设置坊主" required v-if="isAdmin">
-           <el-col :span="12" class="shoperBox">
-          <el-input v-model="form.shoperInfo.name"  @click.native="openChoose" readonly placeholder='请选择工作坊坊主' class='shoper'></el-input>
-          <svg-icon :iconClass='"admin"' class="admin"></svg-icon>
-           </el-col>
         </el-form-item>
         <el-form-item label="工作坊介绍">
           <el-col :span="18">
-            <tinymce :value='form.introduction' v-model="form.introduction" :height="200"></tinymce>
+            <tinymce :value='form.groupIntroduction' v-model="form.groupIntroduction" :height="200"></tinymce>
           </el-col>
-        </el-form-item>
-        <el-form-item label="工作坊关键字">
-          <el-tag
-            :key="tag"
-            v-for="tag in dynamicTags"
-            closable
-            :disable-transitions="false"
-            class="tag"
-            @close="handleClose(tag)">
-            {{tag}}
-          </el-tag>
-          <el-input
-            class="input-new-tag"
-            v-if="inputVisible"
-            v-model="inputValue"
-            ref="saveTagInput"
-            size="small"
-            maxlength="10"
-            @keyup.enter.native="handleInputConfirm"
-            @blur="handleInputConfirm"
-          >
-          </el-input>
-          <el-tooltip v-else class="item" effect="dark" content="每个关键字最多输入十个字" placement="top-start">
-            <el-button  class="button-new-tag" size="small" type="success" @click="showInput">添加关键字</el-button>
-          </el-tooltip>
         </el-form-item>
          <el-form-item>
            <el-button type="primary" @click="updateWorkshop" round>确定</el-button>
            <el-button @click="cancelUpdate" round>取消</el-button>
          </el-form-item>
       </el-form>
-      <choosePerson :choosePersonTitle="choosePersonTitle" v-if="chooseVisible" @closeChoose='closeChoose' :isSingle="'single'" :checkedPersonId='checkedPersonId'></choosePerson>
     </div>
   </div>
 </template>
@@ -106,15 +69,14 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getToken } from '@/utils/storage/cookies'
-// import { editWorkshop } from '@/api/workshop'
 import store from '@/store'
+import { updatedWorkshop } from '@/api/workshop.js'
 import { getPicture } from '@/api/app'
 import appConfig from '../../../static/appConfig.js'
 export default {
   name: 'WorkshopEdit',
   components: {
-    choosePerson: () => import('@/modules/choosePerson'),
-    // faculty: () => import('@/modules/studyphase'),
+    faculty: () => import('./modules/studyphase.vue'),
     tinymce: () => import('@/components/tinymce')
   },
   data() {
@@ -123,7 +85,7 @@ export default {
       imageUrl: '',
       form: {
         shopName: '',
-        introduction: '',
+        groupIntroduction: '',
         shoperInfo: {}
       },
       faculty: {},
@@ -133,34 +95,15 @@ export default {
       facultyParam: {}, // 编辑的已有的学段学科
       headers: {
         enctype: 'multipart/form-data',
-        token: getToken()
+        'Authorization': `Bearer ${getToken()}`
       },
       coverUrl: '',
-      logoFileKey: '',
-      coverFileKey: '',
       coverLoading: false,
-      logoLoading: false,
-      chooseVisible: false,
-      choosePersonTitle: '设置坊主'
+      logoLoading: false
     }
   },
   computed: {
-    ...mapGetters(['uuid', 'workshopUserRoles', 'workshopInfo']),
-    isAdmin() {
-      // 管理员
-      console.log(this.workshopInfo)
-      console.log(this.uuid)
-      return this.workshopInfo.createUserId === this.uuid
-    },
-    isShoper() {
-      // 坊主
-      return (
-        this.workshopUserRoles.indexOf(0) > -1 || this.workshopUserRoles.indexOf(1) > -1
-      )
-    },
-    checkedPersonId() {
-      return [this.form.shoperInfo.id]
-    }
+    ...mapGetters(['uuid', 'workshopUserRoles', 'workshopInfo'])
   },
   mounted() {
     this.getWorkshopInfo()
@@ -180,71 +123,31 @@ export default {
       const result = this.workshopInfo
       this.form = {
         shopName: result.groupName || '',
-        introduction: result.introduction || '',
+        groupIntroduction: result.groupIntroduction || '',
         shoperInfo: { id: result.adminUserId, name: result.adminUserName }
       }
       this.dynamicTags = result.label ? result.label.split(',') : []
       this.facultyParam = {
-        facultyId: result.faculty,
-        subjectId: result.subject
+        phaseId: result.groupSegSubs ? result.groupSegSubs[0].segmentCode : '',
+        subjectId: result.groupSegSubs ? result.groupSegSubs[0].subjectCode : ''
       }
       this.faculty = {
-        facultyId: result.faculty,
-        subjectId: result.subject,
-        facultyName: result.facultyName,
-        subjectName: result.subjectName
+        phaseId: result.groupSegSubs ? result.groupSegSubs[0].segmentCode : '',
+        subjectId: result.groupSegSubs ? result.groupSegSubs[0].subjectCode : ''
       }
-      if (result.coverPic) {
-        this.getSource(result.coverPic).then(data => {
-          this.coverUrl = URL.createObjectURL(data.data) // 返回的类型要是blob才可以这样
-        })
-      } else {
-        this.coverUrl = this.appConfig.cfg_workshop_banner
-      }
-      if (result.logo) {
-        this.getSource(result.logo).then(data => {
-          this.imageUrl = URL.createObjectURL(data.data)
-        })
-      } else {
-        this.imageUrl = this.appConfig.cfg_workshop_Logo
-      }
+
+      this.coverUrl = result.groupImg || this.appConfig.cfg_workshop_banner
+      this.imageUrl = result.groupLogo || this.appConfig.cfg_workshop_Logo
     },
     subject(data) {
       // 学段学科
       this.faculty = data
     },
-    openChoose() {
-      this.chooseVisible = true
-    },
-    closeChoose(data) {
-      this.chooseVisible = false
-      if (data) {
-        this.form.shoperInfo = data[0] || {}
-      }
-    },
-    handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
-    },
-    handleInputConfirm() {
-      const inputValue = this.inputValue
-      if (inputValue && this.dynamicTags.indexOf(inputValue) < 0) {
-        this.dynamicTags.push(inputValue)
-      }
-      this.inputVisible = false
-      this.inputValue = ''
-    },
-    showInput() {
-      this.inputVisible = true
-      this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus()
-      })
-    },
     /* 工作坊头像 */
     handleAvatarSuccess(res, file) {
       console.log(res)
       if (res.code === 200) {
-        this.imageUrl = URL.createObjectURL(file.raw)
-        this.logoFileKey = res.result.fileKey
+        this.imageUrl = res.result.fileUrl
       } else {
         this.$message.warning(res.msg)
       }
@@ -264,8 +167,7 @@ export default {
       console.log(file)
       console.log(fileList)
       if (response.code === 200) {
-        this.coverUrl = URL.createObjectURL(file.raw)
-        this.coverFileKey = response.result.fileKey
+        this.coverUrl = response.result.fileUrl
       } else {
         this.$message.error(response.msg)
       }
@@ -287,20 +189,16 @@ export default {
       // 编辑
       if (!this.filter()) return
       const div = document.createElement('div')
-      div.innerHTML = this.form.introduction
+      div.innerHTML = this.form.groupIntroduction
       const params = {
         id: this.$route.params.id,
         adminUserId: this.form.shoperInfo.id,
-        coverPic: this.coverFileKey,
-        logo: this.logoFileKey,
-        introduction: this.form.introduction,
-        description: div.innerText.substr(0, 100),
-        label: this.dynamicTags.join(','),
-        subject: this.faculty.subjectId,
-        faculty: this.faculty.facultyId,
-        groupName: this.form.shopName,
-        facultyName: this.faculty.facultyName,
-        subjectName: this.faculty.subjectName
+        groupImg: this.coverUrl,
+        groupLogo: this.imageUrl,
+        groupIntroduction: this.form.groupIntroduction,
+        groupDescription: div.innerText.substr(0, 100),
+        segSubs: [{ segmentCode: this.faculty.phaseId, subjectCode: this.faculty.subjectId }],
+        groupName: this.form.shopName
       }
       this.updateGroup(params)
         .then(data => {
@@ -308,7 +206,7 @@ export default {
           if (data.data.code === 200) {
             this.$message.success('修改成功')
             store.dispatch('GetWorkshopDetails', {
-              groupId: this.$route.params.id
+              id: this.$route.params.id
             }).then(() => {
               this.$router.push({
                 path: `/workshops/${this.$route.params.id}`
@@ -333,16 +231,12 @@ export default {
         this.$message({ message: '请输入工作坊名称', type: 'warning' })
         return false
       }
-      if (!this.faculty.facultyId) {
+      if (!this.faculty.phaseId) {
         this.$message({ message: '请选择学段', type: 'warning' })
         return false
       }
       if (!this.faculty.subjectId) {
         this.$message({ message: '请选择学科', type: 'warning' })
-        return false
-      }
-      if (!this.form.shoperInfo.id) {
-        this.$message({ message: '请设置坊主', type: 'warning' })
         return false
       }
       return true
@@ -363,15 +257,7 @@ export default {
     updateGroup(params) {
       // 更新工作坊
       return new Promise((resolve, reject) => {
-        // editWorkshop(params).then(res => {
-        //   resolve(res)
-        // })
-      })
-    },
-    getSource(fileKey) {
-      // 获取工作坊的背景图和头像
-      return new Promise((resolve, reject) => {
-        getPicture(fileKey).then(res => {
+        updatedWorkshop(params).then(res => {
           resolve(res)
         })
       })
@@ -404,13 +290,18 @@ $h140: 140px;
   background-color: #fff;
 
   .top {
-    height: $h100;
+    height: 300px;
     margin: 0 auto;
     position: relative;
     .cvoerBgi {
-      height: $h100;
+      height: 300px;
       background-size: cover;
       background-position: center center;
+      filter: brightness(0.8);
+      img{
+        width: 100%;
+        height: 100%;
+      }
     }
     .uploadBtn {
       position: absolute;
@@ -441,7 +332,7 @@ $h140: 140px;
   .form {
     position: relative;
     margin: 0 auto;
-    margin-top: 30px;
+    margin-top: 45px;
     padding-left: 180px;
     .uploadLoading {
       position: absolute;

@@ -3,7 +3,7 @@
     <el-row class="notice-details-main" :gutter="10">
       <el-col class="home-details" :xs="24" :sm="24" :md="8" :lg="7" :xl="6">
         <div class="informationWrapper bg-white mb-2 border-shadow">
-          <chooseCard :jumpType='"information"' :chooseType='chooseType' :list='chooseList'></chooseCard>
+          <chooseCard :src='src' :jumpType='"information"' :chooseType='chooseType' :list='chooseList'></chooseCard>
         </div>
       </el-col>
       <el-col class="home-details" :xs="24" :sm="24" :md="16" :lg="17" :xl="18">
@@ -85,6 +85,7 @@ export default {
         title: '',
         content: ''
       },
+      src: '../../../static/images/information.jpg',
       addContentLoading: false,
       dialogVisible: false,
       title: '发资讯',
