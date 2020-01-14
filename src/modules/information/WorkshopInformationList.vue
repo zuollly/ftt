@@ -14,7 +14,7 @@
         </div>
         <div class="work-notice-list-wrapper" v-if="page !== 'home' && informationList.length > 0">
           <el-table :data="informationList" style="width: 100%">
-            <el-table-column label="公告标题" width="350" show-overflow-tooltip resizable>
+            <el-table-column label="标题" width="350" show-overflow-tooltip resizable>
               <template slot-scope="scope">
                 <a class="span bg-purple" @click="opeNotice(scope.row, 'view')">{{scope.row.title}}</a>
               </template>

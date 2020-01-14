@@ -15,12 +15,13 @@
         <div class="work-achievement-list-wrapper" v-if="page !== 'home' && homeAchievementList.length > 0">
           <el-table ref="achievementTable" :row-key="getRowKey" @selection-change="handleSelectionChange" :data="homeAchievementList" style="width: 100%">
             <el-table-column type="selection" :reserve-selection="true" width="55"></el-table-column>
-            <el-table-column label="公告标题" width="250" show-overflow-tooltip resizable>
+            <el-table-column label="标题" width="250" show-overflow-tooltip resizable>
               <template slot-scope="scope">
                 <a class="span bg-purple" @click="opeNotice(scope.row, 'view')">{{scope.row.title}}</a>
               </template>
             </el-table-column>
             <el-table-column prop="userName"  width="150" label="发布者" show-overflow-tooltip resizable></el-table-column>
+            <el-table-column prop="groupName"  width="150" label="工作坊" show-overflow-tooltip resizable></el-table-column>
             <el-table-column label="发布日期" show-overflow-tooltip resizable>
               <template slot-scope="scope">{{scope.row.createTime | parseTime('{y}年{m}月{d}日 星期{a}')}}</template>
             </el-table-column>

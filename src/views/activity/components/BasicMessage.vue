@@ -50,7 +50,7 @@
                 <img src="https://activitycdn.ourteacher.com.cn/Content/NewtrainingactivityImg/icon6.png" width="53" height="53">
                 <div>
                   <span>成员数</span>
-                  <span class="number">{{statusInfo.actUserCount}}</span>
+                  <span class="number">{{statusInfo.memberCount}}</span>
                 </div>
               </div>
             </li>
@@ -59,7 +59,7 @@
                 <img src="https://activitycdn.ourteacher.com.cn/Content/NewtrainingactivityImg/icon8.png" width="53" height="53">
                 <div>
                   <span>活动成果数量</span>
-                  <span class="number">{{statusInfo.actResourceCount}}</span>
+                  <span class="number">{{statusInfo.resourceCount}}</span>
                 </div>
               </div>
             </li>
@@ -68,7 +68,7 @@
                 <img src="https://activitycdn.ourteacher.com.cn/Content/NewtrainingactivityImg/icon7.png" width="53" height="53">
                 <div>
                   <span>活动参与数量</span>
-                  <span class="number">{{statusInfo.joinUserCount}}</span>
+                  <span class="number">{{statusInfo.joinCount}}</span>
                 </div>
               </div>
             </li>
@@ -120,7 +120,7 @@ export default {
     },
     queryActivityStatus() {
       const activityId = this.$route.params.activityId
-      this.fetchActivityStatus({ activityId: activityId }).then(res => {
+      this.fetchActivityStatus({ id: activityId }).then(res => {
         const statusInfo = res.data.result
         if (res.data.code === 200) {
           this.statusInfo = statusInfo

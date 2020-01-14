@@ -15,7 +15,7 @@
         <div class="work-notice-list-wrapper" v-if="page !== 'home' && homeResourceList.length > 0">
           <el-table :row-key="getRowKey" ref="resourceTable" @selection-change="handleSelectionChange" :data="homeResourceList" style="width: 100%">
             <el-table-column type="selection" :reserve-selection="true" width="55"></el-table-column>
-            <el-table-column label="公告标题" width="250" show-overflow-tooltip resizable>
+            <el-table-column label="标题" width="250" show-overflow-tooltip resizable>
               <template slot-scope="scope">
                 <a class="span bg-purple" @click="opeNotice(scope.row, 'view')">{{scope.row.title}}</a>
               </template>

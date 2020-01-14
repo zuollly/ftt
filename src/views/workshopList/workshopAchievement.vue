@@ -1,6 +1,6 @@
 <template>
-  <div class="information-wrapper" v-loading="noticeLoading" element-loading-text="拼命加载中">
-    <el-row class="information-details-query" :gutter="10">
+  <div class="achievement-wrapper" v-loading="noticeLoading" element-loading-text="拼命加载中">
+    <el-row class="achievement-details-query" :gutter="10">
       <el-col :span="3">
         <el-input v-model="formQuery.title" placeholder="请输入名称" clearable size="middle"></el-input>
       </el-col>
@@ -8,13 +8,13 @@
         <el-button @click="search" type="primary">搜索</el-button>
       </el-col>
     </el-row>
-    <el-row class="information-details-main">
+    <el-row class="achievement-details-main">
       <el-col class="home-details">
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
           <div class="headWrapper">
-            <p class="p">资讯</p>
+            <p class="p">教学成果</p>
           </div>
-          <WorkshopInformation :page="'hme'" :informationList='homeNoticeList'></WorkshopInformation>
+          <workShopAchievementList :page="'hme'" :homeAchievementList='homeNoticeList'></workShopAchievementList>
           <div class="pagination" v-if="homeNoticeList.length">
             <el-pagination
               background
@@ -35,11 +35,10 @@
 <script>
 import { mapGetters } from 'vuex'
 import { fetchContentPage } from '@/api/content.js'
-import { fetchDictInfo } from '@/api/dict.js'
 export default {
   name: 'Teaching',
   components: {
-    WorkshopInformation: () => import('@/modules/information/workshopInformationList.vue')
+    workShopAchievementList: () => import('@/modules/achievement/workShopAchievementList')
   },
   data() {
     return {
@@ -63,29 +62,22 @@ export default {
   },
   methods: {
     search() {
-      this.getNoticeList()
+      this.getAchievementList()
     },
     handleCurrentChange(index) {
       this.pageObj.pageCurrent = index
-      this.getNoticeList()
+      this.getAchievementList()
     },
     handleSizeChange(val) {
       this.pageObj.pageSize = val
-      this.getNoticeList()
+      this.getNotigetAchievementListceList()
     },
-    async getNoticeList() {
+    getAchievementList() {
       this.noticeLoading = true
-      const noticeCodeInfo = await this.getNoticeCode()
-      const contentTypeCodeInfo = noticeCodeInfo.data.result.find(item => {
-        return item.dictValue.indexOf('资讯') > -1
-      })
       const data = {
         pageCurrent: this.pageObj.pageCurrent,
         pageSize: this.pageObj.pageSize,
-        contentTypeCode: contentTypeCodeInfo.dictKey
-      }
-      if (this.formQuery.title) {
-        data.searchKey = this.formQuery.title
+        contentTypeCode: 'CONTENT_ACHIEVEMENT'
       }
       fetchContentPage(data).then((result) => {
         if (result.data.code === 200) {
@@ -98,35 +90,25 @@ export default {
         this.noticeLoading = !this.noticeLoading
         this.$message({ type: 'warning', message: `${err}` })
       })
-    },
-    issueNotice() {
-
-    },
-    getNoticeCode() {
-      return new Promise((resolve, reject) => {
-        fetchDictInfo({ dictParentKey: 'CONTENT_STATIONNEWS' }).then(res => {
-          resolve(res)
-        })
-      })
     }
   },
   mounted() {
-    this.getNoticeList()
+    this.getAchievementList()
   }
 }
 </script>
 <style lang='scss' rel="stylesheet/scss" scoped>
-.information-wrapper{
-  .information-details-query{
+.achievement-wrapper{
+  .achievement-details-query{
     margin-bottom: 10px;
   }
-  .information-details-main{
+  .achievement-details-main{
     .headWrapper {
       width: 100%;
       height: 50px;
       // padding-bottom: 10px;
       font-size: 14px;
-      color: #494949;
+      // color: #494949;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
@@ -134,7 +116,7 @@ export default {
       box-sizing: border-box;
       align-items: center;
       >>> .el-button {
-        color: #b8b8b8;
+        // color: #b8b8b8;
       }
       .p {
         height: 50px;

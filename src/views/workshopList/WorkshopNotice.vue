@@ -1,11 +1,18 @@
 <template>
-  <div class="teaching-wrapper" v-loading="noticeLoading" element-loading-text="拼命加载中">
-    <el-row class="teaching-details-main">
+  <div class="notice-wrapper" v-loading="noticeLoading" element-loading-text="拼命加载中">
+    <el-row class="notice-details-query" :gutter="10">
+      <el-col :span="3">
+        <el-input v-model="formQuery.title" placeholder="请输入名称" clearable size="middle"></el-input>
+      </el-col>
+      <el-col :span="3">
+        <el-button @click="search" type="primary">搜索</el-button>
+      </el-col>
+    </el-row>
+    <el-row class="notice-details-main">
       <el-col class="home-details">
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
           <div class="headWrapper">
             <p class="p">公告</p>
-            <el-button  type="primary" plain size="mini">发布公告</el-button>
           </div>
           <WorkShopNotice :page="'hme'" :homeNoticeList='homeNoticeList'></WorkShopNotice>
           <div class="pagination" v-if="homeNoticeList.length">
@@ -42,6 +49,9 @@ export default {
         pageCurrent: 1,
         pageSize: 10,
         count: 0
+      },
+      formQuery: {
+        title: ''
       }
     }
   },
@@ -54,6 +64,9 @@ export default {
   watch: {
   },
   methods: {
+    search() {
+      this.getNoticeList()
+    },
     handleCurrentChange(index) {
       this.pageObj.pageCurrent = index
       this.getNoticeList()
@@ -66,12 +79,15 @@ export default {
       this.noticeLoading = true
       const noticeCodeInfo = await this.getNoticeCode()
       const contentTypeCodeInfo = noticeCodeInfo.data.result.find(item => {
-        return item.dictValue === '公告'
+        return item.dictValue.indexOf('公告') > -1
       })
       const data = {
         pageCurrent: this.pageObj.pageCurrent,
         pageSize: this.pageObj.pageSize,
         contentTypeCode: contentTypeCodeInfo.dictKey
+      }
+      if (this.formQuery.title) {
+        data.searchKey = this.formQuery.title
       }
       fetchContentPage(data).then((result) => {
         if (result.data.code === 200) {
@@ -102,14 +118,17 @@ export default {
 }
 </script>
 <style lang='scss' rel="stylesheet/scss" scoped>
-.teaching-wrapper{
-  .teaching-details-main{
+.notice-wrapper{
+  .notice-details-query{
+    margin-bottom: 10px;
+  }
+  .notice-details-main{
     .headWrapper {
       width: 100%;
       height: 50px;
       // padding-bottom: 10px;
       font-size: 14px;
-      color: #494949;
+      // color: #494949;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
@@ -117,7 +136,7 @@ export default {
       box-sizing: border-box;
       align-items: center;
       >>> .el-button {
-        color: #b8b8b8;
+        // color: #b8b8b8;
       }
       .p {
         height: 50px;

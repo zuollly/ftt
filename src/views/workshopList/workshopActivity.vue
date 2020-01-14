@@ -1,6 +1,6 @@
 <template>
-  <div class="information-wrapper" v-loading="noticeLoading" element-loading-text="拼命加载中">
-    <el-row class="information-details-query" :gutter="10">
+  <div class="activity-wrapper" v-loading="noticeLoading" element-loading-text="拼命加载中">
+    <el-row class="activity-details-query" :gutter="10">
       <el-col :span="3">
         <el-input v-model="formQuery.title" placeholder="请输入名称" clearable size="middle"></el-input>
       </el-col>
@@ -8,14 +8,14 @@
         <el-button @click="search" type="primary">搜索</el-button>
       </el-col>
     </el-row>
-    <el-row class="information-details-main">
+    <el-row class="activity-details-main">
       <el-col class="home-details">
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
           <div class="headWrapper">
-            <p class="p">资讯</p>
+            <p class="p">活动</p>
           </div>
-          <WorkshopInformation :page="'hme'" :informationList='homeNoticeList'></WorkshopInformation>
-          <div class="pagination" v-if="homeNoticeList.length">
+          <workshopActivityList :page="'hme'" :homeActivityList='workshopActivityList'></workshopActivityList>
+          <div class="pagination" v-if="workshopActivityList.length">
             <el-pagination
               background
                @size-change="handleSizeChange"
@@ -34,17 +34,16 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { fetchContentPage } from '@/api/content.js'
-import { fetchDictInfo } from '@/api/dict.js'
+import { fetchJyActivityPage } from '@/api/activity.js'
 export default {
   name: 'Teaching',
   components: {
-    WorkshopInformation: () => import('@/modules/information/workshopInformationList.vue')
+    workshopActivityList: () => import('@/modules/activity/workshopActivityList')
   },
   data() {
     return {
       noticeLoading: true, // 是否显示加载中
-      homeNoticeList: [],
+      workshopActivityList: [],
       pageObj: { // 分页信息
         pageCurrent: 1,
         pageSize: 10,
@@ -63,70 +62,55 @@ export default {
   },
   methods: {
     search() {
-      this.getNoticeList()
+      this.getJyActivityPage()
     },
     handleCurrentChange(index) {
       this.pageObj.pageCurrent = index
-      this.getNoticeList()
+      this.getJyActivityPage()
     },
     handleSizeChange(val) {
       this.pageObj.pageSize = val
-      this.getNoticeList()
+      this.getJyActivityPage()
     },
-    async getNoticeList() {
+    getJyActivityPage() {
       this.noticeLoading = true
-      const noticeCodeInfo = await this.getNoticeCode()
-      const contentTypeCodeInfo = noticeCodeInfo.data.result.find(item => {
-        return item.dictValue.indexOf('资讯') > -1
-      })
       const data = {
         pageCurrent: this.pageObj.pageCurrent,
-        pageSize: this.pageObj.pageSize,
-        contentTypeCode: contentTypeCodeInfo.dictKey
+        pageSize: this.pageObj.pageSize
       }
       if (this.formQuery.title) {
-        data.searchKey = this.formQuery.title
+        data.activityName = this.formQuery.title
       }
-      fetchContentPage(data).then((result) => {
+      fetchJyActivityPage(data).then((result) => {
         if (result.data.code === 200) {
           this.noticeLoading = false
-          this.homeNoticeList = result.data.result.list
-          this.pageObj.count = result.data.result.total
+          this.workshopActivityList = result.data.result ? result.data.result.records : []
+          this.pageObj.count = result.data.result ? result.data.result.total : 0
         }
       }).catch(err => {
         console.log(err)
         this.noticeLoading = !this.noticeLoading
         this.$message({ type: 'warning', message: `${err}` })
       })
-    },
-    issueNotice() {
-
-    },
-    getNoticeCode() {
-      return new Promise((resolve, reject) => {
-        fetchDictInfo({ dictParentKey: 'CONTENT_STATIONNEWS' }).then(res => {
-          resolve(res)
-        })
-      })
     }
   },
   mounted() {
-    this.getNoticeList()
+    this.getJyActivityPage()
   }
 }
 </script>
 <style lang='scss' rel="stylesheet/scss" scoped>
-.information-wrapper{
-  .information-details-query{
+.activity-wrapper{
+  .activity-details-query{
     margin-bottom: 10px;
   }
-  .information-details-main{
+  .activity-details-main{
     .headWrapper {
       width: 100%;
       height: 50px;
       // padding-bottom: 10px;
       font-size: 14px;
-      color: #494949;
+      // color: #494949;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
@@ -134,7 +118,7 @@ export default {
       box-sizing: border-box;
       align-items: center;
       >>> .el-button {
-        color: #b8b8b8;
+        // color: #b8b8b8;
       }
       .p {
         height: 50px;

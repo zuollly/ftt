@@ -477,11 +477,13 @@ export function contentInfo(params) {
 // 统计用户参加活动的情况
 export function fetchActivityStatus(params) {
   return request({
-    url: '/workshop/jyUser/activity/queryData',
+    url: '/behaviour/getActById',
     method: 'get',
     params
   })
 }
+// /behaviour/getActById
+// 根据活动id获取活动数据信息
 // 活动用户完成节点操作
 export function stepComplete(params) {
   return request({

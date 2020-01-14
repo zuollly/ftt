@@ -26,7 +26,7 @@
                 </el-tab-pane>
                 <!-- <el-tab-pane label="名校长工作室" name="second">名校长工作室</el-tab-pane> -->
               </el-tabs>
-              <el-button class="moreBtn" @click="getMoreWorkShop('teacher')" size="middle" type="text">查看更多</el-button>
+              <el-button class="moreBtn" @click="getMoreWorkShop('teacherHome')" size="middle" type="text">查看更多</el-button>
             </div>
           </div>
         </el-col>
@@ -34,16 +34,16 @@
           <div class="informationWrapper main-border bg-white mb-2 border-shadow">
             <div class="headWrapper">
               <p class="p">工作坊活跃度排行</p>
-              <el-button type="text">查看更多</el-button>
+              <el-button type="text" @click="getMoreWorkShop('teacherHome')">查看更多</el-button>
             </div>
             <workshopByOrdersList :homeWorkByOrderList='workshopListByOrders'></workshopByOrdersList>
           </div>
           <div class="informationWrapper main-border bg-white mb-2 border-shadow">
             <div class="headWrapper">
               <p class="p">工作室活动</p>
-              <el-button type="text">查看更多</el-button>
+              <el-button type="text" @click="getMoreWorkShop('workshopActivity')">查看更多</el-button>
             </div>
-            <workshopActivityList :homeActivityList='workshopActivityList'></workshopActivityList>
+            <workshopActivityList :page="'home'" :homeActivityList='workshopActivityList'></workshopActivityList>
           </div>
         </el-col>
     </el-row>
@@ -52,9 +52,9 @@
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
           <div class="headWrapper">
             <p class="p">资源</p>
-            <el-button type="text">查看更多</el-button>
+            <el-button type="text" @click="getMoreWorkShop('resourceHome')">查看更多</el-button>
           </div>
-          <div>资源</div>
+          <homeResource :resourcetDataList='resourcetDataList'></homeResource>
         </div>
       </el-col>
     </el-row>
@@ -63,16 +63,16 @@
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
           <div class="headWrapper">
             <p class="p">成果展示</p>
-            <el-button type="text">查看更多</el-button>
+            <el-button type="text" @click="getMoreWorkShop('achievementHome')">查看更多</el-button>
           </div>
-          <pictureContent :achievementDataList='achievementDataList'></pictureContent>
+          <homeAchievement :achievementDataList='achievementDataList'></homeAchievement>
         </div>
       </el-col>
     </el-row>
   </div>
 </template>
 <script>
-import { fetchContentPage } from '@/api/content.js'
+import { fetchContentPage, fetchRelevanceContentPage } from '@/api/content.js'
 import { fetchDictInfo } from '@/api/dict.js'
 import { fetchGroupListPage, fetchWorkshopListByOrders } from '@/api/workshop.js'
 import { fetchJyActivityPage } from '@/api/activity.js'
@@ -82,8 +82,9 @@ export default {
     WorkshopInformation: () => import('@/modules/information/workshopInformationList.vue'),
     WorkshopList: () => import('@/modules/workshop/workshopList.vue'),
     workshopByOrdersList: () => import('@/modules/workshop/workshopByOrdersList.vue'),
-    pictureContent: () => import('@/modules/pictureContent/index.vue'),
-    workshopActivityList: () => import('@/modules/activity/workshopActivityList.vue')
+    workshopActivityList: () => import('@/modules/activity/workshopActivityList.vue'),
+    homeResource: () => import('./components/homeResource.vue'),
+    homeAchievement: () => import('./components/homeAchievement.vue')
   },
   data() {
     return {
@@ -93,6 +94,7 @@ export default {
       workshopDataList: [],
       workshopListByOrders: [],
       achievementDataList: [],
+      resourcetDataList: [],
       activeName1: 'first',
       workshopActivityList: []
     }
@@ -100,7 +102,8 @@ export default {
   mounted() {
     this.getNoticeList()
     this.getGroupListPage()
-    this.getAchievementList()
+    this.getRelevanceContentPage('CONTENT_RESOURCE')
+    this.getRelevanceContentPage('CONTENT_ACHIEVEMENT')
     this.getJyActivityPage()
     this.getWorkshopListByOrders()
   },
@@ -138,21 +141,6 @@ export default {
         this.$message({ type: 'warning', message: `${err}` })
       })
     },
-    getAchievementList() {
-      const data = {
-        pageCurrent: 1,
-        pageSize: 5,
-        contentTypeCode: 'CONTENT_ACHIEVEMENT'
-      }
-      fetchContentPage(data).then((result) => {
-        if (result.data.code === 200) {
-          this.achievementDataList = result.data.result.list
-        }
-      }).catch(err => {
-        console.log(err)
-        this.$message({ type: 'warning', message: `${err}` })
-      })
-    },
     getGroupListPage() {
       const data = {
         pageCurrent: 1,
@@ -187,7 +175,7 @@ export default {
     },
     getJyActivityPage() {
       const data = {
-        groupId: this.$route.params.id,
+        // groupId: this.$route.params.id,
         pageCurrent: 1,
         pageSize: 5
       }
@@ -196,15 +184,37 @@ export default {
         this.workshopActivityList = res.data.result.records ? res.data.result.records : []
       })
     },
+    getRelevanceContentPage(contentTypeCode) {
+      const data = {
+        pageCurrent: 1,
+        pageSize: 5,
+        contentTypeCode: contentTypeCode,
+        limit: 3
+      }
+      fetchRelevanceContentPage(data).then((result) => {
+        if (result.data.code === 200) {
+          this.noticeLoading = false
+          if (contentTypeCode === 'CONTENT_RESOURCE') {
+            this.resourcetDataList = result.data.result.list
+          } else {
+            this.achievementDataList = result.data.result.list
+          }
+        }
+      }).catch(err => {
+        console.log(err)
+        this.noticeLoading = !this.noticeLoading
+        this.$message({ type: 'warning', message: `${err}` })
+      })
+    },
     handleClick(tab) {
       console.log(tab, event)
       this.getNoticeList()
     },
     getMore(activeName) {
       if (activeName === 'first') {
-        this.$router.push({ name: 'notice' })
+        this.$router.push({ name: 'noticeHome' })
       } else {
-        this.$router.push({ name: 'information' })
+        this.$router.push({ name: 'informationHome' })
       }
     },
     getMoreWorkShop(name) {

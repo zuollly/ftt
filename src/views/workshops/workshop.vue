@@ -270,7 +270,7 @@ export default {
       applyIntoWorkshop(data).then(res => {
         console.log(res)
         if (res.data.code === 200) {
-          this.$message.success('申请成功')
+          this.$message.success(res.data.msg)
         }
       })
     }

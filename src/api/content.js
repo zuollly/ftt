@@ -54,3 +54,11 @@ export function verifyContentPage(data, status, userId) {
     data: data
   })
 }
+// 以工作坊为单位翻页查询内容列表
+export function fetchRelevanceContentPage(data) {
+  return request({
+    url: '/channel/content/relevance/queryPage/group',
+    method: 'POST', // 请求方法
+    data: data
+  })
+}

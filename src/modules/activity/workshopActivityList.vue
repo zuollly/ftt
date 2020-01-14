@@ -4,11 +4,56 @@
         <div v-if="homeActivityList.length === 0">
           <LayNotData gridType="tb"></LayNotData>
         </div>
-        <div class="home-activity" v-if="homeActivityList.length > 0">
+        <div class="home-activity" v-if="page === 'home'&&homeActivityList.length > 0">
           <el-table :data="homeActivityList">
             <el-table-column prop="activityName" show-overflow-tooltip resizable></el-table-column>
             <el-table-column show-overflow-tooltip resizable>
               <template slot-scope="scope">{{scope.row.createTime | parseTime('{y}年{m}月{d}日 星期{a}')}}</template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div class="work-activity-list-wrapper" v-if="page !== 'home' && homeActivityList.length > 0">
+          <el-table :row-key="getRowKey" ref="resourceTable" @selection-change="handleSelectionChange" :data="homeActivityList" style="width: 100%">
+            <el-table-column type="selection" :reserve-selection="true" width="55"></el-table-column>
+            <el-table-column label="标题" width="250" show-overflow-tooltip resizable>
+              <template slot-scope="scope">
+                <a class="span bg-purple" @click="opeNotice(scope.row, 'view')">{{scope.row.activityName}}</a>
+              </template>
+            </el-table-column>
+            <el-table-column prop="creatorName"  width="150" label="发布者" show-overflow-tooltip resizable></el-table-column>
+            <el-table-column prop="groupName"  width="150" label="工作坊" show-overflow-tooltip resizable></el-table-column>
+            <el-table-column label="发布日期" show-overflow-tooltip resizable>
+              <template slot-scope="scope">{{scope.row.createTime | parseTime('{y}年{m}月{d}日 星期{a}')}}</template>
+            </el-table-column>
+            <el-table-column prop="date" label="操作">
+              <template slot-scope="scope">
+                <div class="button">
+                  <el-button type="success" plain size="mini" @click="opeNotice(scope.row, 'view')">查看</el-button>
+                  <el-button type="primary" plain size="mini" @click="opeNotice(scope.row, 'edit')">编辑</el-button>
+                  <el-button type="warning" v-if="scope.row.verifyStatus === 0" plain size="mini" @click="opeNotice(scope.row, 'vertify')">审核</el-button>
+
+                  <el-button type="danger" plain size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
+                </div>
+                <div class="mobile-button">
+                  <el-dropdown size="small" split-button type="primary">
+                    操作
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item>
+                        <el-button type="success" size="mini" @click="opeNotice(scope.row, 'view')">查看</el-button>
+                      </el-dropdown-item>
+                      <el-dropdown-item>
+                        <el-button type="primary" size="mini" @click="opeNotice(scope.row, 'edit')">编辑</el-button>
+                      </el-dropdown-item>
+                      <el-dropdown-item>
+                        <el-button type="warning" v-if="scope.row.verifyStatus === 0" plain size="mini" @click="opeNotice(scope.row, 'vertify')">审核</el-button>
+                      </el-dropdown-item>
+                      <el-dropdown-item>
+                        <el-button type="danger" size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </div>
+              </template>
             </el-table-column>
           </el-table>
         </div>
