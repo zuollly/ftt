@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     btnShow() {
-      const arr = this.$store.state.user.workshopUserRoles
+      const arr = this.$store.state.user.
       let role
       for (const item of arr) {
         role = item

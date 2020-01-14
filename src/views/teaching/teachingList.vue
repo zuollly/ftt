@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'workshopUserRoles',
+      '',
       'isMobile'
     ])
   },
@@ -82,7 +82,7 @@ export default {
       }
       fetchJyActivityPage(data).then(res => {
         console.log(res)
-        this.workshopActivityList = res.data.result.records ? res.data.result.records : []
+        this.workshopActivityList = res.data.result ? res.data.result.records : []
         this.pageObj.count = res.data.result.total
       })
     }

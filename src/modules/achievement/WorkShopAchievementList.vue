@@ -13,8 +13,9 @@
           </el-table>
         </div>
         <div class="work-achievement-list-wrapper" v-if="page !== 'home' && homeAchievementList.length > 0">
-          <el-table :data="homeAchievementList" style="width: 100%">
-            <el-table-column label="公告标题" width="350" show-overflow-tooltip resizable>
+          <el-table ref="achievementTable" :row-key="getRowKey" @selection-change="handleSelectionChange" :data="homeAchievementList" style="width: 100%">
+            <el-table-column type="selection" :reserve-selection="true" width="55"></el-table-column>
+            <el-table-column label="公告标题" width="250" show-overflow-tooltip resizable>
               <template slot-scope="scope">
                 <a class="span bg-purple" @click="opeNotice(scope.row, 'view')">{{scope.row.title}}</a>
               </template>
@@ -89,10 +90,11 @@ export default {
       itemCur: {},
       formChoose: {
         status: ''
-      }
+      },
+      multipleSelection: []
     }
   },
-  props: ['homeAchievementList', 'page', 'index'],
+  props: ['homeAchievementList', 'page', 'clearAll'],
   computed: {
     ...mapGetters([
       'uuid'
@@ -120,9 +122,25 @@ export default {
       if (this.page === 'home' && val.length > 5) {
         this.homeAchievementList.length = 5
       }
+    },
+    multipleSelection: function(val) {
+      console.log(val)
+      this.$emit('getSelectedData', val)
+    },
+    clearAll: function(val) {
+      if (val) {
+        this.$refs.achievementTable.clearSelection()
+      }
     }
   },
   methods: {
+    handleSelectionChange(val) {
+      console.log(val)
+      this.multipleSelection = val
+    },
+    getRowKey(row) {
+      return row.id
+    },
     opeNotice(item, type) {
       const workshopId = this.$route.params.id
       if (type === 'edit') {
@@ -138,12 +156,11 @@ export default {
       }
     },
     sure() {
-      var data = {
-        ids: [this.itemCur.id]
-      }
+      var data = [this.itemCur.id]
       verifyContentPage(data, this.formChoose.status * 1, this.uuid).then(res => {
         if (res.data.code === 200) {
           this.$message.success('操作成功')
+          this.dialogVisible = false
           this.$emit('getRefresh')
         }
       })

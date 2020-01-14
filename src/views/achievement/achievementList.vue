@@ -18,9 +18,14 @@
               <el-radio-button label="mine">我发布的成果</el-radio-button>
               <el-radio-button label="0">待审核成果</el-radio-button>
             </el-radio-group>
-            <el-button @click="issueContent" type="primary" plain size="mini">发布成果</el-button>
+            <div>
+              <el-button v-if="searchType==='0'" @click="passContent" type="success" plain size="mini">通过</el-button>
+              <el-button v-if="searchType==='0'" @click="refuseContent" type="warning" plain size="mini">不通过</el-button>
+              <el-button v-if="searchType!=='0'" @click="getDeleteContent('batch')" type="danger" plain size="mini">删除</el-button>
+              <el-button @click="issueContent" type="primary" plain size="mini">发布成果</el-button>
+            </div>
           </div>
-          <WorkShopAchievementList @getRefresh='getRefresh' :homeAchievementList='homeAchievementList' @editContent='editContent' @getDeleteContent='getDeleteContent'></WorkShopAchievementList>
+          <WorkShopAchievementList :clearAll='clearAll' @getRefresh='getRefresh' @getSelectedData='getSelectedData' :homeAchievementList='homeAchievementList' @editContent='editContent' @getDeleteContent='getDeleteContent'></WorkShopAchievementList>
           <div class="pagination" v-if="homeAchievementList.length">
             <el-pagination
               background
@@ -86,7 +91,8 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { fetchContentPage, insertRelevanceContent, updateRelevanceContent, delRelevanceContent, fetchContentById } from '@/api/content.js'
+import { fetchContentPage, insertRelevanceContent, updateRelevanceContent, delRelevanceContent, fetchContentById, verifyContentPage } from '@/api/content.js'
+
 import { fetchDictInfo } from '@/api/dict.js'
 export default {
   name: 'Achievement',
@@ -118,36 +124,36 @@ export default {
       title: '发成果展示',
       opeType: 'add',
       itemCur: null,
-      searchType: '1'
+      searchType: '1',
+      checkedList: [],
+      clearAll: false
     }
   },
   computed: {
     ...mapGetters([
-      'workshopUserRoles',
+      '',
       'isMobile',
       'uuid'
     ])
   },
   watch: {
     searchType: function() {
+      this.clearAll = true
       this.getAchievementList()
     }
   },
   methods: {
     getDeleteContent(type, item) {
       const idList = []
-      // if (type === 'batch') { // 批量删除
-      //   const checkedArr = this.homeNoticeList.filter((item) => {
-      //     return item.checked === true
-      //   })
-      //   if (checkedArr.length === 0) {
-      //     this.$message({ message: '请先选择要删除的公告', type: 'warning' })
-      //     return false
-      //   }
-      //   for (const value of checkedArr) {
-      //     idList[idList.length] = value.id
-      //   }
-      // }
+      if (type === 'batch') { // 批量删除
+        if (this.checkedList.length === 0) {
+          this.$message({ message: '请先选择要删除的内容', type: 'warning' })
+          return false
+        }
+        for (const value of this.checkedList) {
+          idList[idList.length] = value.id
+        }
+      }
       if (type === 'single') { // 单个删除
         idList.push(item.id)
       }
@@ -159,7 +165,9 @@ export default {
         delRelevanceContent(idList).then((result) => {
           if (result.data.code === 200) {
             this.$message({ type: 'success', message: '删除成功' })
+            this.checkedList = []
             this.getAchievementList()
+            this.clearAll = true
           }
         })
       }).catch(() => {
@@ -214,8 +222,66 @@ export default {
       this.contentForm.type = item.contentTypeCode
       this.getContentById(item.id)
     },
+    refuseContent() {
+      const idList = []
+      if (this.checkedList.length === 0) {
+        this.$message({ message: '请先选择不通过的内容', type: 'warning' })
+        return false
+      }
+      for (const value of this.checkedList) {
+        idList[idList.length] = value.id
+      }
+      this.$confirm('是否确认拒绝？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        verifyContentPage(idList, 2, this.uuid).then((result) => {
+          if (result.data.code === 200) {
+            this.$message({ type: 'success', message: '操作成功' })
+            this.checkedList = []
+            this.getAchievementList()
+            this.clearAll = true
+          }
+        })
+      }).catch(() => {
+        this.$message({ type: 'warning', message: '已取消' })
+        return false
+      })
+    },
+    passContent() {
+      const idList = []
+      if (this.checkedList.length === 0) {
+        this.$message({ message: '请先选择要通过的内容', type: 'warning' })
+        return false
+      }
+      for (const value of this.checkedList) {
+        idList[idList.length] = value.id
+      }
+      this.$confirm('是否确认通过？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        verifyContentPage(idList, 1, this.uuid).then((result) => {
+          if (result.data.code === 200) {
+            this.$message({ type: 'success', message: '操作成功' })
+            this.checkedList = []
+            this.getAchievementList()
+            this.clearAll = true
+          }
+        })
+      }).catch(() => {
+        this.$message({ type: 'warning', message: '已取消' })
+        return false
+      })
+    },
     getRefresh() {
       this.getAchievementList()
+    },
+    getSelectedData(list) {
+      this.clearAll = false
+      this.checkedList = list
     },
     getContentById(id) {
       const data = {

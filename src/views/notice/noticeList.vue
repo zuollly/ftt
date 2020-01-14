@@ -95,7 +95,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'workshopUserRoles',
+      '',
       'isMobile',
       'uuid'
     ])

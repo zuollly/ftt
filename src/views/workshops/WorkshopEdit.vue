@@ -102,7 +102,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['uuid', 'workshopUserRoles', 'workshopInfo'])
+    ...mapGetters(['uuid', '', 'workshopInfo'])
   },
   mounted() {
     this.getWorkshopInfo()

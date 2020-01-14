@@ -74,7 +74,7 @@ export default {
   props: ['informationList', 'page', 'index'],
   computed: {
     ...mapGetters([
-      'workshopUserRoles'
+
     ])
   },
   filters: {

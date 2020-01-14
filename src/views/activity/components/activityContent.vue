@@ -125,7 +125,6 @@ export default {
     channelContent: () => import('./channelContent.vue'),
     courseContent: () => import('./courseContent.vue'),
     comment: () => import('@/components/comment/index.vue'),
-    stepResource: () => import('./stepResource'),
     playbackMeeting: () => import('./playbackMeeting')
   },
   data() {

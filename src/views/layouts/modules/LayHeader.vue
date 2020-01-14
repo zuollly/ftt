@@ -14,10 +14,10 @@
               <el-button type="primary" slot="append" icon="el-icon-search"></el-button>
             </el-input>
           </span> -->
-          <template v-if="uuid === ''">
+          <!-- <template v-if="uuid === ''">
             <el-button type="primary" @click="gotoLogin" size="medium">登录</el-button>
-          </template>
-          <template v-else>
+          </template> -->
+          <template v-if="uuid">
             <span class="lay-header-user lay-header-action">
               <span class="el-dropdown-link">
                 <span class="lay-header-user-avatar">

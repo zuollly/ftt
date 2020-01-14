@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'workshopInfo', 'uuid', 'workshopUserRoles', 'currentRoute'
+      'workshopInfo', 'uuid', '', 'currentRoute'
     ]),
     menuData: function() {
       // console.log(this.$route)
