@@ -14,7 +14,7 @@
           <div class="headWrapper">
             <p class="p">教学成果</p>
           </div>
-          <workShopAchievementList :page="'hme'" :homeAchievementList='homeNoticeList'></workShopAchievementList>
+          <workShopAchievementList :onlyRead="true" :page="'hme'" :homeAchievementList='homeNoticeList'></workShopAchievementList>
           <div class="pagination" v-if="homeNoticeList.length">
             <el-pagination
               background

@@ -92,7 +92,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import { fetchContentPage, insertRelevanceContent, updateRelevanceContent, delRelevanceContent, fetchContentById, verifyContentPage } from '@/api/content.js'
-
 import { fetchDictInfo } from '@/api/dict.js'
 export default {
   name: 'Achievement',

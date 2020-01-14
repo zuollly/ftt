@@ -137,5 +137,9 @@ export function formatFixed(val, length) {
 // 富文本图片超出处理
 export function transRichImg(val) {
   if (!val) return ''
-  return val.replace(/\<img/gi, '<img class="rich-image" ')
+  return val.replace(/\<z/gi, '<img class="rich-image" ')
+}
+export function transRichA(val) {
+  if (!val) return ''
+  return val.replace(/\<a/gi, '<a target="_blank" class="rich-image" ')
 }

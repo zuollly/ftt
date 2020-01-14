@@ -29,7 +29,7 @@
           <p class="p">工作室活动</p>
           <el-button type="text">查看更多</el-button>
         </div>
-        <workshopActivityList :homeActivityList='workshopActivityList'></workshopActivityList>
+        <workshopActivityList :page="'home'" :homeActivityList='workshopActivityList'></workshopActivityList>
       </div>
       <div class="informationWrapper main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">

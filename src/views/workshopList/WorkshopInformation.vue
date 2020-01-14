@@ -14,7 +14,7 @@
           <div class="headWrapper">
             <p class="p">资讯</p>
           </div>
-          <WorkshopInformation :page="'hme'" :informationList='homeNoticeList'></WorkshopInformation>
+          <WorkshopInformation :onlyRead="true" :page="'hme'" :informationList='homeNoticeList'></WorkshopInformation>
           <div class="pagination" v-if="homeNoticeList.length">
             <el-pagination
               background

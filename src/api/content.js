@@ -62,3 +62,12 @@ export function fetchRelevanceContentPage(data) {
     data: data
   })
 }
+
+// 点赞
+export function giveContentUp(data) {
+  return request({
+    url: '/channel/content/up',
+    method: 'GET', // 请求方法
+    params: data
+  })
+}

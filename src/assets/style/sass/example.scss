@@ -46,3 +46,45 @@ body{
 .list-group-item {
   border-bottom: 1px dashed #d1d5de;
 }
+.article {
+  .article-title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .article-mate {
+    padding: 10px 0px;
+
+    span {
+      display: inline-block;
+      margin-right: 15px;
+      color: #666;
+    }
+  }
+
+  .article-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #454545;
+
+    img {
+      max-width: 80%;
+    }
+  }
+
+  .article-attach {
+    box-sizing: content-box;
+    padding: 0px;
+    margin: 0px;
+    background-color: transparent;
+    color: rgb(0, 102, 204);
+    text-decoration-line: none;
+    outline: none;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .article-footer {
+    padding: 15px 0;
+  }
+}

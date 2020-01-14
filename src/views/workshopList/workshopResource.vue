@@ -14,7 +14,7 @@
           <div class="headWrapper">
             <p class="p">教学资源</p>
           </div>
-          <workShopResourceList :page="'hme'" :homeResourceList='homeNoticeList'></workShopResourceList>
+          <workShopResourceList :onlyRead="true" :page="'hme'" :homeResourceList='homeNoticeList'></workShopResourceList>
           <div class="pagination" v-if="homeNoticeList.length">
             <el-pagination
               background

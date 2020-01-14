@@ -1,150 +1,155 @@
+
 <template>
-  <div class="notice-details-wrapper" v-loading="loading" element-loading-text="拼命加载中">
-    <div class="header-wrapper">
-      <header class="header">{{details.title}}</header>
-      <!-- <el-button type="text" v-if="details.status === 2" @click="withdrawNotice">撤回</el-button> -->
-      <el-button class="back" type="text" @click="back">返回</el-button>
-    </div>
-    <div class="state">
-      <p>发布者： {{details.editorName}}</p>
-      <p>发布时间： {{details.createTime}}</p>
-    </div>
-    <div class="content" v-html="details.content"></div>
-    <div class="notice-accessory">
-      <p v-if="noticeFileList.length > 0" class="p" @click="downloadNotice(item)" v-for="(item, index) in noticeFileList" :key="index">附件 【{{item.fileName}}】</p>
-      <p v-if="!noticeFileList || noticeFileList.length <= 0" class="p">暂无附件</p>
-    </div>
+  <div class="container mt-3">
+    <el-row :gutter="18">
+      <el-col :span="24">
+        <el-card class="box-card" shadow="never">
+          <div slot="header" class="headerWrapper">
+            <span class="card-title">{{instationBaseInfo.categoryMap}}</span>
+            <el-button type="warning" size="mini" @click="back">返回</el-button>
+
+          </div>
+          <article class="article">
+            <h3 class="article-title text-center">{{instationDetail.title}}</h3>
+            <div class="article-mate">
+              <span>发布者： {{instationDetail.userName||'佚名'}}</span>
+              <span>阅读数({{instationDetail.views||0}})</span>
+              <span>点赞数({{instationDetail.ups||0}})</span>
+              <span>评论数 ({{instationDetail.comments||0}})</span>
+            </div>
+            <div class="article-body" v-html="transRichA(transRichImg(instationDetail.txt))"></div>
+            <div class="article-footer">
+              <div class="text-center">
+                <el-button type="warning" @click="setNoticeUp()">点赞</el-button>
+              </div>
+            </div>
+          </article>
+          <div class="mt-3">
+            <z-z-comment-list
+              @commenthandle="commenthandler"
+              :categoryId="instationBaseInfo.contentId"
+              :category="instationBaseInfo.type"
+              :categoryName="instationDetail.title"
+              :categoryUrl="projectUrl"
+              :userId="uuid"
+              :avatar="userInfo.userAvatar"
+              :needLogin="needLogin"
+              :loginRouteName="'login'"
+            ></z-z-comment-list>
+          </div>
+          <!-- <div class="mt-3">
+            <comment-add></comment-add>
+          </div>
+          <div class="mt-3">
+            <comment-list></comment-list>
+          </div>-->
+        </el-card>
+      </el-col>
+      <!-- <el-col :span="6"></el-col> -->
+    </el-row>
   </div>
 </template>
-
 <script>
-import { editNotice, getHomeNoticeDetails } from '@/api/notice.js'
-import downloadResource from '@/utils/downloadResource.js'
+import { giveContentUp, fetchContentById } from '@/api/content'
+import { transRichImg, transRichA } from '@/utils/filters'
+import { mapGetters } from 'vuex'
 export default {
   name: 'NoticeShow',
-  data() {
-    return {
-      details: {}, // 详情
-      loading: true,
-      noticeFileList: [] // 附件列表
-    }
-  },
-  methods: {
-    withdrawNotice() {
-      const noticeId = this.$route.params.noticeId
-      withdrawNoticeOpe(this, noticeId)
-    },
-    back() {
-      const workshopId = this.$route.params.id
-      const index = this.$route.query.index
-      this.$router.push({
-        name: 'noticeList', params: { id: workshopId }, query: { index: index }
-      })
-    },
-    downloadNotice(item) {
-      const url = `api/sourceHandle/download?id=${item.id}`
-      downloadResource.downloadResource(url)
-    }
+  components: {
+    /* commentAdd: () => import('@/views/modules/comment/commentAdd'),
+    commentList: () => import('@/views/modules/comment/commentList'), */
+    ZZCommentList: () => import('@/components/comment/index')
   },
   mounted() {
-    console.log(this.$route.params, '---this.$route.params-------')
-    const noticeId = this.$route.params.noticeId
-    getNoticeDetails(this, noticeId)
-  }
-}
-function withdrawNoticeOpe(that, id) {
-  const workshopId = that.$route.params.id
-  const data = {
-    id: id,
-    status: 3 // 撤回
-  }
-  that.$confirm('是否确认撤回？', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    editNotice(data).then((result) => {
-      if (result.data.code === 200) {
-        that.$message({ type: 'success', message: `操作成功` })
-        that.$router.push({
-          name: 'noticeList', params: { id: workshopId }
-        })
-      }
-    })
-  }).catch(err => {
-    that.$message({ type: 'warning', message: `${err}` })
-  })
-}
-function getNoticeDetails(that, id) {
-  const data = {
-    id: id
-  }
-  getHomeNoticeDetails(data).then((result) => {
-    if (result.data.code === 200) {
-      that.loading = false
-      that.details = result.data.result
-      that.noticeFileList = result.data.result.fileIds
+    this.getNoticeById()
+  },
+  data() {
+    return {
+      textarea: '',
+      needLogin: false,
+      projectUrl: window.location.href,
+      instationBaseInfo: this.$route.query,
+      activeNames: ['1'],
+      instationDetail: {
+        category: 'project',
+        content: '第三期简报',
+        createTime: '2019-05-31 16:52:44',
+        description: null,
+        status: 2,
+        title: '第三期简报',
+        type: 'briefing',
+        updateTime: '2019-05-31 16:52:44',
+        userId: 'cfe4d43f5a95e68d3eb40686d4be003b',
+        userName: '项目管理员'
+      },
+      // userId: '1058da0851a3d8cd0a3a77f4470051c7',
+      userInfo: this.$store.state.user
     }
-  }).catch(err => {
-    that.loading = false
-    that.$message({ type: 'warning', message: `${err}` })
-  })
+  },
+  computed: {
+    ...mapGetters([
+      'uuid'
+    ])
+  },
+  methods: {
+    back() {
+      this.$router.go(-1)
+    },
+    transRichImg,
+    transRichA,
+    handleChange(val) {
+      console.log(val)
+    },
+    commenthandler(param) {
+      console.dir(param)
+      if (param.status === 'success') {
+        this.getNoticeById()
+      }
+    },
+    // 公告什么的点赞
+    setNoticeUp() {
+      const data = {
+        contentId: this.$route.query.contentId,
+        userId: this.uuid
+      }
+      giveContentUp(data).then(res => {
+        res = res.data
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '点赞成功！'
+          })
+          this.getNoticeById()
+        } else {
+          this.$message({
+            type: 'warning',
+            message: res.msg
+          })
+        }
+      })
+    },
+    // 获取公告、简报、通知详情
+    getNoticeById() {
+      fetchContentById({ id: this.$route.params.id }).then(res => {
+        res = res.data
+        if (res.code === 200) {
+          this.instationDetail = res.result
+        }
+      })
+    }
+  }
 }
 </script>
-
-<style lang='scss' rel="stylesheet/scss" scoped>
-.notice-details-wrapper{
-  background-color: #fff;
-  padding: 20px;
-  .header-wrapper{
-    text-align: center;
-    padding: 20px;
-    border-bottom: 1px #eee solid;
-    box-sizing: border-box;
-    width: 100%;
+<style lang="scss" scope>
+  .headerWrapper{
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    .header{
-      flex: 1;
-      line-height: 40px;
-      color: #494949;
-      font-size: 16px;
-    }
-    >>> .el-button{
-      margin-right: 10px;
-      color: #fe3b59;
-    }
-    .back{
-      color: #494949;
+  }
+  .article-body{
+    a{
+      text-decoration: black;
+      color: red;
     }
   }
-  .state{
-    width: 100%;
-    display: flex;
-    height: 45px;
-    justify-content: space-between;
-    p:nth-child(1){
-      text-align: right
-    }
-    p{
-      width: 45%;
-      line-height: 45px;
-      color: #8c8c8c;
-      font-size: 13px;
-    }
-  }
-  .content{
-    padding: 20px 40px 20px 40px;
-    font-size: 15px;
-  }
-  .notice-accessory{
-    padding: 20px 40px 20px 40px;
-    .p{
-      padding: 10px;
-      cursor: pointer;
-      color: #7a7171;
-      width: 50%;
-    }
-  }
-}
 </style>

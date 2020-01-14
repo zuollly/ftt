@@ -6,7 +6,11 @@
         </div>
         <div class="home-activity" v-if="homeWorkByOrderList.length > 0">
           <el-table :data="homeWorkByOrderList">
-            <el-table-column prop="groupName" show-overflow-tooltip resizable></el-table-column>
+            <el-table-column show-overflow-tooltip resizable>
+              <template slot-scope="scope">
+                <a class="span bg-purple" @click="enterWorkshop(scope.row)">{{scope.row.groupName}}</a>
+              </template>
+            </el-table-column>
             <el-table-column show-overflow-tooltip resizable>
               <template slot-scope="scope">{{scope.row.createTime | parseTime('{y}年{m}月{d}日 星期{a}')}}</template>
             </el-table-column>
@@ -56,6 +60,11 @@ export default {
     }
   },
   methods: {
+    enterWorkshop(item) {
+      console.log(item)
+      this.$router.push({ name: 'workshop',
+        params: { id: item.id }})
+    }
   }
 }
 </script>

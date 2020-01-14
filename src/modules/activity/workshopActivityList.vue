@@ -29,10 +29,6 @@
               <template slot-scope="scope">
                 <div class="button">
                   <el-button type="success" plain size="mini" @click="opeNotice(scope.row, 'view')">查看</el-button>
-                  <el-button type="primary" plain size="mini" @click="opeNotice(scope.row, 'edit')">编辑</el-button>
-                  <el-button type="warning" v-if="scope.row.verifyStatus === 0" plain size="mini" @click="opeNotice(scope.row, 'vertify')">审核</el-button>
-
-                  <el-button type="danger" plain size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
                 </div>
                 <div class="mobile-button">
                   <el-dropdown size="small" split-button type="primary">

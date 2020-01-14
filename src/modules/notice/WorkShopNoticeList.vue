@@ -6,7 +6,11 @@
         </div>
         <div class="home-notice" v-if="page === 'home' && homeNoticeList.length > 0">
           <el-table :data="homeNoticeList">
-            <el-table-column prop="title" show-overflow-tooltip resizable></el-table-column>
+            <el-table-column show-overflow-tooltip resizable>
+              <template slot-scope="scope">
+                <a class="span bg-purple" @click="opeNotice(scope.row, 'view')">{{scope.row.title}}</a>
+              </template>
+            </el-table-column>
             <el-table-column show-overflow-tooltip resizable>
               <template slot-scope="scope">{{scope.row.createTime | parseTime('{y}年{m}月{d}日 星期{a}')}}</template>
             </el-table-column>
@@ -27,9 +31,8 @@
               <template slot-scope="scope">
                 <div class="button">
                   <el-button type="success" plain size="mini" @click="opeNotice(scope.row, 'view')">查看</el-button>
-                  <el-button type="primary" plain size="mini" @click="opeNotice(scope.row, 'edit')">编辑</el-button>
-                  <!-- <el-button type="warning" plain size="mini" v-if="scope.row.status !== 2" @click="opeNotice(scope.row, 'issue')">发布</el-button> -->
-                  <el-button type="danger" plain size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
+                  <el-button v-if="!onlyRead" type="primary" plain size="mini" @click="opeNotice(scope.row, 'edit')">编辑</el-button>
+                  <el-button v-if="!onlyRead" type="danger" plain size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
                 </div>
                 <div class="mobile-button">
                   <el-dropdown size="small" split-button type="primary">
@@ -39,16 +42,10 @@
                         <el-button type="success" size="mini" @click="opeNotice(scope.row, 'view')">查看</el-button>
                       </el-dropdown-item>
                       <el-dropdown-item>
-                        <el-button type="primary" size="mini" @click="opeNotice(scope.row, 'edit')">编辑</el-button>
-                      </el-dropdown-item>
-                      <!-- <el-dropdown-item>
-                        <el-button type="warning" size="mini" v-if="scope.row.status !== 2" @click="opeNotice(scope.row, 'issue')">发布</el-button>
-                      </el-dropdown-item> -->
-                      <el-dropdown-item>
-                        <el-button type="warning" size="mini" v-if="scope.row.status === 2" @click="opeNotice(scope.row, 'withdraw')">撤回</el-button>
+                        <el-button type="primary" v-if="!onlyRead" size="mini" @click="opeNotice(scope.row, 'edit')">编辑</el-button>
                       </el-dropdown-item>
                       <el-dropdown-item>
-                        <el-button type="danger" size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
+                        <el-button type="danger" v-if="!onlyRead" size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
                       </el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
@@ -71,7 +68,7 @@ export default {
     return {
     }
   },
-  props: ['homeNoticeList', 'page', 'index'],
+  props: ['homeNoticeList', 'page', 'onlyRead'],
   computed: {
     ...mapGetters([
       ''
@@ -103,13 +100,14 @@ export default {
   },
   methods: {
     opeNotice(item, type) {
-      const workshopId = this.$route.params.id
+      console.log(item)
+      // const workshopId = this.$route.params.id
       if (type === 'edit') {
         this.$emit('editContent', item)
       }
       if (type === 'view') {
         this.$router.push({
-          name: 'noticeShow', params: { id: workshopId, noticeId: item.id }, query: { index: this.index }
+          name: 'noticeShow', params: { id: item.id }, query: { contentId: item.contentId, categoryMap: '公告', type: 'content' }
         })
       }
     },

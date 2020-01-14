@@ -14,7 +14,7 @@
           <div class="headWrapper">
             <p class="p">公告</p>
           </div>
-          <WorkShopNotice :page="'hme'" :homeNoticeList='homeNoticeList'></WorkShopNotice>
+          <WorkShopNotice :onlyRead="true" :page="'hme'" :homeNoticeList='homeNoticeList'></WorkShopNotice>
           <div class="pagination" v-if="homeNoticeList.length">
             <el-pagination
               background
