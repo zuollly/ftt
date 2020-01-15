@@ -42,7 +42,7 @@
         </el-upload>
       </div>
       <el-form ref="form" :model="form" label-width="240px">
-        <el-form-item label="工作坊名称" required>
+        <el-form-item label="工作室名称" required>
           <el-col :span="12">
             <el-input v-model="form.shopName" class="input"></el-input>
           </el-col>
@@ -227,7 +227,7 @@ export default {
     filter() {
       // 验证
       if (!this.form.shopName) {
-        this.$message({ message: '请输入工作坊名称', type: 'warning' })
+        this.$message({ message: '请输入工作室名称', type: 'warning' })
         return false
       }
       if (!this.faculty.phaseId) {

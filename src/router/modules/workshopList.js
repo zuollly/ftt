@@ -23,9 +23,6 @@ const workshopList = {
     },
     {
       path: 'workshopActivity', component: () => import('@/views/workshopList/workshopActivity'), name: 'workshopActivity', meta: { title: '活动', icon: '' }
-    },
-    {
-      path: 'noticeShow/:id', component: () => import('@/views/notice/noticeShow'), name: 'noticeShow', hidden: true, meta: { title: '内容详情', icon: '' }
     }
   ]
 }

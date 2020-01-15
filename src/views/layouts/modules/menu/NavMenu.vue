@@ -56,6 +56,9 @@ export default {
   methods: {
     getNavMenuItems: function(list) {
       var _this = this
+      if (!list) {
+        return
+      }
       const accessedList = list.filter(item => {
         if (!item.hidden) {
           if (item.children && item.children.length) {
@@ -70,6 +73,9 @@ export default {
     },
     getSideMenuItem: function(list) {
       var _this = this
+      if (!list) {
+        return
+      }
       const accessedList = list.filter(item => {
         if (!item.hidden) {
           if (item.children) {
@@ -85,6 +91,9 @@ export default {
     },
     getTopMenuItem: function(list) {
       var newList = []
+      if (!list) {
+        return
+      }
       list.forEach(function(item, index) {
         if (index < 20) {
           newList.push(item)

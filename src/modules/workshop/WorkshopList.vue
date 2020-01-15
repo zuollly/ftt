@@ -1,10 +1,11 @@
 <template>
   <div class="workshopListWrapper">
     <div class="workshopList-block-wrapper">
-      <div class="workshopList-block">
-        <div class="workshop-details" v-for="(item, idx) in workshopList" :key="idx">
+      <!-- <div class="workshopList-block"> -->
+        <!-- <div class="workshop-details" v-for="(item, idx) in workshopList" :key="idx">
           <div class="image">
-            <img :src="item.groupImg" alt="">
+            <img v-if="item.groupImg" :src="item.groupImg" alt="">
+            <img v-else src="http://api.yx.nercel.cn/file/avator/default_avator.jpg" alt="">
           </div>
           <div class="label">
             <span class="name">{{item.groupName}}</span>
@@ -29,8 +30,41 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </div> -->
+        <el-row class="workshopList-block" :gutter="30">
+          <el-col class="workshop-details" :span="6" v-for="(item, idx) in workshopList" :key="idx">
+            <div class="workshop-details-con">
+              <div class="image">
+                <img v-if="item.groupImg" :src="item.groupImg" alt="">
+                <img v-else src="http://api.yx.nercel.cn/file/avator/default_avator.jpg" alt="">
+              </div>
+              <div class="label">
+                <span class="name">{{item.groupName}}</span>
+                <span class="seg" v-if="item.groupSegSubs">{{item.groupSegSubs[0].segSubtName}}</span>
+              </div>
+              <div class="maskBtn">
+                <el-button round @click="enterWorkshop(item)">查看名师工作室</el-button>
+              </div>
+              <div class="workshopList-mask">
+                <div class="personal-statics">
+                  <div class="statics-label statics-line">
+                    <p class="num">{{item.groupViews || 0}}</p>
+                    <p class="type">访问量</p>
+                  </div>
+                  <div class="statics-label statics-line">
+                    <p class="num">{{item.groupResources || 0}}</p>
+                    <p class="type">资源数</p>
+                  </div>
+                  <div class="statics-label">
+                    <p class="num">{{item.groupLiveness || 0}}</p>
+                    <p class="type">活跃度</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+      <!-- </div> -->
     </div>
   </div>
 </template>
@@ -67,12 +101,18 @@ export default {
     flex-wrap: wrap;
     .workshop-details{
         position: relative;
-        background: #F5F5F5;
         border-radius: 15px;
-        width: 18%;
+        // width: 18%;
+        // width: 240px;
         height: 300px;
-        margin-right: 2%;
+        // margin-right: 2%;
         margin-bottom: 20px;
+        .workshop-details-con{
+          background: #F5F5F5;
+          width: 100%;
+          height: 300px;
+          border-radius: 10px;
+        }
       .image{
         width: 100%;
         height: 80px;
@@ -104,7 +144,8 @@ export default {
           margin-bottom: 10px;
         }
         .seg{
-          color: #D8D8D8;
+          font-size: 16px;
+          color: #1a1717;
         }
       }
       .maskBtn{
@@ -120,7 +161,9 @@ export default {
   }
   .workshopList-mask{
     position: absolute;
-    width: 100%;
+    margin-left: 15px;
+    margin-right: 15px;
+    width: calc(100% - 30px);
     height: 70%;
     left: 0;
     bottom: 0;
@@ -155,7 +198,7 @@ export default {
         }
         .type{
           font-size: 16px;
-          color: #CCCCCC;
+          color: #ffffff;
         }
       }
     }

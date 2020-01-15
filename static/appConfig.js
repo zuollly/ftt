@@ -1,8 +1,10 @@
 module.exports = {
-  cfg_basehost: 'http://localhost', // 站点根网址
+  cfg_basehost: 'http://yx.nercel.cn/ms/', // 站点根网址
+  cfg_fileBasehost: 'http://yx.nercel.cn/msapi/file/icon/', // 文件站点根网址
+  cfg_upfile_path: 'http://yx.nercel.cn/msapi/zuul/tool/file/upload', // 文件上传服务器地址
   cfg_indexurl: '/', // 网页主页链接
   cfg_indexname: '主页', // 主页链接名
-  cfg_webname: '兵团名师工作坊', // 网站名称
+  cfg_webname: '兵团名师工作室', // 网站名称
   cfg_weblogo: './static/images/logo.svg', // 网站名称
   cfg_webslogan: '专业挖坑小队提供最优挖坑服务，坑是种能力，你值得拥有',
   cfg_powerby: 'Copyright &copy; 2018-2020 HDGS. 华大国数 版权所有', // 网站版权信息
@@ -14,7 +16,6 @@ module.exports = {
   cfg_forget_path: 'http://ps.test.nercel.cn/userOperation/getRetrievePassword', // K12找加密码入口
   cfg_register_path: 'http://ps.test.nercel.cn/user_register.jsp', // K12注册入口
   cfg_distanceimg_path: '', // 远程图片地址 http://ps.test.nercel.cn
-  cfg_upfile_path: 'http://ps.test.nercel.cn/', // 文件上传服务器地址
   cfg_up_path: 'http://gzf.test.nercel.cn/workshop/api/sourceHandle/getPicSource/',
   cfg_img_loading: './static/images/loading.svg', // 图片懒加载等待
   cfg_ddimg_width: '', // 缩略图默认宽度

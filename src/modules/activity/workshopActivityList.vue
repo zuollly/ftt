@@ -108,7 +108,7 @@ export default {
         )
       } else {
         this.$router.push({
-          name: 'activityShow', params: { activityId: row.id, id: 1 }}
+          name: 'homeActivityShow', params: { activityId: row.id }}
         )
       }
     }

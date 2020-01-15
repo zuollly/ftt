@@ -32,7 +32,7 @@
       :title="title"
       :visible.sync="dialogVisible"
       v-if="dialogVisible"
-      width="50%"
+      width="80%"
     >
       <el-form
         :model="contentForm"
@@ -44,7 +44,7 @@
           <el-input v-model="contentForm.title" placeholder="请输入公告标题"></el-input>
         </el-form-item>
         <el-form-item label="公告内容" prop="content">
-          <editor v-if="dialogVisible" name="name" class="editor" v-model="contentForm.content" :height="250"></editor>
+          <editor v-if="dialogVisible" name="name" class="editor" v-model="contentForm.content" :height="550"></editor>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -63,6 +63,7 @@
 import { mapGetters } from 'vuex'
 import { fetchContentPage, insertRelevanceContent, updateRelevanceContent, delRelevanceContent, fetchContentById } from '@/api/content.js'
 import { fetchDictInfo } from '@/api/dict.js'
+import appConfig from '../../../static/appConfig'
 export default {
   name: 'NoticeList',
   components: {
@@ -85,7 +86,7 @@ export default {
         title: '',
         content: ''
       },
-      src: '../../../static/images/banner.jpg',
+      src: `${appConfig.cfg_fileBasehost}notice.jpg`,
       addContentLoading: false,
       dialogVisible: false,
       title: '发公告',

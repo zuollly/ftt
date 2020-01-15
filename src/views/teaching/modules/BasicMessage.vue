@@ -23,7 +23,7 @@
                 <span>{{holderInfo.realname||'未指定'}}</span>
               </el-form-item>
               <el-form-item label="活动时间：">
-                <span>{{(form.startTime).split(' ')[0]}} 至 {{(form.endTime).split(' ')[0]}}</span>
+                <span v-if="form.startTime">{{(form.startTime).split(' ')[0]}} 至 {{(form.endTime).split(' ')[0]}}</span>
               </el-form-item>
               <!-- <el-form-item label="学段学科：">
                 <p style="margin: 0" v-if="studyphaseToSubject.length">{{studyphaseToSubject.join(' 、')}}</p>

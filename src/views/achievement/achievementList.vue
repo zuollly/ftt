@@ -53,7 +53,7 @@
         label-width="80px"
         class="demo-ruleForm"
       >
-        <el-form-item label="资讯类型" prop="title">
+        <el-form-item label="成果类型" prop="title">
           <!-- <el-input v-model="contentForm.title" placeholder="请输入资讯标题"></el-input> -->
           <el-select v-if="opeType==='add'" v-model="contentForm.type">
             <el-option
@@ -70,12 +70,30 @@
               :value="item.dictKey"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="资讯标题" prop="title">
+        <el-form-item label="成果标题" prop="title">
           <el-input v-model="contentForm.title" placeholder="请输入资讯标题"></el-input>
         </el-form-item>
-        <el-form-item label="资讯内容" prop="content">
+        <el-form-item label="成果内容" prop="content">
           <editor v-if="dialogVisible" name="name" class="editor" v-model="contentForm.content" :height="250"></editor>
         </el-form-item>
+        <el-form-item label="上传成果" required>
+            <el-upload
+              ref="upload"
+              class="upload-demo"
+              name="multipartFile"
+              :action="uploadUrl()"
+              :headers="headers"
+              accept=".xls,.xlsx,.doc,.docx,.ppt,.pptx,.pps,.ppsx,.txt,.pdf,.mp4"
+              :before-upload="beforeAvatarUpload"
+              :on-success="uploadSuccess"
+              :on-remove="handleRemove"
+              :before-remove="beforeRemove"
+              :limit="1"
+              :file-list="fileList"
+              >
+              <el-button size="small" type="primary">上传文件</el-button>
+            </el-upload>
+          </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -93,6 +111,9 @@
 import { mapGetters } from 'vuex'
 import { fetchContentPage, insertRelevanceContent, updateRelevanceContent, delRelevanceContent, fetchContentById, verifyContentPage } from '@/api/content.js'
 import { fetchDictInfo } from '@/api/dict.js'
+import { getToken } from '@/utils/storage/cookies'
+import appConfig from '../../../static/appConfig'
+
 export default {
   name: 'Achievement',
   components: {
@@ -116,7 +137,7 @@ export default {
         title: '',
         content: ''
       },
-      src: '../../../static/images/achievement.jpg',
+      src: `${appConfig.cfg_fileBasehost}achievement.jpg`,
       typeList: [],
       addContentLoading: false,
       dialogVisible: false,
@@ -125,7 +146,13 @@ export default {
       itemCur: null,
       searchType: '1',
       checkedList: [],
-      clearAll: false
+      clearAll: false,
+      modelCode: '',
+      fileList: [],
+      headers: {
+        'enctype': 'multipart/form-data',
+        'Authorization': 'Bearer ' + getToken()
+      }
     }
   },
   computed: {
@@ -142,6 +169,78 @@ export default {
     }
   },
   methods: {
+    uploadUrl() {
+      console.log(appConfig, 'appConfig')
+      return appConfig.cfg_upfile_path
+    },
+    beforeAvatarUpload(file) { // 上传文件之前的钩子，参数为上传的文件
+      // eslint-disable-next-line no-array-constructor
+      var fileName = new Array()
+      fileName = file.name.split('.')
+      console.log(fileName[fileName.length - 1])
+      const extension = fileName[fileName.length - 1] === 'xls'
+      const extension2 = fileName[fileName.length - 1] === 'xlsx'
+      const extension3 = fileName[fileName.length - 1] === 'doc'
+      const extension4 = fileName[fileName.length - 1] === 'docx'
+      const extension5 = fileName[fileName.length - 1] === 'ppt'
+      const extension6 = fileName[fileName.length - 1] === 'pptx'
+      const extension7 = fileName[fileName.length - 1] === 'pps'
+      const extension8 = fileName[fileName.length - 1] === 'ppsx'
+      const extension9 = fileName[fileName.length - 1] === 'txt'
+      const extension10 = fileName[fileName.length - 1] === 'pdf'
+      const extension11 = fileName[fileName.length - 1] === 'mp4'
+      const isLt2M = file.size / 1024 / 1024 < 500
+      if (!extension && !extension2 && !extension3 && !extension4 && !extension5 && !extension6 && !extension7 && !extension8 && !extension9 && !extension10 && !extension11) {
+        this.$message({
+          message: '上传模板只能是xls,xlsx,doc,docx,ppt,pptx,pps,ppsx,txt,pdf,mp4格式!',
+          type: 'warning'
+        })
+        this.fileOk = false
+        return false
+      }
+      if (!isLt2M) {
+        this.$message({
+          message: '上传模板大小不能超过 500MB!',
+          type: 'warning'
+        })
+        this.fileOk = false
+        return false
+      }
+      this.fileOk = true
+    },
+    beforeRemove(file, fileList) { // 删除文件之前的钩子，参数为上传的文件和文件列表
+      if (this.fileOk === true) {
+        return this.$confirm(`确定移除 ${file.name}？`)
+      }
+    },
+    handleRemove(file, fileList) {
+      // const fileId = (file.response && file.response.result && file.response.result.id) || file.id
+      // // 防止服务器空间非法占用
+      // fileService.deleteFile({ id: fileId })
+      // this.fileList.forEach((att, attIndex) => {
+      //   if (att.fileId === fileId) this.fileList.splice(attIndex, 1)
+      // })
+      // this.file = {}
+    },
+    uploadSuccess(res) {
+      this.file = res.result
+      console.log(res)
+      switch (this.file.fileCategory) {
+        case 'document':
+          this.modelCode = 'doc'
+          break
+        case 'picture':
+          this.modelCode = 'doc'
+          break
+        case 'voice':
+        case 'video':
+          this.modelCode = 'video'
+          break
+        default:
+          this.modelCode = 'doc'
+          break
+      }
+    },
     getDeleteContent(type, item) {
       const idList = []
       if (type === 'batch') { // 批量删除
@@ -175,11 +274,21 @@ export default {
       })
     },
     addContent() {
+      if (!(this.file && this.file.id)) {
+        this.$message({ message: '请上传文件', type: 'error', duration: 2000 })
+        return false
+      }
       const data = {
-        modelCode: 'article',
+        modelCode: this.modelCode,
         title: this.contentForm.title,
         txt: this.contentForm.content,
         userId: this.uuid,
+        doc: {
+          fileId: this.file.id,
+          fileName: this.file.fileName,
+          fileType: this.file.fileType,
+          fileSize: this.file.fileSize
+        },
         relevance: {
           contentTypeCode: this.contentForm.type,
           moduleId: this.$route.params.id
@@ -289,6 +398,20 @@ export default {
       fetchContentById(data).then(res => {
         if (res.data.code === 200) {
           this.contentForm.content = res.data.result.txt ? res.data.result.txt : ''
+          const resourceForm = res.data.result
+          if (resourceForm.fileId) {
+            this.fileList = [
+              {
+                id: resourceForm.fileId,
+                fileName: resourceForm.fileName,
+                fileSize: resourceForm.fileSize,
+                fileType: resourceForm.fileType,
+                name: resourceForm.fileName
+              }
+            ]
+          } else {
+            this.fileList = []
+          }
         }
       })
     },

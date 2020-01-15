@@ -153,7 +153,7 @@ export default {
       }
       if (type === 'view') {
         this.$router.push({
-          name: 'noticeShow', params: { id: item.id }, query: { contentId: item.contentId, categoryMap: '教学资源', type: 'content' }
+          name: 'docShow', params: { id: item.id }, query: { contentId: item.contentId, categoryMap: '教学资源', type: 'content' }
         })
       }
       if (type === 'vertify') {

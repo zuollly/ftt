@@ -2,7 +2,7 @@
   <div class="container">
     <el-row class="workshop-homeMain-moduel" :gutter="10">
         <el-col class="home-details" :xs="24" :sm="24" :md="16" :lg="17" :xl="18">
-          <div class="informationWrapper d-flex main-border bg-white mb-2 border-shadow">
+          <div class="informationWrapper informationNotice d-flex main-border bg-white mb-2 border-shadow">
             <div class="swiperWrapper">
               <img src="../../../static/images/swiper.jpg" alt="">
             </div>
@@ -18,7 +18,7 @@
               <el-button class="moreBtn" @click="getMore(activeName)" size="middle" type="text">查看更多</el-button>
             </div>
           </div>
-          <div class="informationWrapper main-border bg-white mb-2 border-shadow">
+          <div class="informationWrapper informationTeacher main-border bg-white mb-2 border-shadow">
             <div class="informationContent contentWrapper">
               <el-tabs v-model="activeName1">
                 <el-tab-pane label="名师工作室" name="first">
@@ -31,14 +31,14 @@
           </div>
         </el-col>
         <el-col class="home-details" :xs="24" :sm="24" :md="8" :lg="7" :xl="6">
-          <div class="informationWrapper main-border bg-white mb-2 border-shadow">
+          <div class="informationWrapper informationLiveness main-border bg-white mb-2 border-shadow">
             <div class="headWrapper">
-              <p class="p">工作坊活跃度排行</p>
+              <p class="p">工作室活跃度排行</p>
               <el-button type="text" @click="getMoreWorkShop('teacherHome')">查看更多</el-button>
             </div>
             <workshopByOrdersList :homeWorkByOrderList='workshopListByOrders'></workshopByOrdersList>
           </div>
-          <div class="informationWrapper main-border bg-white mb-2 border-shadow">
+          <div class="informationWrapper informationLiveness main-border bg-white mb-2 border-shadow">
             <div class="headWrapper">
               <p class="p">工作室活动</p>
               <el-button type="text" @click="getMoreWorkShop('workshopActivity')">查看更多</el-button>
@@ -144,12 +144,12 @@ export default {
     getGroupListPage() {
       const data = {
         pageCurrent: 1,
-        pageSize: 5,
+        pageSize: 4,
         groupType: 'teacher'
       }
       fetchGroupListPage(data, 0).then((result) => {
         if (result.data.code === 200) {
-          this.workshopDataList = result.data.result.records
+          this.workshopDataList = result.data.result ? result.data.result.records : []
         }
       }).catch(err => {
         console.log(err)
@@ -162,11 +162,11 @@ export default {
           'group_liveness'
         ],
         pageCurrent: 1,
-        pageSize: 8
+        pageSize: 6
       }
       fetchWorkshopListByOrders(data).then((result) => {
         if (result.data.code === 200) {
-          this.workshopListByOrders = result.data.result.records
+          this.workshopListByOrders = result.data.result ? result.data.result.records : []
         }
       }).catch(err => {
         console.log(err)
@@ -177,11 +177,11 @@ export default {
       const data = {
         // groupId: this.$route.params.id,
         pageCurrent: 1,
-        pageSize: 5
+        pageSize: 6
       }
       fetchJyActivityPage(data).then(res => {
         console.log(res)
-        this.workshopActivityList = res.data.result.records ? res.data.result.records : []
+        this.workshopActivityList = res.data.result ? res.data.result.records : []
       })
     },
     getRelevanceContentPage(contentTypeCode) {
@@ -260,7 +260,7 @@ $name: 'workshop-homeMain-moduel';
     display: flex;
     flex-direction: column;
     .informationWrapper{
-      min-height: 300px;
+      min-height: 350px;
       .swiperWrapper{
         width: 340px;
         // height: 260px;
@@ -281,6 +281,16 @@ $name: 'workshop-homeMain-moduel';
           // padding-top: 5px;
         }
       }
+    }
+    .informationTeacher{
+      height: 450px;
+    }
+    .informationNotice{
+      height: 300px;
+    }
+    .informationLiveness{
+      height: 400px;
+      height: 400px;
     }
   }
   .bg-white{

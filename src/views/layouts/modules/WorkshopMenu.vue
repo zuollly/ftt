@@ -8,18 +8,21 @@
           </span>
         </div>
         <!-- <div class="workshop-banner">
-          <img class="corverImg" v-if="workshopInfo.groupImg" :src="workshopInfo.groupImg" alt="">
+          <img class="corverImg" v-if="workshopInfo&&workshopInfo.groupImg" :src="workshopInfo.groupImg" alt="">
           <img v-else class="loadImg" :src="appConfig.cfg_img_loading">
         </div> -->
         <div class="workshop-details">
-          <span class="details-header">{{workshopInfo.groupName}}&nbsp;<small>{{workshopInfo.adminUserName}}</small></span>
+          <span class="details-header">{{workshopInfo.groupName}}</span>
           <div class="workshop-type">
-            <span>
-              <svg-icon icon-class="subject" /> 创建时间：{{workshopInfo.createTime}}
-            </span>
-            <span>
-              <el-tooltip class="item" effect="dark" content="科目" placement="bottom"><svg-icon icon-class="subject" /></el-tooltip> {{workshopInfo.groupSegSubs?workshopInfo.groupSegSubs[0].segSubtName:''}}
-            </span>
+            <!-- <span>
+              <svg-icon icon-class="subject" /> 创建时间：{{workshopInfo.createTime}}zzzz
+            </span> -->
+            <div>
+             学科： {{workshopInfo.groupSegSubs?workshopInfo.groupSegSubs[0].segSubtName:''}}
+            </div>
+            <div class="introductionWrapper">
+             <el-tooltip class="item" effect="dark" :content="workshopInfo.groupIntroduction" placement="bottom"><span class="introduction">简介： {{workshopInfo.groupIntroduction?workshopInfo.groupIntroduction:''}}</span></el-tooltip>
+            </div>
           </div>
         </div>
         <el-button class="workshop-edit" type="primary" size="medium" icon="el-icon-edit" @click="editWorkshop" plain>编辑工作室资料</el-button>
@@ -189,14 +192,24 @@ export default {
         // align-items: center;
         justify-content: center;
         .details-header{
-          font-size: 34px;
+          font-size: 36px;
+          padding-bottom: 10px;
         }
         .workshop-type{
-          span{
+          div{
             font-size: 16px;
-            display: inline-block;
-            padding: 5px 20px 10px 0;
             color: #ffffff;
+          }
+          .introductionWrapper{
+            width: 80%;
+          }
+          .introduction{
+            color: #ffffff!important;
+            width: 100%;
+            display: inline-block;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
           }
         }
       }

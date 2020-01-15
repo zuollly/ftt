@@ -57,7 +57,7 @@ export function getFileInfo(data) {
 // 获取服务器文件信息
 export function getPreviewURL(params) {
   return request({
-    url: baseURl + `/tool/file/getPreSee`,
+    url: `/zuul/tool/file/getPreSee`,
     method: 'get',
     params
   })

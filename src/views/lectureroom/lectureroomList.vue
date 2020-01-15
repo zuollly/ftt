@@ -6,6 +6,9 @@
           <div class="headWrapper">
             <p class="p">名师讲堂</p>
           </div>
+          <div class="inConstruction">
+            <img :src="src" alt="">
+          </div>
         </div>
       </el-col>
     </el-row>
@@ -13,13 +16,15 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import appConfig from '../../../static/appConfig'
 export default {
   name: 'LectureroomList',
   components: {
   },
   data() {
     return {
-      noticeLoading: false // 是否显示加载中
+      noticeLoading: false, // 是否显示加载中
+      src: `${appConfig.cfg_fileBasehost}inConstruction.jpg`
     }
   },
   computed: {
@@ -61,6 +66,10 @@ export default {
         border-bottom: 2px #FF5A00 solid;
         color: #FF5A00;
       }
+    }
+    .inConstruction{
+      width: 100%;
+      text-align: center;
     }
     .home-details{
       display: flex;

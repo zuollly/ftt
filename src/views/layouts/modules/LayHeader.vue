@@ -1,7 +1,7 @@
 <template>
   <el-header class="lay-header-container">
     <div class="container">
-      <div class="lay-header d-flex justify-content-around">
+      <div class="lay-header d-flex justify-content-between">
         <div class="lay-header-logo">
           <router-link to="/"><img :src="appConfig.cfg_weblogo"> <h1>{{appConfig.cfg_webname}}</h1></router-link>
         </div>
@@ -14,9 +14,6 @@
               <el-button type="primary" slot="append" icon="el-icon-search"></el-button>
             </el-input>
           </span> -->
-          <!-- <template v-if="uuid === ''">
-            <el-button type="primary" @click="gotoLogin" size="medium">登录</el-button>
-          </template> -->
           <template v-if="uuid">
             <span class="lay-header-user lay-header-action">
               <span class="el-dropdown-link">

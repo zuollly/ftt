@@ -45,7 +45,7 @@
             <div class="member-contents">
               <ul>
                 <li v-for="(item, index) in memberList" :key="index">
-                  <a>
+                  <a v-if="item.userInfo">
                     <img :src="item.userInfo.avatar">
                     <p :title="item.userInfo.realname">
                       {{item.userInfo.realname}}

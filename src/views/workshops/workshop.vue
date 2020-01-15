@@ -47,10 +47,10 @@
         <div class="personal-avatars-wrapper">
           <div class="personal-avatars">
             <div class="logo">
-              <img v-if="workshopInfo.groupLogo" :src="workshopInfo.groupLogo" alt="">
-              <img v-if="!workshopInfo.groupLogo" src="http://api.yx.nercel.cn/file/avator/default_avator.jpg" alt="">
+              <img v-if="workshopInfo&&workshopInfo.groupLogo" :src="workshopInfo.groupLogo" alt="">
+              <img v-if="(!workshopInfo)||(!workshopInfo.groupLogo)" src="http://api.yx.nercel.cn/file/avator/default_avator.jpg" alt="">
             </div>
-            <p class="name label">{{workshopInfo.adminUserName}}</p>
+            <p class="name label" v-if="workshopInfo">{{workshopInfo.adminUserName}}</p>
             <!-- <p class="subject label">初中数学</p> -->
           </div>
         </div>

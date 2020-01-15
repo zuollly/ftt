@@ -22,7 +22,7 @@
         </el-select>
       </el-col>
       <el-col :span="3">
-        <el-input v-model="formQuery.groupName" placeholder="请输入工作坊名称" clearable size="middle"></el-input>
+        <el-input v-model="formQuery.groupName" placeholder="请输入工作室名称" clearable size="middle"></el-input>
       </el-col>
       <el-col :span="3">
         <el-button @click="search" type="primary">搜索</el-button>
@@ -46,7 +46,7 @@
                @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               layout="total, sizes, prev, pager, next, jumper"
-              :page-sizes="[10, 20, 30]"
+              :page-sizes="[12, 20, 30]"
               :current-page.sync="pageObj.pageCurrent"
               :page-size="pageObj.pageSize"
               :total.sync="pageObj.count">
@@ -74,7 +74,7 @@ export default {
       workshopDataList: [],
       pageObj: { // 分页信息
         pageCurrent: 1,
-        pageSize: 10,
+        pageSize: 12,
         count: 0
       },
       formQuery: {
