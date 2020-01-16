@@ -21,7 +21,7 @@
              学科： {{workshopInfo.groupSegSubs?workshopInfo.groupSegSubs[0].segSubtName:''}}
             </div>
             <div class="introductionWrapper">
-             <el-tooltip class="item" effect="dark" :content="workshopInfo.groupIntroduction" placement="bottom"><span class="introduction">简介： {{workshopInfo.groupIntroduction?workshopInfo.groupIntroduction:''}}</span></el-tooltip>
+             <el-tooltip class="item" effect="dark" :content="workshopInfo.groupIntroduction" placement="bottom"><div class="introduction" v-html="`简介：${workshopInfo.groupIntroduction}`"></div></el-tooltip>
             </div>
           </div>
         </div>

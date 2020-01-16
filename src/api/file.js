@@ -1,9 +1,6 @@
 import request from '@/utils/request'
-import * as appConfig from '../../static/appConfig'
-let baseURl = ''
-if (!appConfig.app_isXJBT) {
-  baseURl = '/zuul'
-}
+// import * as appConfig from '../../static/appConfig'
+const baseURl = '/zuul'
 // 上传文件
 export function uploadFile(data) {
   return request({
@@ -16,8 +13,8 @@ export function uploadFile(data) {
 // 上传图片headers: { "Content-Type": "multipart/form-data" }
 export function uploadPic(data) {
   return request({
-    url: baseURl + '/tool/file/uploadPic',
-    headers: { 'Content-Type': 'multipart/form-data' },
+    url: '/zuul/tool/file/uploadPic',
+    headers: { 'Content-Type': 'application/json' },
     method: 'post',
     data: data
   })

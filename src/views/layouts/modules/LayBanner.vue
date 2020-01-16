@@ -14,7 +14,7 @@ export default {
   .lay-banner{
     margin-left: -10px;
     margin-right: -10px;
-    height: 544px;
+    height: 350px;
     overflow: hidden;
     img {
       width: 100%;

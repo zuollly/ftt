@@ -10,7 +10,7 @@
       <!-- 上传的loading -->
       <span class="uploadLoading" v-if="coverLoading"><i class="el-icon-loading"></i></span>
       <!-- <img :src="coverUrl" alt="pic" v-if="coverUrl" > -->
-      <el-upload
+      <!-- <el-upload
         class="uploadPic"
         action="http://yx.nercel.cn/msapi/zuul/tool/file/upload"
         name="multipartFile"
@@ -21,25 +21,15 @@
         :on-error='errFunction'
         :on-remove="handleRemove">
         <el-button class="uploadBtn" icon="el-icon-upload" circle v-hover="'上传'" type="success"></el-button>
-      </el-upload>
+      </el-upload> -->
+      <lay-cropper :inputId="'coverImg'" :imgStr="'cover'" class="uploadPic" :cropWidth="140" :cropHeight="140" @cropped="getCoverImg"></lay-cropper>
     </div>
     <!-- 表单 -->
     <div class="form">
       <!-- picture -->
       <div class="picture">
-        <el-upload
-          class="avatar-uploader"
-          action="http://yx.nercel.cn/msapi/zuul/tool/file/upload"
-          name="multipartFile"
-          :show-file-list="false"
-          :on-error='errorFunction'
-          :headers='headers'
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload">
-          <span class="uploadLoading" v-if="logoLoading"><i class="el-icon-loading"></i></span>
-          <p class="cvoerLogo" :style="{ backgroundImage: `url(${imageUrl})` }"></p>
-          <p class="mt-2"><el-button size="small" style="width: 100%">修改Logo</el-button></p>
-        </el-upload>
+        <p class="cvoerLogo" :style="{ backgroundImage: `url(${imageUrl})` }"></p>
+        <lay-cropper :inputId="'logoImg'" :imgStr="'logo'" class="avatar-uploader" :cropWidth="140" :cropHeight="140" @cropped="getLogoImg"></lay-cropper>
       </div>
       <el-form ref="form" :model="form" label-width="240px">
         <el-form-item label="工作室名称" required>
@@ -76,7 +66,8 @@ export default {
   name: 'WorkshopEdit',
   components: {
     faculty: () => import('./modules/studyphase.vue'),
-    tinymce: () => import('@/components/tinymce')
+    tinymce: () => import('@/components/tinymce'),
+    LayCropper: () => import('@/components/LayCropper')
   },
   data() {
     return {
@@ -97,6 +88,8 @@ export default {
         'Authorization': `Bearer ${getToken()}`
       },
       coverUrl: '',
+      coverImgInfo: {},
+      imageUrlInfo: {},
       coverLoading: false,
       logoLoading: false
     }
@@ -117,6 +110,16 @@ export default {
     }
   },
   methods: {
+    getCoverImg: function(data) {
+      // this.imgUrl = data.file
+      this.coverUrl = data.file
+      this.coverImgInfo = data.result
+      console.log(data)
+    },
+    getLogoImg(data) {
+      this.imageUrl = data.file
+      this.imageUrlInfo = data.result
+    },
     getWorkshopInfo() {
       // 获取工作坊的详情
       const result = this.workshopInfo
@@ -137,6 +140,8 @@ export default {
 
       this.coverUrl = result.groupImg || this.appConfig.cfg_workshop_banner
       this.imageUrl = result.groupLogo || this.appConfig.cfg_workshop_Logo
+      this.imageUrlInfo.fileUrl = result.groupLogo || this.appConfig.cfg_workshop_Logo
+      this.coverImgInfo.fileUrl = result.groupImg || this.appConfig.cfg_workshop_banner
     },
     subject(data) {
       // 学段学科
@@ -192,8 +197,8 @@ export default {
       const params = {
         id: this.$route.params.id,
         adminUserId: this.form.shoperInfo.id,
-        groupImg: this.coverUrl,
-        groupLogo: this.imageUrl,
+        groupImg: this.coverImgInfo.fileUrl,
+        groupLogo: this.imageUrlInfo.fileUrl,
         groupIntroduction: this.form.groupIntroduction,
         groupDescription: div.innerText.substr(0, 100),
         segSubs: [{ segmentCode: this.faculty.phaseId, subjectCode: this.faculty.subjectId }],
@@ -302,13 +307,13 @@ $h140: 140px;
         height: 100%;
       }
     }
-    .uploadBtn {
+    .uploadPic {
       position: absolute;
-      right: 15px;
-      width: 40px;
+      right: 10px;
+      width: 120px;
       height: 40px;
       z-index: 99;
-      top: 8px;
+      bottom: 15px;
       transition: width 0.3s;
       border-radius: 20px;
       &:hover {
@@ -379,6 +384,7 @@ $h140: 140px;
       border-radius: 5px;
       box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
       .avatar-uploader {
+        text-align: center;
         .el-icon-picture-outline {
           font-size: 50px;
           text-align: center;

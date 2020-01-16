@@ -1,8 +1,8 @@
 <template>
 <div>
   <div>
-    <label class="el-button el-button--default el-button--medium" for="uploadImg">编辑图片</label>
-    <input type="file" id="uploadImg" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event, 2)">
+    <label class="el-button el-button--default el-button--medium" :for="inputId">上传图片</label>
+    <input type="file" :id="inputId" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event, 2)">
     <!--<el-upload-->
       <!--class="avatar-uploader"-->
       <!--ref="upload"-->
@@ -14,37 +14,45 @@
     <!--</el-upload>-->
   </div>
   <el-dialog
-    title="提示"
+    title="图片剪裁"
     :visible.sync="dialogCropper"
     :width="dialogWidth"
+    append-to-body
     :before-close="handleClose">
     <div class="lay-cropper">
       <div class="lay-cropper-body">
-      <div class="lay-cropper-cube">
-        <vueCropper
-          ref="cropper"
-          :img="option.img"
-          :outputSize="option.size"
-          :outputType="option.outputType"
-          :info="true"
-          :full="option.full"
-          :canMove="option.canMove"
-          :canMoveBox="option.canMoveBox"
-          :original="option.original"
-          :autoCrop="option.autoCrop"
-          :autoCropWidth="option.autoCropWidth"
-          :autoCropHeight="option.autoCropHeight"
-          :fixedBox="option.fixedBox"
-          @realTime="realTime"
-          @imgLoad="imgLoad"></vueCropper>
-      </div>
+        <div class="lay-cropper-cube">
+          <vueCropper
+            ref="cropper"
+            :img="option.img"
+            :outputSize="option.size"
+            :outputType="option.outputType"
+            :info="true"
+            :full="option.full"
+            :canMove="option.canMove"
+            :canMoveBox="option.canMoveBox"
+            :original="option.original"
+            :autoCrop="option.autoCrop"
+            :autoCropWidth="option.autoCropWidth"
+            :autoCropHeight="option.autoCropHeight"
+            :fixedBox="option.fixedBox"
+            @realTime="realTime"
+            @imgLoad="imgLoad"></vueCropper>
+        </div>
       <div class="lay-cube-preview">
         <div class="lay-preview">
-          <div :style="previews.div" class="rounded">
-            <img :src="previews.url" :style="previews.img">
+          <p>截图框大小</p>
+          <div
+              class="show-preview"
+              :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden',
+              'margin': '5px'}">
+            <div :style="previews.div" class="rounded">
+              <img :src="previews.url" :style="previews.img">
+            </div>
           </div>
         </div>
         <div class="lay-preview">
+          <p>中等大小</p>
           <div :style="previewStyle1">
             <div :style="previews.div" class="rounded">
               <img :src="previews.url" :style="previews.img">
@@ -52,6 +60,7 @@
           </div>
         </div>
         <div class="lay-preview">
+          <p>迷你大小</p>
           <div :style="previewStyle2">
             <div :style="previews.div" class="rounded">
               <img :src="previews.url" :style="previews.img">
@@ -60,27 +69,27 @@
         </div>
       </div>
     </div>
-      <div class="lay-cropper-footer">
-        <div class="lay-cropper-scope-btn">
-          <label class="el-button el-button--success el-button--medium" for="uploads">更换图片</label>
-          <input type="file" id="uploads" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event, 1)">
-          <el-button size="small" @click="changeScale(1)">+</el-button>
-          <el-button size="small" @click="changeScale(-1)">-</el-button>
-          <el-button size="small" @click="rotateLeft">↺</el-button>
-          <el-button size="small" @click="rotateRight">↻</el-button>
-        </div>
-        <div class="lay-cropper-upload-btn">
-          <el-button type="primary" size="small" :loading="loading" @click="finish()">保存</el-button>
-          <el-button type="primary" size="small"  @click="down('blob')">下载</el-button>
-        </div>
+    <div class="lay-cropper-footer">
+      <div class="lay-cropper-scope-btn">
+        <label class="el-button el-button--success el-button--medium" for="uploads">更换图片</label>
+        <input type="file" id="uploads" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event, 1)">
+        <el-button size="small" @click="changeScale(1)">+</el-button>
+        <el-button size="small" @click="changeScale(-1)">-</el-button>
+        <el-button size="small" @click="rotateLeft">↺</el-button>
+        <el-button size="small" @click="rotateRight">↻</el-button>
       </div>
+      <div class="lay-cropper-upload-btn">
+        <el-button type="primary" size="small" :loading="loading" @click="finish()">保存</el-button>
+        <el-button type="primary" size="small"  @click="down('blob')">下载</el-button>
+      </div>
+    </div>
     </div>
   </el-dialog>
 </div>
 </template>
 <script>
 import { VueCropper } from 'vue-cropper'
-import { upImgLogo } from '@/api/app'
+import { uploadPic } from '@/api/file'
 export default {
   name: 'LayCropper',
   components: {
@@ -101,7 +110,7 @@ export default {
         size: 1,
         full: false, // 是否输出原图比例的截图 props名full
         outputType: this.cropOutputType, // 输出图片格式
-        original: false, // 上传图片是否显示原始宽高 (针对大图 可以铺满)
+        original: true, // 上传图片是否显示原始宽高 (针对大图 可以铺满)
         high: true, // 是否根据dpr生成适合屏幕的高清图片
         infoTrue: false, // 截图信息展示是否是真实的输出宽高
         canMove: true, // 能否拖动图片
@@ -110,15 +119,16 @@ export default {
         autoCropWidth: this.cropWidth, // 自动生成截图框的宽高
         autoCropHeight: this.cropHeight,
         centerBox: false, // 截图框是否限制在图片里(只有在自动生成截图框时才能生效)
-        fixedBox: true, // 截图框固定大小
-        mode: 'contain' // contain | cover | 400px auto | auto 400px | 50% | auto 50% 类似css background属性设置  设置不符合规范不生效， 参照文档说明
+        fixedBox: false, // 截图框固定大小
+        mode: 'contain', // contain | cover | 400px auto | auto 400px | 50% | auto 50% 类似css background属性设置  设置不符合规范不生效， 参照文档说明
+        maxImgSize: 2000
       }
     }
   },
   props: {
     dialogWidth: { // 弹出框的宽度
       type: String,
-      default: '70%'
+      default: '90%'
     },
     upImgPath: { // 默认裁剪图片
       type: String,
@@ -135,6 +145,15 @@ export default {
     cropHeight: {
       type: Number,
       default: 120
+    },
+    imgStr: {
+      type: String,
+      default: ''
+    },
+    inputId: { // 页面要用到两次这个组件， 传一个id避免页面出现两个重复id
+      type: String,
+      default: '',
+      required: true
     }
   },
   methods: {
@@ -170,13 +189,14 @@ export default {
       this.previews = data
     },
     finish(type) {
+      console.log(type, 'type')
       var _this = this
       _this.loading = true
       if (type === 'blob') {
         _this.$refs.cropper.getCropBlob(data => {
           var img = window.URL.createObjectURL(data)
           _this.modelSrc = img
-          upImgLogo({ file: data }).then(res => {
+          uploadPic({ base64Str: data }).then(res => {
             _this.$emit('cropped', img)
             // _this.isUpImg = true
             _this.loading = false
@@ -184,6 +204,7 @@ export default {
         })
       } else {
         _this.$refs.cropper.getCropData(data => {
+          console.log(data, 'data-')
           _this.model = true
           if (_this.modelSrc !== data) {
             _this.modelSrc = data
@@ -196,13 +217,13 @@ export default {
             return false
           }
           var result = { file: data }
-          upImgLogo({ file: data }).then(res => {
+          uploadPic({ base64Str: data }).then(res => {
             if (res.data.code === 200) {
               _this.option.img = ''
               result.result = res.data.result
               _this.$emit('cropped', result)
               _this.isUpImg = true
-              // _this.dialogCropper = false
+              _this.dialogCropper = false
               _this.$message({
                 type: 'success',
                 message: '上传成功'
@@ -250,8 +271,11 @@ export default {
     uploadImg(e, num) {
       // 上传图片
       // this.option.img
-      console.log(e)
+      console.log(e, num, this.imgStr)
       var _this = this
+      if (!e.target.files.length) {
+        return
+      }
       var file = e.target.files[0]
       _this.fileInfo.name = file.name
       if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(e.target.value)) {
@@ -281,9 +305,10 @@ export default {
       reader.readAsArrayBuffer(file)
     },
     imgLoad(msg) {
-      console.log(msg)
+      console.log(msg, 'msg-')
     },
     handleClose(done) {
+      this.loading = false
       if (this.isUpImg) {
         this.$confirm('还没有上传裁剪好的图片，确认关闭？')
           .then(_ => {
@@ -302,24 +327,21 @@ export default {
 <style lang="scss" rel="stylesheet/scss" scoped>
 .lay-cropper{
   .lay-cropper-body{
-    display: flex;
-    display: -webkit-flex;
-    justify-content: flex-start;
-    -webkit-justify-content: flex-start;
+    width: 100%;
   }
   .lay-cropper-cube{
-    width: 400px;
+    width: 100%;
     height: 320px;
   }
   .lay-cube-preview{
+    width: 100%;
     padding: 0 20px;
+    display: flex;
   }
   .lay-preview{
     overflow: hidden;
     margin-bottom: 20px;
-    &:last-child{
-      margin-bottom: 0px;
-    }
+    padding-right: 20px;
   }
   .lay-cropper-footer{
     margin-top: 15px;
