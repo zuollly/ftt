@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       noticeLoading: false, // 是否显示加载中
-      src: `${appConfig.cfg_fileBasehost}inConstruction.jpg`
+      src: `${appConfig.cfg_fileBasehost}inConstruction.png`
     }
   },
   computed: {
