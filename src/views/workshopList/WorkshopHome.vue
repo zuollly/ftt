@@ -266,7 +266,7 @@ $name: 'workshop-homeMain-moduel';
         // height: 260px;
         padding: 10px 20px 10px 10px;
         img{
-          width: 930%;
+          width: 93%;
         }
       }
       .contentWrapper{
