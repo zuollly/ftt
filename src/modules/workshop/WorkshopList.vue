@@ -35,7 +35,7 @@
           <el-col class="workshop-details" :span="6" v-for="(item, idx) in workshopList" :key="idx">
             <div class="workshop-details-con">
               <div class="image">
-                <img v-if="item.groupImg" :src="item.groupImg" alt="">
+                <img v-if="item.groupLogo" :src="item.groupLogo" alt="">
                 <img v-else src="http://api.yx.nercel.cn/file/avator/default_avator.jpg" alt="">
               </div>
               <div class="label">

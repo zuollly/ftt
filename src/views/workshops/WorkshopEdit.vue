@@ -351,6 +351,7 @@ $h140: 140px;
       height: $h140;
       background-size: cover;
       background-position: center center;
+      border-radius: 5px;
     }
     .input {
       max-width: 437px;
@@ -385,6 +386,7 @@ $h140: 140px;
       box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
       .avatar-uploader {
         text-align: center;
+        margin-top: 5px;
         .el-icon-picture-outline {
           font-size: 50px;
           text-align: center;

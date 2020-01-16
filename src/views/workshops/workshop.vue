@@ -1,7 +1,7 @@
 <template>
   <el-row class="workshop-homeMain-moduel" :gutter="10">
     <el-col class="home-details" :xs="24" :sm="24" :md="16" :lg="17" :xl="18">
-      <div class="informationWrapper d-flex main-border bg-white mb-2 border-shadow">
+      <div class="informationWrapper informationNotice d-flex main-border bg-white mb-2 border-shadow">
         <div class="swiperWrapper">
           <img src="../../../static/images/swiper.jpg" alt="">
         </div>
@@ -17,26 +17,28 @@
           <el-button class="moreBtn" @click="getMore(activeName)" size="middle" type="text">查看更多</el-button>
         </div>
       </div>
-      <div class="informationWrapper main-border bg-white mb-2 border-shadow">
-        <div class="headWrapper">
-          <p class="p">名师讲堂</p>
-          <el-button type="text">查看更多</el-button>
-        </div>
-        <div>名师讲堂</div>
-      </div>
-      <div class="informationWrapper main-border bg-white mb-2 border-shadow">
+      <div class="informationWrapper informationActivity main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
           <p class="p">工作室活动</p>
           <el-button type="text">查看更多</el-button>
         </div>
         <workshopActivityList :page="'home'" :homeActivityList='workshopActivityList'></workshopActivityList>
       </div>
-      <div class="informationWrapper main-border bg-white mb-2 border-shadow">
+      <div class="informationWrapper informationActivity main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
           <p class="p">成果展示</p>
           <el-button type="text">查看更多</el-button>
         </div>
         <WorkShopAchievementList :homeAchievementList='homeAchievementList' :page="'home'"></WorkShopAchievementList>
+      </div>
+      <div class="informationWrapper informationTeacher main-border bg-white mb-2 border-shadow">
+        <div class="headWrapper">
+          <p class="p">名师讲堂</p>
+          <el-button type="text">查看更多</el-button>
+        </div>
+        <div>
+          <LayNotData gridType="tb"></LayNotData>
+        </div>
       </div>
     </el-col>
     <el-col class="home-details" :xs="24" :sm="24" :md="8" :lg="7" :xl="6">
@@ -87,14 +89,14 @@
 
         </div>
       </div>
-      <div class="informationWrapper main-border bg-white mb-2 border-shadow">
+      <div class="informationWrapper informationSource main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
           <p class="p">工作坊资源</p>
           <!-- <el-button type="text">查看更多</el-button> -->
         </div>
         <WorkShopResourceList :homeResourceList='homeResourceList' :page="'home'"></WorkShopResourceList>
       </div>
-      <div class="informationWrapper main-border bg-white mb-2 border-shadow">
+      <div class="informationWrapper informationMember main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
           <div class="ope">
             <p class="p">成员排行</p>
@@ -129,7 +131,8 @@ export default {
     WorkShopResourceList: () => import('@/modules/resource/workShopResourceList.vue'),
     WorkShopAchievementList: () => import('@/modules/achievement/workShopAchievementList.vue'),
     workshopActivityList: () => import('@/modules/activity/workshopActivityList.vue'),
-    homeMember: () => import('./modules/homeMember.vue')
+    homeMember: () => import('./modules/homeMember.vue'),
+    LayNotData: () => import('@/modules/LayNotData')
   },
   data() {
     return {
@@ -336,11 +339,12 @@ $name: 'workshop-homeMain-moduel';
         // height: 260px;
         padding: 10px 20px 10px 10px;
         img{
-          width: 100%;
+          width: 85%;
         }
       }
       .contentWrapper{
         position: relative;
+        // height: 300px;
         .moreBtn{
           position: absolute;
           right: 10px;
@@ -352,8 +356,23 @@ $name: 'workshop-homeMain-moduel';
         }
       }
     }
+    .informationNotice{
+      height: 330px;
+    }
+    .informationMember{
+      height: 375px;
+    }
+    .informationSource{
+      height: 330px;
+    }
+    .informationActivity{
+      height: 330px;
+    }
+    .informationTeacher{
+      height: 340px;
+    }
     .staticInfoWrapper{
-      min-height: 230px;
+      height: 240px;
       .staticsWrapper{
         .totalLinessW{
           min-height: 100px;
@@ -374,7 +393,7 @@ $name: 'workshop-homeMain-moduel';
     }
     .personal-details{
       position: relative;
-      min-height: 385px;
+      height: 385px;
       .personal-banner{
         height: 100px;
         .personal-img{
