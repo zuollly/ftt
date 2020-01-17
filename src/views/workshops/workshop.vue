@@ -20,16 +20,16 @@
       <div class="informationWrapper informationActivity main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
           <p class="p">工作室活动</p>
-          <el-button v-if="workshopPermissionInfo.ACTIVITY_QUERYLIST" type="text">查看更多</el-button>
+          <el-button v-if="workshopPermissionInfo.ACTIVITY_QUERYLIST" @click="getMoreList('activityList')" type="text">查看更多</el-button>
         </div>
         <workshopActivityList :page="'home'" :homeActivityList='workshopActivityList'></workshopActivityList>
       </div>
-      <div class="informationWrapper informationActivity main-border bg-white mb-2 border-shadow">
+      <div class="informationWrapper informationSource main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
-          <p class="p">成果展示</p>
-          <el-button v-if="workshopPermissionInfo.CONTENT_ACHIEVEMENT_QUERYLIST" type="text">查看更多</el-button>
+          <p class="p">工作坊资源</p>
+          <el-button v-if="workshopPermissionInfo.CONTENT_RESOURCE_QUERYLIST" @click="getMoreList('resourceList')" type="text">查看更多</el-button>
         </div>
-        <WorkShopAchievementList :homeAchievementList='homeAchievementList' :page="'home'"></WorkShopAchievementList>
+        <WorkShopResourceList :homeResourceList='homeResourceList' :page="'home'"></WorkShopResourceList>
       </div>
       <div class="informationWrapper informationTeacher main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
@@ -89,12 +89,12 @@
 
         </div>
       </div>
-      <div class="informationWrapper informationSource main-border bg-white mb-2 border-shadow">
+      <div class="informationWrapper informationActivity main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
-          <p class="p">工作坊资源</p>
-          <el-button v-if="workshopPermissionInfo.CONTENT_RESOURCE_QUERYLIST" type="text">查看更多</el-button>
+          <p class="p">成果展示</p>
+          <el-button v-if="workshopPermissionInfo.CONTENT_ACHIEVEMENT_QUERYLIST" @click="getMoreList('achievement')" type="text">查看更多</el-button>
         </div>
-        <WorkShopResourceList :homeResourceList='homeResourceList' :page="'home'"></WorkShopResourceList>
+        <WorkShopAchievementList :homeAchievementList='homeAchievementList' :page="'home'"></WorkShopAchievementList>
       </div>
       <div class="informationWrapper informationMember main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
@@ -225,11 +225,10 @@ export default {
       }
       fetchContentPage(data).then((result) => {
         if (result.data.code === 200) {
-          this.homeResourceList = result.data.result.list
           if (contentTypeCode === 'CONTENT_ACHIEVEMENT') {
             this.homeAchievementList = result.data.result.list
           } else if (contentTypeCode === 'CONTENT_RESOURCE') {
-            this.homeAchievementList = result.data.result.list
+            this.homeResourceList = result.data.result.list
           }
         }
       }).catch(err => {
@@ -257,6 +256,9 @@ export default {
       } else {
         this.$router.push({ name: 'informationList' })
       }
+    },
+    getMoreList(name) {
+      this.$router.push({ name: name })
     },
     // getMoreMember() {
     //   this.$router.push({ name: 'memberList' })
@@ -313,10 +315,10 @@ $name: 'workshop-homeMain-moduel';
     .ope{
       display: flex;
       flex-direction: row;
-      justify-content: space-around;
+      justify-content: space-between;
       height: 50px;
       line-height: 50px;
-      width: 50%;
+      width: 100%;
       .chooseLabel{
         cursor: pointer;
       }
@@ -364,10 +366,10 @@ $name: 'workshop-homeMain-moduel';
       height: 330px;
     }
     .informationMember{
-      height: 375px;
+      height: 415px;
     }
     .informationSource{
-      height: 330px;
+      height: 370px;
     }
     .informationActivity{
       height: 330px;

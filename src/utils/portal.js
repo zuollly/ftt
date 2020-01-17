@@ -11,6 +11,7 @@ import 'nprogress/nprogress.css'// progress bar style
 import * as appConfig from '../../static/appConfig'
 
 const jumpToken = window.location.search.split('=')[1]
+console.log(jumpToken, 'jumpToken')
 store.commit('SET_TOKEN', jumpToken)
 
 NProgress.configure({ showSpinner: false })// NProgress Configuration

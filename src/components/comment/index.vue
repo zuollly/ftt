@@ -90,7 +90,7 @@
  * commenthandle 事件是行为记录
  */
 import { fetchCommentPage, likes, insertComment, deleteComment } from '@/api/comment'
-const defaultHeadPic = '/static/images/defaultHeadPic.jpg'
+import appConfig from '../../../static/appConfig'
 export default {
   props: {
     categoryId: { // 评论对象ID，例如文档ID
@@ -115,7 +115,7 @@ export default {
     },
     avatar: { // 头像
       type: String,
-      default: defaultHeadPic
+      default: `${appConfig.cfg_fileBasehost}default_avator.jpg`
     },
     needLogin: { // 需要登录才可以发表评论和回复
       type: Boolean,
@@ -138,7 +138,7 @@ export default {
       addReplyText: '',
       commentList: [],
       total: 0,
-      defaultHeadPic: defaultHeadPic,
+      defaultHeadPic: `${appConfig.cfg_fileBasehost}default_avator.jpg`,
       loading: false,
       loadingReply: false,
       allCommentClass: ['allComment', 'active'],

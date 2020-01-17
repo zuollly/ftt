@@ -124,6 +124,7 @@ export default {
     homeWorkDetails: () => import('./homeWorkDetails.vue'),
     channelContent: () => import('./channelContent.vue'),
     courseContent: () => import('./courseContent.vue'),
+    stepResource: () => import('./stepResource.vue'),
     comment: () => import('@/components/comment/index.vue'),
     playbackMeeting: () => import('./playbackMeeting')
   },

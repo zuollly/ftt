@@ -6,12 +6,17 @@
         </div>
         <div class="home-notice" v-if="page === 'home' && homeResourceList.length > 0">
           <el-table :data="homeResourceList">
-            <el-table-column show-overflow-tooltip resizable>
+            <el-table-column label="标题" show-overflow-tooltip resizable>
               <template slot-scope="scope">
                 <a class="span bg-purple" @click="opeNotice(scope.row, 'view')">{{scope.row.title}}</a>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip resizable>
+            <el-table-column prop="userName" label="上传人" show-overflow-tooltip resizable></el-table-column>
+            <el-table-column prop="views" label="浏览数" show-overflow-tooltip resizable></el-table-column>
+            <el-table-column prop="ups" label="点赞数" show-overflow-tooltip resizable></el-table-column>
+            <el-table-column prop="comments" label="评论数" show-overflow-tooltip resizable></el-table-column>
+            <el-table-column prop="downloads" label="下载数"></el-table-column>
+            <el-table-column show-overflow-tooltip label="上传日期" width="190" resizable>
               <template slot-scope="scope">{{scope.row.createTime | parseTime('{y}年{m}月{d}日 星期{a}')}}</template>
             </el-table-column>
           </el-table>
@@ -187,7 +192,7 @@ export default {
     .home-notice{
       /deep/ .el-table__header{
         /deep/ .has-gutter{
-          display: none!important
+          // display: none!important
         }
       }
     }

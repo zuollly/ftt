@@ -23,7 +23,7 @@
 
 <script>
 import { insertComment } from '@/api/comment'
-const defaultHeadPic = '/static/images/defaultHeadPic.jpg'
+import appConfig from '../../../static/appConfig'
 export default {
   components: {
     needLogin: () => import('./needLogin.vue')
@@ -51,7 +51,7 @@ export default {
     },
     avatar: { // 头像
       type: String,
-      default: defaultHeadPic
+      default: `${appConfig.cfg_fileBasehost}default_avator.jpg`
     },
     needLogin: { // 需要登录才可以发表评论和回复
       type: Boolean,
@@ -70,8 +70,7 @@ export default {
     return {
       addCommentText: '',
       arrColor: false,
-      defaultHeadPic
-
+      defaultHeadPic: `${appConfig.cfg_fileBasehost}default_avator.jpg`
     }
   },
   methods: {
