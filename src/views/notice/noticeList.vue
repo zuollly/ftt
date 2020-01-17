@@ -10,7 +10,7 @@
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
           <div class="headWrapper">
             <p class="p">工作室公告</p>
-            <el-button  type="primary" plain size="mini" @click="issueContent">发布公告</el-button>
+            <el-button v-if="workshopPermissionInfo.CONTENT_STATIONNEWS_INSERT" type="primary" plain size="mini" @click="issueContent">发布公告</el-button>
           </div>
           <WorkShopNotice :page="'hme'" @getDeleteContent='getDeleteContent' @editContent='editContent' :homeNoticeList='homeNoticeList'></WorkShopNotice>
           <div class="pagination" v-if="homeNoticeList.length">
@@ -96,7 +96,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      '',
+      'workshopPermissionInfo',
       'isMobile',
       'uuid'
     ])

@@ -19,10 +19,10 @@
               <el-radio-button label="0">待审核资源</el-radio-button>
             </el-radio-group>
             <div>
-              <el-button v-if="searchType==='0'" @click="passContent" type="success" plain size="mini">通过</el-button>
-              <el-button v-if="searchType==='0'" @click="refuseContent" type="warning" plain size="mini">不通过</el-button>
-              <el-button v-if="searchType!=='0'" @click="getDeleteContent('batch')" type="danger" plain size="mini">删除</el-button>
-              <el-button @click="issueContent" type="primary" plain size="mini">发布教学资源</el-button>
+              <el-button v-if="workshopPermissionInfo.CONTENT_RESOURCE_VERIFY&&searchType==='0'" @click="passContent" type="success" plain size="mini">通过</el-button>
+              <el-button v-if="workshopPermissionInfo.CONTENT_RESOURCE_VERIFY&&searchType==='0'" @click="refuseContent" type="warning" plain size="mini">不通过</el-button>
+              <el-button v-if="workshopPermissionInfo.CONTENT_RESOURCE_DELETE&&searchType!=='0'" @click="getDeleteContent('batch')" type="danger" plain size="mini">删除</el-button>
+              <el-button v-if="workshopPermissionInfo.CONTENT_RESOURCE_INSERT" @click="issueContent" type="primary" plain size="mini">发布教学资源</el-button>
             </div>
           </div>
           <WorkShopResourceList :clearAll='clearAll' @getRefresh='getRefresh' @getSelectedData='getSelectedData' :homeResourceList='homeResourceList' @editContent='editContent' @getDeleteContent='getDeleteContent'></WorkShopResourceList>
@@ -156,7 +156,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      '',
+      'workshopPermissionInfo',
       'isMobile',
       'uuid'
     ])

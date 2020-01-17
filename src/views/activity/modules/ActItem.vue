@@ -21,7 +21,7 @@
                 <el-tooltip class="item" effect="dark" :content="shoplist.description" placement="top-start">
                   <p class="media-content">{{shoplist.activityIntroduction}}</p>
                 </el-tooltip>
-                <el-button type="primary" size="mini"  @click="enterActivity(workshopItem)">进入活动</el-button>
+                <el-button v-if="workshopPermissionInfo.ACTIVITY_QUERYONE" type="primary" size="mini"  @click="enterActivity(workshopItem)">进入活动</el-button>
               </div>
             </div>
           </div>
@@ -29,8 +29,8 @@
       </el-col>
       <el-col :span="8">
         <div class="card-opera">
-            <el-button class="ml-2" type="success" size="mini" @click="editActivity(shoplist)">编辑活动</el-button>
-            <el-button class="ml-2" type="danger" size="mini" icon="el-icon-delete" @click="deleteActivity(workshopItem.id)"></el-button>
+            <el-button v-if="workshopPermissionInfo.ACTIVITY_UPDATE" class="ml-2" type="success" size="mini" @click="editActivity(shoplist)">编辑活动</el-button>
+            <el-button v-if="workshopPermissionInfo.ACTIVITY_DELETE" class="ml-2" type="danger" size="mini" icon="el-icon-delete" @click="deleteActivity(workshopItem.id)"></el-button>
         </div>
       </el-col>
     </el-row>
@@ -66,7 +66,8 @@ export default {
     },
     ...mapGetters([
       'appConfig',
-      'isMobile'
+      'isMobile',
+      'workshopPermissionInfo'
     ])
   },
   mounted() {

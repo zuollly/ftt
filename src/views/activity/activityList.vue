@@ -5,7 +5,7 @@
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
           <div class="headWrapper">
             <p class="p">工作室活动</p>
-            <el-button type="primary" size="mini" @click="addActivity">新增活动</el-button>
+            <el-button v-if="workshopPermissionInfo.ACTIVITY_INSERT" type="primary" size="mini" @click="addActivity">新增活动</el-button>
           </div>
           <div class="activityContent">
             <div v-for="(item, index) in workshopActivityList" :key="index">
@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      '',
+      'workshopPermissionInfo',
       'isMobile'
     ])
   },

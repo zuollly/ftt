@@ -32,11 +32,11 @@
               <template slot-scope="scope">
                 <div class="button">
                   <el-button type="success" plain size="mini" @click="opeNotice(scope.row, 'view')">查看</el-button>
-                  <el-button v-if="!onlyRead" type="primary" plain size="mini" @click="opeNotice(scope.row, 'edit')">编辑</el-button>
-                  <el-button type="warning" v-if="!onlyRead&&scope.row.verifyStatus === 0" plain size="mini" @click="opeNotice(scope.row, 'vertify')">审核</el-button>
+                  <!-- <el-button v-if="workshopPermissionInfo&&(!onlyRead)" type="primary" plain size="mini" @click="opeNotice(scope.row, 'edit')">编辑</el-button> -->
+                  <el-button type="warning" v-if="workshopPermissionInfo.CONTENT_RESOURCE_VERIFY&&(!onlyRead)&&scope.row.verifyStatus === 0" plain size="mini" @click="opeNotice(scope.row, 'vertify')">审核</el-button>
 
                   <!-- <el-button type="warning" plain size="mini" v-if="scope.row.status !== 2" @click="opeNotice(scope.row, 'issue')">发布</el-button> -->
-                  <el-button v-if="!onlyRead" type="danger" plain size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
+                  <el-button v-if="workshopPermissionInfo.CONTENT_RESOURCE_DELETE&&(!onlyRead)" type="danger" plain size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
                 </div>
                 <div class="mobile-button">
                   <el-dropdown size="small" split-button type="primary">
@@ -45,14 +45,14 @@
                       <el-dropdown-item>
                         <el-button type="success" size="mini" @click="opeNotice(scope.row, 'view')">查看</el-button>
                       </el-dropdown-item>
-                      <el-dropdown-item>
+                      <!-- <el-dropdown-item>
                         <el-button type="primary" v-if="!onlyRead" size="mini" @click="opeNotice(scope.row, 'edit')">编辑</el-button>
+                      </el-dropdown-item> -->
+                      <el-dropdown-item>
+                        <el-button type="warning" v-if="workshopPermissionInfo.CONTENT_RESOURCE_VERIFY&&(!onlyRead)&&scope.row.verifyStatus === 0" plain size="mini" @click="opeNotice(scope.row, 'vertify')">审核</el-button>
                       </el-dropdown-item>
                       <el-dropdown-item>
-                        <el-button type="warning" v-if="!onlyRead&&scope.row.verifyStatus === 0" plain size="mini" @click="opeNotice(scope.row, 'vertify')">审核</el-button>
-                      </el-dropdown-item>
-                      <el-dropdown-item>
-                        <el-button type="danger" v-if="!onlyRead" size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
+                        <el-button type="danger" v-if="workshopPermissionInfo.CONTENT_RESOURCE_DELETE&&(!onlyRead)" size="mini" @click="deleteNoticeSingle(scope.row, 'single')">删除</el-button>
                       </el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
@@ -101,7 +101,8 @@ export default {
   props: ['homeResourceList', 'page', 'clearAll', 'onlyRead'],
   computed: {
     ...mapGetters([
-      'uuid'
+      'uuid',
+      'workshopPermissionInfo'
     ])
   },
   filters: {

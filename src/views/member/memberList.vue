@@ -8,8 +8,8 @@
               <el-radio-button label="member">所有成员</el-radio-button>
               <el-radio-button label="apply">待审核成员</el-radio-button>
             </el-radio-group>
-            <el-button v-if="searchType==='member'" @click="addMember" type="primary" plain size="mini">邀请成员</el-button>
-            <div v-if="searchType==='apply'">
+            <el-button v-if="workshopPermissionInfo.GROUP_USER_INSERT&&searchType==='member'" @click="addMember" type="primary" plain size="mini">邀请成员</el-button>
+            <div v-if="workshopPermissionInfo.GROUP_USER_VERIFY&&searchType==='apply'">
               <el-button type="primary" @click="opeSomeMember('pass')" size="small">通过</el-button>
               <el-button type="danger" @click="opeSomeMember('reject')" size="small">拒绝</el-button>
             </div>
@@ -17,13 +17,13 @@
           <div v-if="searchType==='member'" class="memberConWrapper">
             <div class="memberCon" v-for="(item, idx) in memberList" :key="idx">
               <div class="settingBtn">
-                <el-tooltip class="item" effect="dark" content="删除成员" placement="top">
+                <el-tooltip v-if="workshopPermissionInfo.GROUP_USER_DELETE" class="item" effect="dark" content="删除成员" placement="top">
                   <el-button type="danger" size="mini" @click="deleteMember(item)" icon="el-icon-delete" circle></el-button>
                 </el-tooltip>
-                <el-tooltip v-if="item.roleCode!=='GROUP_ASSISTANT'" class="item" effect="dark" content="设置助理角色" placement="top">
+                <el-tooltip v-if="workshopPermissionInfo.GROUP_USER_UPDATE&&(item.roleCode!=='GROUP_ASSISTANT')" class="item" effect="dark" content="设置助理角色" placement="top">
                   <el-button type="primary" size="mini" @click="settingMemberRole(item, 'GROUP_ASSISTANT')" icon="el-icon-setting" circle></el-button>
                 </el-tooltip>
-                <el-tooltip v-if="item.roleCode==='GROUP_ASSISTANT'" class="item" effect="dark" content="取消助理角色" placement="top">
+                <el-tooltip v-if="workshopPermissionInfo.GROUP_USER_UPDATE&&(item.roleCode==='GROUP_ASSISTANT')" class="item" effect="dark" content="取消助理角色" placement="top">
                   <el-button type="primary" size="mini" @click="settingMemberRole(item, 'GROUP_USER')" icon="el-icon-setting" circle></el-button>
                 </el-tooltip>
               </div>
@@ -74,8 +74,8 @@
               <el-table-column label="操作">
                 <template slot-scope="scope">
                   <div class="button">
-                    <el-button type="danger" plain size="mini" @click="opeMember(scope.row, 'reject')">拒绝</el-button>
-                    <el-button type="primary" plain size="mini" @click="opeMember(scope.row, 'pass')">通过</el-button>
+                    <el-button type="danger" v-if="workshopPermissionInfo.GROUP_USER_VERIFY" plain size="mini" @click="opeMember(scope.row, 'reject')">拒绝</el-button>
+                    <el-button type="primary" v-if="workshopPermissionInfo.GROUP_USER_VERIFY" plain size="mini" @click="opeMember(scope.row, 'pass')">通过</el-button>
                   </div>
                 </template>
               </el-table-column>
@@ -122,7 +122,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['uuid'])
+    ...mapGetters(['uuid', 'workshopPermissionInfo'])
   },
   watch: {
     searchType: function(val) {

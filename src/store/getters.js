@@ -19,7 +19,8 @@ const getters = {
   workshopInfo: state => state.workshop.workshopInfo,
   workshopBehaviour: state => state.workshop.workshopBehaviour, // 当前工作坊统计信息
   permission_routers: state => state.permission.routers,
-  addRouters: state => state.permission.addRouters // 0-坊主 1-副坊主  2-参与人员  3-申请人员  4-报名未通过人员  5-没有参与工作坊的成员
+  addRouters: state => state.permission.addRouters, // 0-坊主 1-副坊主  2-参与人员  3-申请人员  4-报名未通过人员  5-没有参与工作坊的成员
+  workshopPermissionInfo: state => state.workshopPermission.workshopPermissionInfo
 }
 
 export default getters

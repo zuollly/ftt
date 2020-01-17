@@ -25,7 +25,7 @@
             </div>
           </div>
         </div>
-        <el-button class="workshop-edit" type="primary" size="medium" icon="el-icon-edit" @click="editWorkshop" plain>编辑工作室资料</el-button>
+        <el-button v-if="workshopPermissionInfo.COURSE_UPDATE" class="workshop-edit" type="primary" size="medium" icon="el-icon-edit" @click="editWorkshop" plain>编辑工作室资料</el-button>
       </div>
       <div class="workshop-menu">
         <nav-menu mode="horizontal" :menuData="menuData" :currentRoute="currentRoute"></nav-menu>
@@ -77,7 +77,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'appConfig', 'currentRoute'
+      'appConfig', 'currentRoute', 'workshopPermissionInfo'
     ]),
     dialogWidth: function() {
       console.log(`-----------` + this.browserInfo)

@@ -58,6 +58,8 @@ export default {
       var _this = this
       const groupId = _this.$route.params.id
       if (_this.workshopInfo.id || groupId !== _this.workshopInfo.id) {
+        store.dispatch('GetWorkshopPermission', { groupId: groupId, userId: this.uuid }).then(response => {
+        })
         store.dispatch('GetWorkshopDetails', { id: groupId }).then(response => {
           if (response.code === 200) {
             // store.dispatch('GetWorkshopModuleSum', { id: groupId })

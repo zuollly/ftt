@@ -82,6 +82,11 @@ export default {
     },
     enterWorkshop(item) {
       console.log(item)
+      // const data = {
+      //   groupId: item.id,
+      //   userId: this.uuid
+      // }
+      // this.$store.dispatch('GetWorkshopPermission', data)
       this.$router.push({ name: 'workshop',
         params: { id: item.id }})
     }

@@ -56,3 +56,12 @@ export function fetchWorkshopMemberPage(data) {
     data: data
   })
 }
+
+// 查询用户角色权限Map
+export function fetchWorkshopRolePage(data) {
+  return request({
+    url: '/user/project/role/query',
+    method: 'post',
+    data: data
+  })
+}

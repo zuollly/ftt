@@ -14,27 +14,27 @@
               <WorkshopInformation :page="'home'" :informationList='informationList'></WorkshopInformation>
             </el-tab-pane>
           </el-tabs>
-          <el-button class="moreBtn" @click="getMore(activeName)" size="middle" type="text">查看更多</el-button>
+          <el-button v-if="workshopPermissionInfo.CONTENT_STATIONNEWS_QUERYLIST" class="moreBtn" @click="getMore(activeName)" size="middle" type="text">查看更多</el-button>
         </div>
       </div>
       <div class="informationWrapper informationActivity main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
           <p class="p">工作室活动</p>
-          <el-button type="text">查看更多</el-button>
+          <el-button v-if="workshopPermissionInfo.ACTIVITY_QUERYLIST" type="text">查看更多</el-button>
         </div>
         <workshopActivityList :page="'home'" :homeActivityList='workshopActivityList'></workshopActivityList>
       </div>
       <div class="informationWrapper informationActivity main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
           <p class="p">成果展示</p>
-          <el-button type="text">查看更多</el-button>
+          <el-button v-if="workshopPermissionInfo.CONTENT_ACHIEVEMENT_QUERYLIST" type="text">查看更多</el-button>
         </div>
         <WorkShopAchievementList :homeAchievementList='homeAchievementList' :page="'home'"></WorkShopAchievementList>
       </div>
       <div class="informationWrapper informationTeacher main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
           <p class="p">名师讲堂</p>
-          <el-button type="text">查看更多</el-button>
+          <!-- <el-button type="text">查看更多</el-button> -->
         </div>
         <div>
           <LayNotData gridType="tb"></LayNotData>
@@ -71,7 +71,7 @@
           </div>
         </div>
         <div class="personal-button">
-          <el-button type="warning" @click="getApplyIntoWorkshop">申请加入工作室</el-button>
+          <el-button v-if="workshopPermissionInfo.GROUP_USER_APPLY" type="warning" @click="getApplyIntoWorkshop">申请加入工作室</el-button>
         </div>
 
       </div>
@@ -92,7 +92,7 @@
       <div class="informationWrapper informationSource main-border bg-white mb-2 border-shadow">
         <div class="headWrapper">
           <p class="p">工作坊资源</p>
-          <!-- <el-button type="text">查看更多</el-button> -->
+          <el-button v-if="workshopPermissionInfo.CONTENT_RESOURCE_QUERYLIST" type="text">查看更多</el-button>
         </div>
         <WorkShopResourceList :homeResourceList='homeResourceList' :page="'home'"></WorkShopResourceList>
       </div>
@@ -108,7 +108,7 @@
               <span class="chooseLabel" @click="changeType('2')" :class="{active: showType==='2'}">周</span>
             </div>
           </div>
-          <el-button type="text" @click="getMoreMember()">查看更多</el-button>
+          <!-- <el-button type="text" @click="getMoreMember()">查看更多</el-button> -->
         </div>
         <homeMember :homeMemberList='homeMemberList'></homeMember>
       </div>
@@ -148,11 +148,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['workshopInfo', 'uuid'])
+    ...mapGetters(['workshopInfo', 'uuid', 'workshopPermissionInfo'])
   },
   watch: {
     workshopInfo: function(val) {
       console.log(val, 'workshopInfo1')
+    },
+    workshopPermissionInfo: function(val) {
+      console.log(val, 'workshopPermissionInfoworkshopPermissionInfo')
     }
   },
   methods: {
@@ -255,9 +258,9 @@ export default {
         this.$router.push({ name: 'informationList' })
       }
     },
-    getMoreMember() {
-      this.$router.push({ name: 'memberList' })
-    },
+    // getMoreMember() {
+    //   this.$router.push({ name: 'memberList' })
+    // },
     getNoticeCode() {
       return new Promise((resolve, reject) => {
         fetchDictInfo({ dictParentKey: 'CONTENT_STATIONNEWS' }).then(res => {
@@ -285,6 +288,7 @@ export default {
     this.getMemberLinessRank()
     this.getWorkshopModuleSum()
     this.getJyActivityPage()
+    console.log(this.workshopPermissionInfo, 'workshopPermissionInfo')
   }
 }
 </script>
