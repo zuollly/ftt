@@ -13,7 +13,7 @@
             </el-table-column>
             <el-table-column prop="userName"  width="100" show-overflow-tooltip resizable></el-table-column>
             <el-table-column show-overflow-tooltip resizable>
-              <template slot-scope="scope">{{scope.row.createTime | parseTime('{y}年{m}月{d}日 星期{a}')}}</template>
+              <template slot-scope="scope">{{scope.row.createTime}}</template>
             </el-table-column>
           </el-table>
         </div>
@@ -28,7 +28,7 @@
             <el-table-column prop="userName"  width="150" label="发布者" show-overflow-tooltip resizable></el-table-column>
             <el-table-column prop="groupName"  width="150" label="工作坊" show-overflow-tooltip resizable></el-table-column>
             <el-table-column label="发布日期" show-overflow-tooltip resizable>
-              <template slot-scope="scope">{{scope.row.createTime | parseTime('{y}年{m}月{d}日 星期{a}')}}</template>
+              <template slot-scope="scope">{{scope.row.createTime}}</template>
             </el-table-column>
             <el-table-column prop="date" label="操作">
               <template slot-scope="scope">

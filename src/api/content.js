@@ -27,7 +27,23 @@ export function updateRelevanceContent(data) {
     data: data
   })
 }
+// 推送
+export function pushRelevanceContent(data) {
+  return request({
+    url: '/channel/content/relevance/push',
+    method: 'POST', // 请求方法
+    data: data
+  })
+}
 
+// 资源推送至工作坊分享资源
+export function publishToGroup(data) {
+  return request({
+    url: '/tool/resourceShare/publishToGroup',
+    method: 'POST', // 请求方法
+    data: data
+  })
+}
 // 翻页查询
 export function fetchContentPage(data) {
   return request({

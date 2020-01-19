@@ -6,15 +6,6 @@
         <img src="https://activitycdn.ourteacher.com.cn/Content/Images/pass-btn.png">
       </div> -->
     </div>
-    <!-- <div class="N-Information">
-      <p><span class="time">环节时间：</span>{{currentStep.startTime}}-{{currentStep.endTime}}</p>
-    </div>
-    <div class="N-requeris fontSize12">
-      <div class="Left N-huanjie">
-        <span class="n-infor">环节完成要求：</span>
-        <div class="displayStyle" v-for="(item, index) in currentStepRequirement" :key="index">{{getRequireMent(item.stepRequirementName, item.stepRequirementData)}}</div>
-      </div>
-    </div> -->
     <div v-html="currentStepInfo.description" class="description"></div>
     <div class="N-content">
       <channelContent v-if="channelList.length" :channelList='channelList'></channelContent>

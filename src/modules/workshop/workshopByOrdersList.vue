@@ -12,7 +12,7 @@
               </template>
             </el-table-column>
             <el-table-column show-overflow-tooltip resizable>
-              <template slot-scope="scope">{{scope.row.createTime | parseTime('{y}年{m}月{d}日 星期{a}')}}</template>
+              <template slot-scope="scope">{{scope.row.createTime}}</template>
             </el-table-column>
           </el-table>
         </div>

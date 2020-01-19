@@ -282,6 +282,7 @@ export default {
         title: this.contentForm.title,
         txt: this.contentForm.content,
         userId: this.uuid,
+        contentLevel: 'GROUP',
         doc: {
           fileId: this.file.id,
           fileName: this.file.fileName,

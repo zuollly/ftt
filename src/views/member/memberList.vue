@@ -60,11 +60,11 @@
               </el-table-column>
               <el-table-column prop="realname" label="姓名" width="250"></el-table-column>
               <el-table-column label="申请时间" width="300">
-                <template slot-scope="scope">{{scope.row.createTime | parseTime('{y}年{m}月{d}日 星期{a}')}}</template>
+                <template slot-scope="scope">{{scope.row.createTime}}</template>
               </el-table-column>
               <el-table-column label="审核时间" width="300">
                 <template slot-scope="scope">
-                  <span v-if="scope.row.verifyTime">{{scope.row.verifyTime | parseTime('{y}年{m}月{d}日 星期{a}')}}</span>
+                  <span v-if="scope.row.verifyTime">{{scope.row.verifyTime}}</span>
                   <span v-else>暂无</span>
                 </template>
               </el-table-column>
