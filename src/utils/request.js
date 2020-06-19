@@ -21,7 +21,8 @@ const codeMessage = {
 }
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://yx.nercel.cn/msapi/', // api的base_url
+  // baseURL: 'http://yx.nercel.cn/msapi/', // api的base_url
+  baseURL: 'http://192.168.10.92:30440',
   timeout: 30000 // request timeout
 })
 

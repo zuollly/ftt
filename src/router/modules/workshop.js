@@ -65,6 +65,23 @@ const workshopRouter = {
       ]
     },
     {
+      path: '/workshops/:id/training',
+      component: () => import('@/views/training/index'),
+      name: 'trainingList',
+      redirect: '/workshops/:id/training/trainingList',
+      meta: { title: '培训', icon: '', requireAuth: true },
+      children: [
+        {
+          path: 'trainingList', component: () => import('@/views/training/trainingList'), name: 'trainingList', hidden: true, meta: { title: '培训', icon: '', requireAuth: true }},
+        {
+          path: 'trainingAdd', component: () => import('@/views/training/trainingAdd'), name: 'trainingAdd', hidden: true, meta: { title: '新增培训', icon: 'training-add', requireAuth: true }
+        }
+        // {
+        //   path: 'teachingShow/:activityId', component: () => import('@/views/teaching/teachingShow'), hidden: true, name: 'teachingShow', meta: { title: '互动教研详情', icon: 'activity-show', requireAuth: true }
+        // }
+      ]
+    },
+    {
       path: 'workshopEdit',
       component: () => import('@/views/workshops/workshopEdit'),
       name: 'workshopEdit',

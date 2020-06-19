@@ -1,15 +1,25 @@
 <template>
-  <div class="teaching-wrapper" v-loading="noticeLoading" element-loading-text="拼命加载中">
-    <el-row class="teaching-details-main">
+  <div class="training-wrapper" v-loading="noticeLoading" element-loading-text="拼命加载中">
+    <el-row class="training-details-main">
       <el-col class="home-details">
         <div class="informationWrapper main-border bg-white mb-2 border-shadow">
           <div class="headWrapper">
-            <p class="p">互动教研</p>
-            <el-button v-if="workshopPermissionInfo.ACTIVITY_INSERT" type="primary" size="mini" @click="addTeaching">新增教研</el-button>
+            <p class="p">培训</p>
           </div>
-          <div class="activityContent">
-            <div v-for="(item, index) in workshopActivityList" :key="index">
-              <ActItem class="check-item" :workshopItem="item" @getList='getList'></ActItem>
+          <div class="headWrapper">
+            <el-radio-group v-model="joinstatus">
+              <el-radio-button label=0>全部</el-radio-button>
+              <el-radio-button label=1>我参与的</el-radio-button>
+              <el-radio-button label=2>我报名的</el-radio-button>
+            </el-radio-group>
+            <div>
+              <el-button type="primary" @click="addTraining" size="small">新增培训</el-button>
+              <el-select size="small" v-model="activityStatus">
+                <el-option label="全部培训" value=""></el-option>
+                <el-option label="进行中" value="1"></el-option>
+                <el-option label="已结束" value="2"></el-option>
+                <el-option label="未开始" value="0"></el-option>
+              </el-select>
             </div>
           </div>
           <div class="pagination">
@@ -31,16 +41,18 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { fetchJyActivityPage } from '@/api/activity.js'
+import { fetchTrainPage } from '@/api/train.js'
 export default {
-  name: 'TeachingList',
+  name: 'TrainingList',
   components: {
     ActItem: () => import('./modules/ActItem.vue')
   },
   data() {
     return {
       noticeLoading: false, // 是否显示加载中
-      workshopActivityList: [],
+      workshopTrainList: [],
+      joinstatus: 0,
+      activityStatus: '',
       pageObj: { // 分页信息
         pageCurrent: 1,
         pageSize: 10,
@@ -50,51 +62,48 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'workshopPermissionInfo',
-      'isMobile'
+      'uuid'
     ])
   },
   watch: {
   },
   methods: {
-    addTeaching() {
+    addTraining() {
       console.log(this.$route.params)
       this.$router.push({
-        name: 'teachingAdd', query: { templateId: 'e005d2e35634c0e0548ee13000ced241' }})
+        name: 'trainingAdd', query: { templateId: 'dc732c86b0931af658f0f2f5f3cf7a83' }})
     },
     handleCurrentChange(index) {
       this.pageObj.pageCurrent = index
-      this.getJyActivityPage()
+      this.getJyTrainPage()
     },
     handleSizeChange(val) {
       this.pageObj.pageSize = val
-      this.getJyActivityPage()
+      this.getJyTrainPage()
     },
-    getList() {
-      this.getJyActivityPage()
-    },
-    getJyActivityPage() {
+    getJyTrainPage() {
       const data = {
         groupId: this.$route.params.id,
         pageCurrent: this.pageObj.pageCurrent,
         pageSize: this.pageObj.pageSize,
-        activityThemeCode: '0_JATD1'
+        userId: this.uuid,
+        joinstatus: 0
       }
-      fetchJyActivityPage(data).then(res => {
+      fetchTrainPage(data).then(res => {
         console.log(res)
-        this.workshopActivityList = res.data.result ? res.data.result.records : []
+        this.workshopTrainList = res.data.result ? res.data.result.records : []
         this.pageObj.count = res.data.result ? res.data.result.total : 0
       })
     }
   },
   mounted() {
-    this.getJyActivityPage()
+    this.getJyTrainPage()
   }
 }
 </script>
 <style lang='scss' rel="stylesheet/scss" scoped>
-.teaching-wrapper{
-  .teaching-details-main{
+.training-wrapper{
+  .training-details-main{
     .headWrapper {
       width: 100%;
       height: 50px;
