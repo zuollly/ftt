@@ -1,4 +1,3 @@
-import * as appConfig from '../../static/appConfig'
 import request from '@/utils/request'
 // 获取活动分页列表
 // export function fetchActivityPage(data) {
@@ -496,7 +495,7 @@ export function stepComplete(params) {
 // 活动环节下面的资源列表
 export function fetchResourcePage(data) {
   return request({
-    url: appConfig.app_basehost + '/tool/resourceShare/queryPage',
+    url: '/tool/resourceShare/queryPage',
     method: 'post',
     data
   })
@@ -504,7 +503,7 @@ export function fetchResourcePage(data) {
 // 新增活动环节下面的资源
 export function insertResource(data) {
   return request({
-    url: appConfig.app_basehost + '/tool/resourceShare/insert',
+    url: '/tool/resourceShare/insert',
     method: 'post',
     data
   })
@@ -512,7 +511,7 @@ export function insertResource(data) {
 // 删除活动环节下面的资源
 export function deleteResourceBatch(data) {
   return request({
-    url: appConfig.app_basehost + '/tool/resourceShare/delete',
+    url: '/tool/resourceShare/delete',
     method: 'post',
     data
   })
@@ -520,7 +519,7 @@ export function deleteResourceBatch(data) {
 // 成果展示一键推送
 export function filePublish(data) {
   return request({
-    url: appConfig.app_basehost + '/tool/file/publish',
+    url: '/tool/file/publish',
     method: 'post',
     data: data
   })
@@ -528,7 +527,7 @@ export function filePublish(data) {
 // 成果展示一键归档
 export function filePige(data) {
   return request({
-    url: appConfig.app_basehost + '/tool/resourceShare/publishToGroup',
+    url: '/tool/resourceShare/publishToGroup',
     method: 'post',
     data: data
   })

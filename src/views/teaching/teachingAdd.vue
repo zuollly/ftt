@@ -7,7 +7,13 @@
           <p :class="{'base-title': true, 'active': selectedStep[0]}" @click="baseInfo">基本信息</p>
         </div> -->
         <div class="right">
-          <activity-base-info @stageId='saveStageId' v-if="baseInfoShow" @activityId='saveActivityId' :stepInfo='currentStepInfo' :activityId='activityId'></activity-base-info>
+          <activity-base-info
+            @stageId='saveStageId'
+            v-if="baseInfoShow"
+            @activityId='saveActivityId'
+            :stepInfo='currentStepInfo'
+            :activityId='activityId'
+          ></activity-base-info>
         </div>
       </div>
     </el-card>
@@ -143,7 +149,7 @@ export default {
       font-size: 16px;
       color: #999;
       i {
-        color: #409EFF;
+        color: #409eff;
         margin-right: 5px;
       }
     }
@@ -161,7 +167,7 @@ export default {
       line-height: 30px;
       font-size: 14px;
       overflow: hidden;
-      text-overflow:ellipsis;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
     .active {

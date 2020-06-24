@@ -2,30 +2,14 @@
   <div>
     <el-dialog title="环节服务" :visible.sync="dialogTableVisible">
       <el-select v-model="value" placeholder="请选择" @change="handleServerChange">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
       </el-select>
       <el-table v-if="(!isComment) && (value!=='video_interaction')&&(value !== 'homeWork') && (value!=='channel')" :data="gridData" ref="multipleTable" @selection-change="handleSelectionChange">
-        <el-table-column
-          type="selection"
-          width="55">
-        </el-table-column>
+        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column v-for="(item, index) in tableProp" :prop="item.prop" :key="index" :label="item.name" min-width="150"></el-table-column>
       </el-table>
       <div v-if="(!isComment) && (value!=='video_interaction')&&(value !== 'homeWork')&& (value!=='channel')" style="text-align: right;margin-top:15px">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="pageParams.pageCurrent"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="pageParams.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
-        </el-pagination>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageParams.pageCurrent" :page-sizes="[10, 20, 30, 40]" :page-size="pageParams.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
       </div>
       <div v-if="value === 'homeWork'" class="homeWorkWrapper">
         <el-form ref="formAdd" :model="formAdd" label-width="80px">
@@ -33,7 +17,7 @@
             <el-input class="wid50" v-model="formAdd.title"></el-input>
           </el-form-item>
           <el-form-item label="作业内容">
-            <tinymce v-model="formAdd.content" :value='formAdd.conetnt' :height="300" :width='300'></tinymce>
+            <tinymce v-model="formAdd.content" :value="formAdd.conetnt" :height="300" :width="300"></tinymce>
           </el-form-item>
         </el-form>
       </div>
@@ -43,27 +27,17 @@
             <el-input class="wid50" v-model="formAdd.contentTitle"></el-input>
           </el-form-item>
           <el-form-item label="内容">
-            <tinymce v-model="formAdd.txt" :value='formAdd.txt' :height="300" :width='300'></tinymce>
+            <tinymce v-model="formAdd.txt" :value="formAdd.txt" :height="300" :width="300"></tinymce>
           </el-form-item>
         </el-form>
       </div>
-       <div v-if="value === 'video_interaction'" class="homeWorkWrapper">
+      <div v-if="value === 'video_interaction'" class="homeWorkWrapper">
         <el-form ref="formAdd" :rules="rules" :model="formAdd" label-width="120px">
           <el-form-item label="开始时间" prop="starTime">
-            <el-date-picker
-              v-model="formAdd.starTime"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              type="datetime"
-              placeholder="选择日期时间">
-            </el-date-picker>
+            <el-date-picker v-model="formAdd.starTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期时间"></el-date-picker>
           </el-form-item>
           <el-form-item label="结束时间" prop="endTime">
-            <el-date-picker
-              v-model="formAdd.endTime"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              type="datetime"
-              placeholder="选择日期时间">
-            </el-date-picker>
+            <el-date-picker v-model="formAdd.endTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期时间"></el-date-picker>
           </el-form-item>
         </el-form>
       </div>
@@ -75,7 +49,12 @@
 </template>
 
 <script>
-import { fetchCourseInfoPage, fetchHomeWorkPage, fetchContentPage, fetchActivityHolder } from '@/api/activityCopy'
+import {
+  fetchCourseInfoPage,
+  fetchHomeWorkPage,
+  fetchContentPage,
+  fetchActivityHolder
+} from '@/api/activityCopy'
 import { insertContentRelevance } from '@/api/contentCopy.js'
 import { insertHomeWork } from '@/api/task.js'
 import { applyConference } from '@/api/tool.js'
@@ -88,14 +67,21 @@ export default {
     ...mapGetters(['uuid'])
   },
   watch: {
-    stepId: function(val) {
+    stepId(val) {
       console.log(val, 'stepId')
     }
   },
   mounted() {
     console.log(this.stepId, 'stepId')
-    fetchActivityHolder({ roleCode: 'ACT_HOST', activityId: this.activityId }).then(res => {
-      if (res.data.code === 200 && res.data.result && res.data.result.userInfo) {
+    fetchActivityHolder({
+      roleCode: 'ACT_HOST',
+      activityId: this.activityId
+    }).then(res => {
+      if (
+        res.data.code === 200 &&
+        res.data.result &&
+        res.data.result.userInfo
+      ) {
         this.holder = res.data.result.userInfo
         console.log(res.data, 100)
       }
@@ -110,8 +96,8 @@ export default {
         { value: 'course', label: '课程' },
         { value: 'channel', label: '内容' },
         { value: 'comment', label: '讨论' },
-        { value: 'resourcesShow', label: '资源展示' },
-        { value: 'resourcesShare', label: '资源分享' },
+        { value: 'resourceShow', label: '资源展示' },
+        { value: 'resourceShare', label: '资源分享' },
         { value: 'video_interaction', label: '互动教研' }
       ],
       value: '',
@@ -137,7 +123,8 @@ export default {
         ],
         endTime: [
           { required: true, message: '请输入结束时间', trigger: 'change' }
-        ] },
+        ]
+      },
       holder: {}
     }
   },
@@ -150,7 +137,7 @@ export default {
     },
     hasServerCode: {
       type: Array,
-      default: function() {
+      default() {
         return []
       }
     },
@@ -245,7 +232,11 @@ export default {
         })
       }
       this.isComment = false
-      if (this.value === 'comment' || this.value === 'resourcesShow' || this.value === 'resourcesShare') {
+      if (
+        this.value === 'comment' ||
+        this.value === 'resourceShow' ||
+        this.value === 'resourceShare'
+      ) {
         this.isComment = true
       }
     },
@@ -318,16 +309,16 @@ export default {
         select = 'isComment'
         this.dialogTableVisible = false
       }
-      if (this.value === 'resourcesShow') {
-        if (this.hasServerCode.indexOf('resourcesShow') > -1) {
+      if (this.value === 'resourceShow') {
+        if (this.hasServerCode.indexOf('resourceShow') > -1) {
           this.$message.warning('该环节已有一个资源展示项目')
           return
         }
         select = 'isResourcesShow'
         this.dialogTableVisible = false
       }
-      if (this.value === 'resourcesShare') {
-        if (this.hasServerCode.indexOf('resourcesShare') > -1) {
+      if (this.value === 'resourceShare') {
+        if (this.hasServerCode.indexOf('resourceShare') > -1) {
           this.$message.warning('该环节已有一个资源分享项目')
           return
         }
@@ -450,7 +441,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.homeWorkWrapper{
+.homeWorkWrapper {
   margin-top: 20px;
 }
 </style>

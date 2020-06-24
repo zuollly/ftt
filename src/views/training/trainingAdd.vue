@@ -7,7 +7,13 @@
           <p :class="{'base-title': true, 'active': selectedStep[0]}" @click="baseInfo">基本信息</p>
         </div> -->
         <div class="right">
-          <activity-base-info @stageId='saveStageId' v-if="baseInfoShow" @activityId='saveActivityId' :stepInfo='currentStepInfo' :activityId='activityId'></activity-base-info>
+          <activity-base-info
+            @stageId='saveStageId'
+            v-if="baseInfoShow"
+            @activityId='saveActivityId'
+            :stepTlist='stepList'
+            :activityId='activityId'
+          ></activity-base-info>
         </div>
       </div>
     </el-card>
@@ -24,7 +30,7 @@ export default {
     return {
       form: {},
       stageId: '',
-      currentStepInfo: {},
+      stepList: [],
       baseInfoShow: true,
       activityId: '',
       addStepShow: false,
@@ -37,18 +43,9 @@ export default {
     },
     isEditActivity() { // 是不是编辑活动
       return !!this.$route.query.activityId
-    },
-    isPreview() { // 是不是预览
-      return !!this.$route.query.isPreview
     }
   },
   created() {
-    // if (this.hasApplyTemplate) {
-    //   this.getStageId({ unionId: this.$route.query.templateId }).then(() => {
-    //     this.getActivityStepList().then(() => {
-    //     })
-    //   })
-    // }
     if (this.isEditActivity) {
       this.activityId = this.$route.query.activityId
       this.getStageId({ unionId: this.activityId }).then(() => {
@@ -59,13 +56,6 @@ export default {
     }
   },
   methods: {
-    // getActivityInfo() {
-    //   this.fetchActivityInfo({ id: this.activityId }).then(res => {
-    //     if (res.data.code === 200) {
-    //       this.activityByTemplate = res.data.result.templateId
-    //     }
-    //   })
-    // },
     getStageId(params) { // 根据活动id或者模板id换取阶段id
       return this.fetchStageId(params).then(res => {
         console.log(res, 'res---------33')
@@ -74,13 +64,15 @@ export default {
         }
       })
     },
-    getActivityStepList() { // 环节list
+    getActivityStepList() { // 获取环节list
       return this.activityStepList({ stageId: this.stageId }).then(res => {
         if (res.data.code === 200) {
-          this.currentStepInfo = res.data.result[0]
+          console.log(res.data.result, 'res.datares.data-res.data')
+          this.stepList = res.data.result
         }
       })
     },
+    // 应用模板后拿到阶段id
     saveStageId(value) {
       this.stageId = value
       console.log(value, '==============')
@@ -143,7 +135,7 @@ export default {
       font-size: 16px;
       color: #999;
       i {
-        color: #409EFF;
+        color: #409eff;
         margin-right: 5px;
       }
     }
@@ -161,7 +153,7 @@ export default {
       line-height: 30px;
       font-size: 14px;
       overflow: hidden;
-      text-overflow:ellipsis;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
     .active {

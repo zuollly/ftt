@@ -57,7 +57,7 @@ export default {
     }
   },
   created() {
-    if (!this.notApplyTemplate) {
+    if (!this.notApplyTemplate) { // 使用了模板
       this.getStageId({ unionId: this.$route.query.templateId }).then(() => {
         this.getActivityStepList().then(() => {
           this.selectedStep = Array(this.stepList.length + 1).fill(false)

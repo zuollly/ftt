@@ -2,24 +2,22 @@
   <div class="stepResourceWrapper">
     <el-button type="primary" @click="uploadResource">上传资源</el-button>
     <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="title" label="资源名称" show-overflow-tooltip resizable min-width="220">
+      <el-table-column prop="fileName" label="资源名称" show-overflow-tooltip resizable>
       </el-table-column>
-      <el-table-column prop="userName" label="上传人" show-overflow-tooltip resizable min-width="100">
+      <el-table-column prop="userName" label="上传人" show-overflow-tooltip resizable>
       </el-table-column>
-      <el-table-column prop="createTime" min-width="180" show-overflow-tooltip resizable label="上传时间">
+      <el-table-column prop="createTime" show-overflow-tooltip resizable label="上传时间">
         <template slot-scope="scope">
           <span>{{scope.row.createTime | parseTime('{y}-{m}-{d} {h}:{i}:{s}')}}</span>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="250">
+      <!-- <el-table-column fixed="right" label="操作" width="250">
         <template slot-scope="scope">
           <el-button @click="look(scope.row)" type="text" size="small">查看</el-button>
           <el-button type="text" size="small" @click="download(scope.row)">下载</el-button>
           <el-button type="text" size="small" v-if="scope.row.userId === uuid" @click="del(scope.row)">删除</el-button>
-          <el-button type="text" @click="pige" size="small">归档</el-button>
-          <el-button type="text" @click="publish(scope.row)" size="small">推送</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <div class="pagination">
       <el-pagination small layout="prev, pager, next" v-if="tableData.length>0" @current-change="handleAllPageChange" :current-page="params.pageCurrent" :page-size="params.pageSize" :total="total"></el-pagination>
@@ -27,7 +25,7 @@
     <a style="display:none" id="downFA"></a>
     <el-dialog title="上传资源" :visible.sync="dialogVisible" width="30%">
       <div style="position: relative">
-        <el-upload class="upload-demo" action="http://yx.nercel.cn/msapi/zuul/tool/file/upload" multiple :show-file-list="true" name="multipartFile " :headers='headers' :on-success="handleUploadSuccess">
+        <el-upload class="upload-demo" :action="appConfig.cfg_upfile_path" multiple :show-file-list="true" :file-list="fileListShow" name="multipartFile " :headers='headers' :on-success="handleUploadSuccess">
           <el-button type="primary" size="small">上传资源</el-button>
         </el-upload>
       </div>
@@ -40,8 +38,8 @@
 </template>
 
 <script>
-import { fetchActivityInfo } from '@/api/activityCopy.js'
-import { fetchContentPage, insertRelevanceContent, fetchContentById, delRelevanceContent, pushRelevanceContent, publishToGroup } from '@/api/content.js'
+import { fetchActivityInfo, insertResource, fetchResourcePage } from '@/api/activityCopy.js'
+import { fetchContentPage, fetchContentById, delRelevanceContent } from '@/api/content.js'
 import { getPreviewURL, downloadFile } from '@/api/file.js'
 import { getToken } from '@/utils/storage/cookies'
 import { mapGetters } from 'vuex'
@@ -56,7 +54,8 @@ export default {
         pageSize: 10
       },
       total: 0,
-      fileList: {},
+      fileListShow: [],
+      fileList: [],
       headers: {
         Authorization: 'Bearer ' + getToken()
       },
@@ -88,6 +87,7 @@ export default {
   methods: {
     uploadResource() {
       this.dialogVisible = true
+      this.fileListShow = []
     },
     getActivityInfo() {
       const activityId = this.$route.params.activityId
@@ -103,49 +103,72 @@ export default {
     handleUploadSuccess(res, file) {
       console.log(res)
       if (res.code === 200) {
-        this.fileList = res.result
-      }
-      switch (this.fileList.fileCategory) {
-        case 'document':
-          this.modelCode = 'doc'
-          break
-        case 'picture':
-          this.modelCode = 'doc'
-          break
-        case 'voice':
-        case 'video':
-          this.modelCode = 'video'
-          break
-        default:
-          this.modelCode = 'doc'
-          break
+        this.fileList = [res.result]
+        this.fileListShow = [{ name: res.result.fileName }]
       }
     },
+    // addResource() {
+    //   const data = {
+    //     title: this.fileList.fileName,
+    //     modelCode: this.modelCode,
+    //     userId: this.uuid,
+    //     contentLevel: 'STEP',
+    //     doc: {
+    //       fileId: this.fileList.id,
+    //       fileName: this.fileList.fileName,
+    //       fileType: this.fileList.fileType,
+    //       fileSize: this.fileList.fileSize
+    //     },
+    //     relevance: {
+    //       contentTypeCode: 'CONTENT_RESOURCE',
+    //       moduleId: this.resourcesList[0].stepId
+    //     }
+    //   }
+    //   insertRelevanceContent(data).then(res => {
+    //     this.dialogVisible = false
+    //     if (res.data.code === 200) {
+    //       this.$message.success('上传成功')
+    //       this.params.pageCurrent = 1
+    //       this.queryResourcePage()
+    //     } else {
+    //       this.$message.error('上传失败')
+    //     }
+    //   })
+    // },
     addResource() {
-      const data = {
-        title: this.fileList.fileName,
-        modelCode: this.modelCode,
-        userId: this.uuid,
-        contentLevel: 'STEP',
-        doc: {
-          fileId: this.fileList.id,
-          fileName: this.fileList.fileName,
-          fileType: this.fileList.fileType,
-          fileSize: this.fileList.fileSize
-        },
-        relevance: {
-          contentTypeCode: 'CONTENT_RESOURCE',
-          moduleId: this.resourcesList[0].stepId
-        }
+      if (!this.fileListShow.length) {
+        this.$message.warning('请先选择上传文件')
+        return
       }
-      insertRelevanceContent(data).then(res => {
-        this.dialogVisible = false
+      const fileTempList = this.fileList.map(el => {
+        return {
+          categoryId: this.resourcesList[0].serviceId,
+          createId: this.uuid,
+          createTime: el.createTime,
+          fileCategory: el.fileCategory,
+          fileId: el.id,
+          fileName: el.fileName,
+          fileSize: el.fileSize,
+          fileType: el.fileType
+        }
+      })
+      this.insertResource(fileTempList)
+    },
+    insertResource(params) {
+      insertResource(params).then(res => {
         if (res.data.code === 200) {
-          this.$message.success('上传成功')
+          console.log(res, 'res')
+          this.dialogVisible = false
           this.params.pageCurrent = 1
-          this.queryResourcePage()
+          this.params.categoryId = this.resourcesList[0].serviceId
+          fetchResourcePage(this.params).then(res => {
+            if (res.data.code === 200) {
+              this.tableData = res.data.result.records || []
+              this.total = res.data.result.total
+            }
+          })
         } else {
-          this.$message.error('上传失败')
+          this.$message.error(res.data.msg)
         }
       })
     },
@@ -223,34 +246,6 @@ export default {
           type: 'info',
           message: '已取消删除'
         })
-      })
-    },
-    publish(item) {
-      pushRelevanceContent({
-        contentTypeCode: 'CONTENT_RESOURCE_ACT_ARCHIVE',
-        moduleId: this.$route.params.id,
-        pushStatus: 1,
-        userId: this.uuid,
-        id: item.id
-      }).then(res => {
-        if (res.data.code === 200) {
-          this.$message.success('推送成功')
-        } else {
-          this.$message.error(res.data.msg)
-        }
-      })
-    },
-    pige() {
-      publishToGroup({
-        actId: this.$route.params.activityId,
-        groupId: this.$route.params.id,
-        contentId: this.resourcesList[0].serviceId
-      }).then(res => {
-        if (res.data.code === 200) {
-          this.$message.success('归档成功')
-        } else {
-          this.$message.error(res.data.msg)
-        }
       })
     }
   },

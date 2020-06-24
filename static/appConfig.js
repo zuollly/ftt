@@ -1,7 +1,7 @@
 module.exports = {
   cfg_basehost: 'http://yx.nercel.cn/ms/', // 站点根网址
   cfg_fileBasehost: 'http://yx.nercel.cn/msapi/file/icon/', // 文件站点根网址
-  cfg_upfile_path: 'http://yx.nercel.cn/msapi/zuul/tool/file/upload', // 文件上传服务器地址
+  cfg_upfile_path: 'http://192.168.10.92:30440/zuul/tool/file/upload', // 文件上传服务器地址
   cfg_indexurl: '/', // 网页主页链接
   cfg_indexname: '主页', // 主页链接名
   cfg_webname: '兵团名师工作室', // 网站名称

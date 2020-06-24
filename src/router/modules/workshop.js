@@ -76,9 +76,6 @@ const workshopRouter = {
         {
           path: 'trainingAdd', component: () => import('@/views/training/trainingAdd'), name: 'trainingAdd', hidden: true, meta: { title: '新增培训', icon: 'training-add', requireAuth: true }
         }
-        // {
-        //   path: 'teachingShow/:activityId', component: () => import('@/views/teaching/teachingShow'), hidden: true, name: 'teachingShow', meta: { title: '互动教研详情', icon: 'activity-show', requireAuth: true }
-        // }
       ]
     },
     {

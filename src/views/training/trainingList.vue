@@ -22,16 +22,13 @@
               </el-select>
             </div>
           </div>
+          <div class="activityContent">
+            <div v-for="(item, index) in workshopTrainList" :key="index">
+              <ActItem class="check-item" :workshopItem="item" @getList='getList'></ActItem>
+            </div>
+          </div>
           <div class="pagination">
-            <el-pagination
-              background
-               @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              layout="total, sizes, prev, pager, next, jumper"
-              :page-sizes="[10, 20, 30]"
-              :current-page.sync="pageObj.pageCurrent"
-              :page-size="pageObj.pageSize"
-              :total.sync="pageObj.count">
+            <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :page-sizes="[10, 20, 30]" :current-page.sync="pageObj.pageCurrent" :page-size="pageObj.pageSize" :total.sync="pageObj.count">
             </el-pagination>
           </div>
         </div>
@@ -66,12 +63,25 @@ export default {
     ])
   },
   watch: {
+    activityStatus(val) {
+      console.log(val)
+      this.getJyTrainPage()
+    },
+    joinstatus(val) {
+      console.log(val)
+      this.getJyTrainPage()
+    }
   },
   methods: {
+    getList() {
+      this.getJyTrainPage()
+    },
     addTraining() {
       console.log(this.$route.params)
       this.$router.push({
-        name: 'trainingAdd', query: { templateId: 'dc732c86b0931af658f0f2f5f3cf7a83' }})
+        name: 'trainingAdd',
+        query: { templateId: 'dc732c86b0931af658f0f2f5f3cf7a83' }
+      })
     },
     handleCurrentChange(index) {
       this.pageObj.pageCurrent = index
@@ -87,7 +97,8 @@ export default {
         pageCurrent: this.pageObj.pageCurrent,
         pageSize: this.pageObj.pageSize,
         userId: this.uuid,
-        joinstatus: 0
+        joinStatus: this.joinstatus * 1,
+        activityStatus: this.activityStatus === '' ? '' : this.activityStatus * 1
       }
       fetchTrainPage(data).then(res => {
         console.log(res)
@@ -102,8 +113,8 @@ export default {
 }
 </script>
 <style lang='scss' rel="stylesheet/scss" scoped>
-.training-wrapper{
-  .training-details-main{
+.training-wrapper {
+  .training-details-main {
     .headWrapper {
       width: 100%;
       height: 50px;
@@ -123,37 +134,37 @@ export default {
         height: 50px;
         line-height: 50px;
         padding: 0 10px;
-        border-bottom: 2px #FF5A00 solid;
-        color: #FF5A00;
+        border-bottom: 2px #ff5a00 solid;
+        color: #ff5a00;
       }
     }
-    .home-details{
+    .home-details {
       display: flex;
       flex-direction: column;
-      .informationWrapper{
+      .informationWrapper {
         min-height: 300px;
-        .activityContent{
+        .activityContent {
           padding-top: 20px;
         }
       }
     }
-    .bg-white{
+    .bg-white {
       background: #ffffff;
     }
-    .border-shadow{
-      box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    .border-shadow {
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     }
-    .main-border{
+    .main-border {
       border: solid #eeeeee 1px;
       padding: 15px 15px 15px 15px;
       box-sizing: border-box;
     }
-    .radius-border{
+    .radius-border {
       border-top-right-radius: 20px;
       border-top-left-radius: 20px;
     }
-    .flex-grow-1{
-      flex: 1
+    .flex-grow-1 {
+      flex: 1;
     }
   }
 }

@@ -20,8 +20,8 @@
           <span>教研直播观看人次：{{videoStatus.liveCount}}</span>
         </div>
         <el-table :data="vedioPlayList" style="width: 100%">
-           <el-table-column prop="pxFile.fileSize" label="文件大小"></el-table-column>
-           <el-table-column prop="pxFile.fileType" label="文件类型"></el-table-column>
+          <el-table-column prop="pxFile.fileSize" label="文件大小"></el-table-column>
+          <el-table-column prop="pxFile.fileType" label="文件类型"></el-table-column>
           <el-table-column prop="attendTime" label="开始时间">
             <template slot-scope="scope">{{scope.row.startTime | parseTime('{y}-{m}-{d}')}}</template>
           </el-table-column>
@@ -36,22 +36,13 @@
           </el-table-column>
         </el-table>
         <div>
-          <el-pagination
-            @current-change="handleLinkCurrentChange"
-            :current-page.sync="linkPageObj.pageCurrent"
-            :page-size="linkPageObj.pageSize"
-            layout="prev, pager, next"
-            :total="linkPageObj.total">
+          <el-pagination @current-change="handleLinkCurrentChange" :current-page.sync="linkPageObj.pageCurrent" :page-size="linkPageObj.pageSize" layout="prev, pager, next" :total="linkPageObj.total">
           </el-pagination>
         </div>
       </div>
       <comment @commenthandle='commenthandle' v-if="commentList.length" :userId='uuid' :categoryId='commentList[0].stepId' :category='category' :categoryUrl='categoryUrl' :categoryName.sync='channelInfo.title' :loginRouteName='loginRouteName' objType='activity'></comment>
     </div>
-    <el-dialog
-      title="参与人数详情"
-      :visible.sync="memberDialogVisible"
-      width="40%"
-      >
+    <el-dialog title="参与人数详情" :visible.sync="memberDialogVisible" width="40%">
       <el-row :gutter="20">
         <el-col :span="6">
           <el-input clearable size="small" placeholder="请输入参与人员姓名" v-model="formQuery.username"></el-input>
@@ -78,28 +69,19 @@
         <el-table-column prop="ip" label="ip地址"></el-table-column>
       </el-table>
       <div>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page.sync="pageObj.pageCurrent"
-          :page-size="pageObj.pageSize"
-          layout="prev, pager, next"
-          :total="pageObj.total">
+        <el-pagination @current-change="handleCurrentChange" :current-page.sync="pageObj.pageCurrent" :page-size="pageObj.pageSize" layout="prev, pager, next" :total="pageObj.total">
         </el-pagination>
       </div>
       <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="memberDialogVisible = false">知道了</el-button>
-  </span>
-</el-dialog>
- <el-dialog
-      title="回放"
-      :visible.sync="playDialogVisible"
-      width="45%"
-      >
+        <el-button type="primary" @click="memberDialogVisible = false">知道了</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="回放" :visible.sync="playDialogVisible" width="45%">
       <playbackMeeting :filePreseeUrl='meetingUrl'></playbackMeeting>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="playDialogVisible = false">知道了</el-button>
       </span>
-</el-dialog>
+    </el-dialog>
   </div>
 </template>
 
@@ -187,7 +169,7 @@ export default {
     ])
   },
   watch: {
-    currentStep: function(val) {
+    currentStep(val) {
       this.getOneActivityStepInfo({ stepId: this.currentStep.id })
       this.getOneActivityStepRequirement({ id: val.id })
       this.getOneActivityStepServerList({ id: val.id })
@@ -281,10 +263,10 @@ export default {
               commentList.push(element)
               this.checkCommentFinlish()
             }
-            if (element.serviceTypeCode === 'resourcesShow') {
+            if (element.serviceTypeCode === 'resourceShow') {
               resourcesList.push(element)
             }
-            if (element.serviceTypeCode === 'resourcesShare') {
+            if (element.serviceTypeCode === 'resourceShare') {
               resourcesList.push(element)
             }
             if (element.serviceTypeCode === 'video_interaction') {
@@ -443,13 +425,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.activityContent{
-  .a-descripe{
+.activityContent {
+  .a-descripe {
     border-bottom: solid 1px #f0f1f1;
     padding-left: 15px;
     /* height: 54px; */
     margin: 0px 8px;
-    .a-title{
+    .a-title {
       border-bottom: solid 3px #00cbac;
       padding: 0px 22px 10px 22px;
       margin-top: 19px;
@@ -464,18 +446,18 @@ export default {
       z-index: 1;
       top: 30px;
       right: 30px;
-      img{
+      img {
         margin-left: 20px;
       }
     }
   }
   .N-Information {
     padding: 0px 23px 0px 20px;
-    p{
+    p {
       padding-top: 18px;
     }
   }
-  .N-requeris{
+  .N-requeris {
     border-bottom: solid 1px #c8cbce;
     // border-radius: 24px;
     width: 95%;
@@ -489,7 +471,8 @@ export default {
       color: #8d8d8d;
       padding-left: 25px;
       .n-infor {
-        background: url(../../../../static/images/icon0.png) no-repeat left center;
+        background: url(../../../../static/images/icon0.png) no-repeat left
+          center;
         padding-left: 28px;
         height: 40px;
         display: inline-block;
@@ -502,11 +485,17 @@ export default {
   }
   .description {
     padding: 15px 25px 15px 35px;
-    /deep/ p,h1,h2,h3,h4,h5,h6 {
+    /deep/ p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       margin: 0;
     }
   }
-  .N-content{
+  .N-content {
     // border-radius: 24px;
     width: 95%;
     // height: 60px;

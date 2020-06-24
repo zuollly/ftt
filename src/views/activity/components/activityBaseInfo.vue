@@ -1,58 +1,45 @@
 <template>
   <div class="activity-add">
     <div style="display: flex">
-    <div class="form">
-      <el-form :model="form" size="small">
-        <el-form-item label="活动名称" :label-width="labelwidth" required>
-          <el-input v-model="form.activityName" style="width: 300px" size="small"></el-input>
-        </el-form-item>
-        <el-form-item label="活动主题" :label-width="labelwidth" required>
-          <span v-if="!notApplyTemplate">{{form.themeName}}</span>
-          <el-select v-model="form.activityThemeCode" placeholder="请选择活动主题" size="small">
-            <el-option
-              v-for="item in themeCodeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="活动主持人" :label-width="labelwidth">
-          <p v-if="!groupHostInfo.userId"><el-button type="text" @click="openAddEventHost">选择活动主持人</el-button></p>
-          <p v-else><span style="cursor:pointer" @click="openAddEventHost">{{groupHostInfo.realname}}</span></p>
-          <!-- <el-select v-model="form.holder" placeholder="请选择活动主持人" size="small" v-if="refS">
+      <div class="form">
+        <el-form :model="form" size="small">
+          <el-form-item label="活动名称" :label-width="labelwidth" required>
+            <el-input v-model="form.activityName" style="width: 300px" size="small"></el-input>
+          </el-form-item>
+          <el-form-item label="活动主题" :label-width="labelwidth" required>
+            <span v-if="!notApplyTemplate">{{form.themeName}}</span>
+            <el-select v-model="form.activityThemeCode" placeholder="请选择活动主题" size="small">
+              <el-option v-for="item in themeCodeOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="活动主持人" :label-width="labelwidth">
+            <p v-if="!groupHostInfo.userId">
+              <el-button type="text" @click="openAddEventHost">选择活动主持人</el-button>
+            </p>
+            <p v-else>
+              <span style="cursor:pointer" @click="openAddEventHost">{{groupHostInfo.realname}}</span>
+            </p>
+            <!-- <el-select v-model="form.holder" placeholder="请选择活动主持人" size="small" v-if="refS">
             <el-option
               v-for="item in groupUser"
               :key="item.userId"
               :label="item.realname"
               :value="item.userId">
             </el-option>
-          </el-select> -->
-        </el-form-item>
-        <el-form-item label="活动时间" :label-width="labelwidth" required>
-          <el-date-picker
-            value-format="yyyy-MM-dd HH:mm:ss"
-            style="width: 150px"
-            v-model="form.startTime"
-            type="date"
-            placeholder="请选择开始时间">
-          </el-date-picker>
-          <span>至</span>
-          <el-date-picker
-            v-model="form.endTime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            style="width: 150px"
-            type="date"
-            placeholder="请选择结束时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="发布范围" :label-width="labelwidth" required>
-          <el-radio v-model="activityScope" label="1">全坊</el-radio>
-        </el-form-item>
-        <el-form-item label="活动关键词" :label-width="labelwidth">
-          <el-input v-model="form.activityKeyword" style="width: 300px" size="small"></el-input>
-        </el-form-item>
-        <!-- <el-form-item label="学段学科" :label-width="labelwidth">
+            </el-select>-->
+          </el-form-item>
+          <el-form-item label="活动时间" :label-width="labelwidth" required>
+            <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" style="width: 150px" v-model="form.startTime" type="date" placeholder="请选择开始时间"></el-date-picker>
+            <span>至</span>
+            <el-date-picker v-model="form.endTime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 150px" type="date" placeholder="请选择结束时间"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="发布范围" :label-width="labelwidth" required>
+            <el-radio v-model="activityScope" label="1">全坊</el-radio>
+          </el-form-item>
+          <el-form-item label="活动关键词" :label-width="labelwidth">
+            <el-input v-model="form.activityKeyword" style="width: 300px" size="small"></el-input>
+          </el-form-item>
+          <!-- <el-form-item label="学段学科" :label-width="labelwidth">
           <el-button type="text" size="small" @click="selectStudy">选择学段学科</el-button>
           <p style="margin: 0" v-if="studyphaseToSubject.length">已选择：{{studyphaseToSubject.join(' 、')}}</p>
         </el-form-item>
@@ -67,26 +54,19 @@
         <el-form-item label="成员是否支持申请" :label-width="labelwidth">
           <el-radio v-model="form.isSupportApply" :label="0">支持</el-radio>
           <el-radio v-model="form.isSupportApply" :label="1">不支持</el-radio>
-        </el-form-item> -->
-      </el-form>
-    </div>
-    <div class="img">
-      <el-upload
-        class="avatar-uploader"
-        action="http://yx.nercel.cn/msapi/zuul/tool/file/upload"
-        :headers="headers"
-        name="multipartFile"
-        :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload">
-        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-      </el-upload>
-    </div>
+          </el-form-item>-->
+        </el-form>
+      </div>
+      <div class="img">
+        <el-upload class="avatar-uploader" action="http://yx.nercel.cn/msapi/zuul/tool/file/upload" :headers="headers" name="multipartFile" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </div>
     </div>
     <el-form :model="form">
       <el-form-item label="活动描述" :label-width="labelwidth">
-        <tinymce :value='form.activityDescription' v-model="form.activityDescription" :height='200'></tinymce>
+        <tinymce :value="form.activityDescription" v-model="form.activityDescription" :height="200"></tinymce>
       </el-form-item>
       <el-form-item :label-width="labelwidth">
         <el-button type="primary" size="small" @click="addActivityInfo" v-if="!form.id && !isPreview">确 定</el-button>
@@ -96,14 +76,26 @@
     </el-form>
     <!--  -->
     <!-- <study-phase ref="studyPhase" @studyPhase='studyPhase' :select='selectStudyphase'></study-phase> -->
-    <chooseEventHost ref="chooseEvent" @sureHost='sureHost'></chooseEventHost>
-
+    <chooseEventHost ref="chooseEvent" @sureHost="sureHost"></chooseEventHost>
   </div>
 </template>
 
 <script>
-import { fetchTemplateById, fetchActivityTheme, insertActivity, insertActivityStage, applyTemplate, getStageId, fetchActivityHolder,
-  fetchActivityInfo, updateActivity, inviteMemberJoinActivity, fetchWorkshopMembers, fetchWorkshopMember, activityRelevanceHolder } from '@/api/activityCopy'
+import {
+  fetchTemplateById,
+  fetchActivityTheme,
+  insertActivity,
+  insertActivityStage,
+  applyTemplate,
+  getStageId,
+  fetchActivityHolder,
+  fetchActivityInfo,
+  updateActivity,
+  inviteMemberJoinActivity,
+  fetchWorkshopMembers,
+  fetchWorkshopMember,
+  activityRelevanceHolder
+} from '@/api/activityCopy'
 import { html2Text } from '@/utils/filters'
 import { mapGetters } from 'vuex'
 export default {
@@ -115,8 +107,8 @@ export default {
   data() {
     return {
       headers: {
-        'enctype': 'multipart/form-data',
-        'Authorization': 'Bearer 8c1e6fb0-c9ee-45bc-8572-9a8584c3b350'
+        enctype: 'multipart/form-data',
+        Authorization: 'Bearer 8c1e6fb0-c9ee-45bc-8572-9a8584c3b350'
       },
       form: { activityDescription: '' },
       labelwidth: '140px',
@@ -137,13 +129,16 @@ export default {
   },
   props: ['activityId'],
   computed: {
-    notApplyTemplate() { // 应用了模板
+    notApplyTemplate() {
+      // 应用了模板
       return !!this.$route.query.templateId
     },
-    isEditActivity() { // 是不是编辑活动
+    isEditActivity() {
+      // 是不是编辑活动
       return !!this.$route.query.activityId
     },
-    isPreview() { // 是不是预览
+    isPreview() {
+      // 是不是预览
       return !!this.$route.query.isPreview
     },
     ...mapGetters(['kingdomInfo', 'kingdomId', 'workshopId', 'uuid'])
@@ -172,7 +167,10 @@ export default {
         if (res.data.code === 200) {
           this.form = currentActivityInfo
           this.imageUrl = currentActivityInfo.activityImg
-          this.groupHostInfo = { realname: currentActivityInfo.activityManagerName, userId: currentActivityInfo.activityManagerId }
+          this.groupHostInfo = {
+            realname: currentActivityInfo.activityManagerName,
+            userId: currentActivityInfo.activityManagerId
+          }
           this.selectStudyphase = []
           this.studyphaseToSubject = []
           if (this.form.segSubVOs) {
@@ -185,7 +183,13 @@ export default {
       })
       this.getActHoder(this.activityId).then(res => {
         // this.form.holder = res.data.result && res.data.result.userInfo && res.data.result.userInfo.userId
-        this.$set(this.form, 'holder', res.data.result && res.data.result.userInfo && res.data.result.userInfo.userId)
+        this.$set(
+          this.form,
+          'holder',
+          res.data.result &&
+          res.data.result.userInfo &&
+          res.data.result.userInfo.userId
+        )
       })
     },
     templateinfo() {
@@ -255,9 +259,7 @@ export default {
         }
       })
     },
-    beforeAvatarUpload() {
-
-    },
+    beforeAvatarUpload() { },
     handleAvatarSuccess(res, file) {
       console.log(res)
       if (res.code === 200) {
@@ -300,9 +302,13 @@ export default {
       if (!this.ruleCkeck()) {
         return
       }
-      this.form.activityIntroduction = html2Text(this.form.activityDescription).substring(0, 150)
+      this.form.activityIntroduction = html2Text(
+        this.form.activityDescription
+      ).substring(0, 150)
       this.form.groupId = this.$route.params.id
-      this.form.activityManagerId = this.groupHostInfo ? this.groupHostInfo.userId : ''
+      this.form.activityManagerId = this.groupHostInfo
+        ? this.groupHostInfo.userId
+        : ''
       // this.form.activityManagerName = this.groupHostInfo.realname
       this.form.creatorId = this.uuid
       await this.insertActivity(this.form).then(res => {
@@ -326,10 +332,17 @@ export default {
           //   })
           // 保险起见，保留
           if (this.workshopMemberIds.indexOf(this.uuid) > -1) {
-            this.workshopMemberIds.splice(this.workshopMemberIds.indexOf(this.uuid), 1)
+            this.workshopMemberIds.splice(
+              this.workshopMemberIds.indexOf(this.uuid),
+              1
+            )
           }
-          if (this.notApplyTemplate) { // 应用了模板就调一个方法
-            this.applyTemplate({ id: this.templateId, activityId: res.data.result }).then(res => {
+          if (this.notApplyTemplate) {
+            // 应用了模板就调一个方法
+            this.applyTemplate({
+              id: this.templateId,
+              activityId: res.data.result
+            }).then(res => {
               this.fetchStageId({ unionId: this.form.id }).then(res => {
                 if (res.data.code === 200) {
                   this.$emit('stageId', res.data.result[0].id)
@@ -350,7 +363,9 @@ export default {
       if (!this.ruleCkeck()) {
         return
       }
-      this.form.activityIntroduction = html2Text(this.form.activityDescription).substring(0, 150)
+      this.form.activityIntroduction = html2Text(
+        this.form.activityDescription
+      ).substring(0, 150)
       this.updateActivity(this.form).then(res => {
         console.log(res)
         if (res.data.code === 200) {
@@ -423,13 +438,16 @@ export default {
       this.$refs.chooseEvent.dialogVisible = false
     },
     backTo() {
-      if (this.isEditActivity) { // 编辑则是从列表页而来
+      if (this.isEditActivity) {
+        // 编辑则是从列表页而来
         this.$router.push({
-          name: 'activityList' })
+          name: 'activityList'
+        })
         return
       }
       this.$router.push({
-        name: 'activityAdd' })
+        name: 'activityAdd'
+      })
     },
     /* axios----- */
     fetchTemplateById(params) {
@@ -439,7 +457,8 @@ export default {
         })
       })
     },
-    fetchActivityTheme() { // 开启的活动模板
+    fetchActivityTheme() {
+      // 开启的活动模板
       return new Promise((resolve, reject) => {
         fetchActivityTheme().then(res => {
           resolve(res)
@@ -460,14 +479,16 @@ export default {
     //     })
     //   })
     // },
-    insertActivityStage(params) { // 活动的阶段, 先暂时在模板的基本信息填写了之后加一个阶段, 参数随便写的
+    insertActivityStage(params) {
+      // 活动的阶段, 先暂时在模板的基本信息填写了之后加一个阶段, 参数随便写的
       return new Promise((resolve, reject) => {
         insertActivityStage(params).then(res => {
           resolve(res)
         })
       })
     },
-    applyTemplate(params) { // 将某一个模板应用于活动, 应用之后模板下面的环节和阶段都会直接被复制到活动下面
+    applyTemplate(params) {
+      // 将某一个模板应用于活动, 应用之后模板下面的环节和阶段都会直接被复制到活动下面
       return new Promise((resolve, reject) => {
         applyTemplate(params).then(res => {
           resolve(res)
@@ -481,7 +502,8 @@ export default {
         })
       })
     },
-    fetchActivityInfo(params) { // 获取活动详情
+    fetchActivityInfo(params) {
+      // 获取活动详情
       return new Promise((resolve, reject) => {
         fetchActivityInfo(params).then(res => {
           resolve(res)
@@ -490,7 +512,10 @@ export default {
     },
     getActHoder(activityId) {
       return new Promise((resolve, reject) => {
-        fetchActivityHolder({ roleCode: 'ACT_HOST', activityId: activityId }).then(res => {
+        fetchActivityHolder({
+          roleCode: 'ACT_HOST',
+          activityId: activityId
+        }).then(res => {
           if (res.data.code === 200) {
             resolve(res)
           }
@@ -547,7 +572,7 @@ export default {
     overflow: hidden;
   }
   .avatar-uploader /deep/ .el-upload:hover {
-    border-color: #409EFF;
+    border-color: #409eff;
   }
   .avatar-uploader-icon {
     font-size: 28px;

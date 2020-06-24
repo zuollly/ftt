@@ -1,12 +1,14 @@
 <template>
-  <lay-container-query  slot="container">
+  <lay-container-query slot="container">
     <template slot="container">
-    <lay-header :logoPic="logo"></lay-header>
-    <workshop-menu v-if="isHandlePage" mode="horizontal" :workshopInfo="workshopInfo" :menuData="menuData"></workshop-menu>
-    <div class="container" v-if="isBread"><lay-breadcrumb></lay-breadcrumb></div>
-    <lay-main></lay-main>
-    <lay-footer></lay-footer>
-    <lay-back-top></lay-back-top>
+      <lay-header :logoPic="logo"></lay-header>
+      <workshop-menu v-if="isHandlePage" mode="horizontal" :workshopInfo="workshopInfo" :menuData="menuData"></workshop-menu>
+      <div class="container" v-if="isBread">
+        <lay-breadcrumb></lay-breadcrumb>
+      </div>
+      <lay-main></lay-main>
+      <lay-footer></lay-footer>
+      <lay-back-top></lay-back-top>
     </template>
   </lay-container-query>
 </template>
@@ -35,18 +37,18 @@ export default {
     ...mapGetters([
       'workshopInfo', 'uuid', '', 'currentRoute'
     ]),
-    menuData: function() {
+    menuData() {
       // console.log(this.$route)
       // console.log(this.$router.options.routes[4].children)
       console.log(workshop.children, 'workshop.children')
       return workshop.children
     },
-    isHandlePage: function() {
+    isHandlePage() {
       return (this.$route.name !== 'workshopEdit')
     },
-    isBread: function() {
+    isBread() {
       const routerName = this.$route.name
-      return (routerName === 'activityAdd' || routerName === 'activityInfo' || routerName === 'teachingAdd' || routerName === 'teachingShow' || routerName === 'workshopEdit')
+      return (routerName === 'activityAdd' || routerName === 'activityInfo' || routerName === 'teachingAdd' || routerName === 'teachingShow' || routerName === 'trainingAdd' || routerName === 'workshopEdit')
     }
   },
   mounted() {
@@ -54,7 +56,7 @@ export default {
   },
   methods: {
     // 获取工作坊详细信息 及 当前登录用户的身份
-    getWorkshopInfo: function() {
+    getWorkshopInfo() {
       var _this = this
       const groupId = _this.$route.params.id
       if (_this.workshopInfo.id || groupId !== _this.workshopInfo.id) {

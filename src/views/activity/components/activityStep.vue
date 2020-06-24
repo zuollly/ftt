@@ -63,28 +63,44 @@
             </div>
           </el-form-item> -->
           <el-form-item label="环节服务：" :required="currentStepInfo.stepTypeName === '讨论'">
-            <p><el-button type="text" @click="openAddStepServer">添加环节服务</el-button></p>
+            <p>
+              <el-button type="text" @click="openAddStepServer">添加环节服务</el-button>
+            </p>
             <div v-for="(item, index) in stepServerList" :key="index">
               <p v-if="item.serverInfo.serviceTypeCode == 'homeWork'">作业：{{item.serverInfo.title}}
-                <span><el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button></span>
+                <span>
+                  <el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button>
+                </span>
               </p>
               <p v-if="item.serverInfo.serviceTypeCode == 'course'">课程：{{item.serverInfo.courseName}}
-                <span><el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button></span>
+                <span>
+                  <el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button>
+                </span>
               </p>
               <p v-if="item.serverInfo.serviceTypeCode == 'channel'">内容：{{item.serverInfo.title}}
-                <span><el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button></span>
+                <span>
+                  <el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button>
+                </span>
               </p>
               <p v-if="item.serverInfo.serviceTypeCode == 'comment'">讨论：开展讨论
-                <span><el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button></span>
+                <span>
+                  <el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button>
+                </span>
               </p>
-              <p v-if="item.serverInfo.serviceTypeCode == 'resourcesShow'">资源：资源展示
-                <span><el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button></span>
+              <p v-if="item.serverInfo.serviceTypeCode == 'resourceShow'">资源：资源展示
+                <span>
+                  <el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button>
+                </span>
               </p>
-              <p v-if="item.serverInfo.serviceTypeCode == 'resourcesShare'">资源：资源分享
-                <span><el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button></span>
+              <p v-if="item.serverInfo.serviceTypeCode == 'resourceShare'">资源：资源分享
+                <span>
+                  <el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button>
+                </span>
               </p>
               <p v-if="item.serverInfo.serviceTypeCode == 'video_interaction'">教研：互动教研
-                <span><el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button></span>
+                <span>
+                  <el-button type="text" @click="delStepServer([item.stepServer.id])">删除</el-button>
+                </span>
               </p>
             </div>
           </el-form-item>
@@ -103,9 +119,11 @@
 </template>
 
 <script>
-import { activityStepList, oneActivityStep, oneActivityStepRequirement, oneStepRequirementTypeList, activityStepTypeList, deleteActivityStep,
+import {
+  activityStepList, oneActivityStep, oneActivityStepRequirement, oneStepRequirementTypeList, activityStepTypeList, deleteActivityStep,
   addStepRequirement, updateStepRequirement, deleteStepRequirement, insertActivityStep, updateActivityStep, insertStepServer, StepServerList,
-  fetchCourseInfo, fetchOneHomeWork, contentInfo, deleteStepServer } from '@/api/activityCopy'
+  fetchCourseInfo, fetchOneHomeWork, contentInfo, deleteStepServer
+} from '@/api/activityCopy'
 import { html2Text } from '@/utils/filters'
 import { mapGetters } from 'vuex'
 export default {
@@ -164,7 +182,7 @@ export default {
       deep: true,
       immediate: true
     },
-    stepServerList: function(val) {
+    stepServerList(val) {
       const hasServerCode = val.map(ele => {
         return ele.stepServer.serviceTypeCode
       })
@@ -295,11 +313,11 @@ export default {
             if (el.serviceTypeCode === 'comment') {
               stepServerList.push({ serverInfo: { serviceTypeCode: 'comment' }, stepServer: el })
             }
-            if (el.serviceTypeCode === 'resourcesShow') {
-              stepServerList.push({ serverInfo: { serviceTypeCode: 'resourcesShow' }, stepServer: el })
+            if (el.serviceTypeCode === 'resourceShow') {
+              stepServerList.push({ serverInfo: { serviceTypeCode: 'resourceShow' }, stepServer: el })
             }
-            if (el.serviceTypeCode === 'resourcesShare') {
-              stepServerList.push({ serverInfo: { serviceTypeCode: 'resourcesShare' }, stepServer: el })
+            if (el.serviceTypeCode === 'resourceShare') {
+              stepServerList.push({ serverInfo: { serviceTypeCode: 'resourceShare' }, stepServer: el })
             }
             if (el.serviceTypeCode === 'video_interaction') {
               stepServerList.push({ serverInfo: { serviceTypeCode: 'video_interaction' }, stepServer: el })
