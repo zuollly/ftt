@@ -1,12 +1,8 @@
 <template>
   <div>
-    <el-dialog
-      title="选择主持人"
-      :visible.sync="dialogVisible"
-      :before-close="cancel"
-      width="60%">
+    <el-dialog title="邀请成员" :visible.sync="dialogVisible" :before-close="cancel" width="60%">
       <el-table :data="studyPhaseList" @selection-change="handleSelectionChange">
-         <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="ucName" label="姓名" show-overflow-tooltip resizable></el-table-column>
         <el-table-column prop="userRoleValue" label="角色" show-overflow-tooltip resizable></el-table-column>
         <el-table-column prop="schoolName" label="学校" show-overflow-tooltip resizable></el-table-column>
@@ -14,15 +10,7 @@
         <el-table-column prop="subjectName" label="学科" show-overflow-tooltip resizable></el-table-column> -->
       </el-table>
       <div class="pagination">
-        <el-pagination
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          layout="total, sizes, prev, pager, next, jumper"
-          :page-sizes="[10, 20, 30]"
-          :current-page.sync="pageObj.pageCurrent"
-          :page-size="pageObj.pageSize"
-          :total.sync="pageObj.count">
+        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :page-sizes="[10, 20, 30]" :current-page.sync="pageObj.pageCurrent" :page-size="pageObj.pageSize" :total.sync="pageObj.count">
         </el-pagination>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -64,7 +52,7 @@ export default {
   },
   watch: {
     'levelInfo': {
-      handler: function(val) {
+      handler(val) {
         if (val) {
           this.getData()
         }
@@ -89,9 +77,9 @@ export default {
     },
     getData() {
       const params = {
-        schoolProvince: this.levelInfo.schoolProvince,
-        schoolCity: this.levelInfo.schoolCity,
-        schoolCounty: this.levelInfo.schoolCounty,
+        provinceCode: this.levelInfo.schoolProvince,
+        cityCode: this.levelInfo.schoolCity,
+        countyCode: this.levelInfo.schoolCounty,
         schoolId: this.levelInfo.schoolId,
         pageNum: this.pageObj.pageCurrent,
         pageSize: this.pageObj.pageSize,
@@ -100,10 +88,10 @@ export default {
         userType: 'person'
       }
       this.getWorkshopMemberPage(params).then(res => {
+        console.log(res.data.rows, '99999999')
         if (res.data.code === '0') {
           this.studyPhaseList = res.data.rows
           this.pageObj.count = res.data.total
-          console.log(res.data, 9999)
         }
       })
     },
@@ -115,7 +103,7 @@ export default {
       this.$emit('sureInviteMember', this.multipleSelection)
     },
     cancel() {
-      this.$emit('sureInviteMember', this.multipleSelection)
+      this.$emit('sureInviteMember', [])
     },
     getWorkshopMemberPage(params) {
       return new Promise((resolve, reject) => {

@@ -48,7 +48,7 @@ export default {
     },
     isBread() {
       const routerName = this.$route.name
-      return (routerName === 'activityAdd' || routerName === 'activityInfo' || routerName === 'teachingAdd' || routerName === 'teachingShow' || routerName === 'trainingAdd' || routerName === 'workshopEdit')
+      return (routerName === 'activityAdd' || routerName === 'activityInfo' || routerName === 'teachingAdd' || routerName === 'teachingShow' || routerName === 'trainingAdd' || routerName === 'trainingShow' || routerName === 'workshopEdit')
     }
   },
   mounted() {

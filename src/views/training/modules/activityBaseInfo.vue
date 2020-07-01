@@ -25,12 +25,13 @@
             </el-form-item>
             <el-form-item label="培训范围" :label-width="labelwidth" required>
               <!-- <el-radio v-model="activityScope" label="1">全坊</el-radio> -->
-              <el-button v-if="!levelInfo.schoolProvince" @click="chooseRange" type="text">去选择></el-button>
-              <p v-else @click="chooseRange" type="text">{{levelInfo.schoolProvinceName+levelInfo.cityName+levelInfo.schoolName}}</p>
+              <el-button v-if="!levelInfo.schoolProvinceName" @click="chooseRange" type="text">去选择></el-button>
+              <p v-else @click="chooseRange" type="text">{{levelInfo.schoolProvinceName+
+                levelInfo.cityName+levelInfo.schoolName}}</p>
             </el-form-item>
             <el-form-item label="参与方式" :label-width="labelwidth">
               <el-checkbox v-model="isApply">报名</el-checkbox>
-              <el-checkbox v-model="isInvite">邀请</el-checkbox>
+              <el-checkbox v-model="isInvite">去邀请</el-checkbox>
             </el-form-item>
             <el-form-item v-if="selectMember.length" label="已选择邀请人员" :label-width="labelwidth" required>
               <div>
@@ -84,6 +85,7 @@ import {
   StepServerList,
   activityRelevanceHolder
 } from '@/api/activityCopy'
+import { fetchJyUserPage } from '@/api/train.js'
 import { html2Text } from '@/utils/filters'
 import { updateConference } from '@/api/tool.js'
 import { mapGetters } from 'vuex'
@@ -154,7 +156,7 @@ export default {
     },
     isInvite(val) {
       if (val) {
-        if (!this.levelInfo.schoolProvince) {
+        if (!this.levelInfo.schoolProvince && !this.$route.query.activityId) {
           this.$message.warning('请先选择活动范围')
           this.isInvite = false
           return false
@@ -165,9 +167,11 @@ export default {
   },
   mounted() {
     this.getWorkshopMember()
+    console.log(this.$route.query, 'this.$route.query')
     if (this.$route.query.activityId) {
-      console.log(11111111111111111)
+      console.log(111111111)
       this.getActivityInfo()
+      this.queryJyUserPage()
     } else {
       if (this.hasApplyTemplate) {
         this.templateinfo()
@@ -186,10 +190,13 @@ export default {
     },
     leaderInfo(levelInfo) {
       console.log(levelInfo, 'levelInfo')
-      this.levelInfo = levelInfo
+      if (levelInfo) {
+        this.levelInfo = levelInfo
+      }
       this.$refs.addMemberDialog.dialogTableVisible = false
     },
     async getActivityInfo() {
+      console.log('我有执行')
       await this.fetchActivityInfo({ id: this.$route.query.activityId }).then(res => {
         const currentActivityInfo = res.data.result
         console.log(currentActivityInfo, 'currentActivityInfo')
@@ -200,7 +207,42 @@ export default {
             realname: currentActivityInfo.activityManagerName,
             userId: currentActivityInfo.activityManagerId
           }
-          console.log(this.groupHostInfo, 'activityManagerName')
+          this.isApply = currentActivityInfo.isSupportApply === 0
+          this.levelInfo = {
+            schoolProvinceName: currentActivityInfo.actUserArea,
+            cityName: '',
+            schoolName: ''
+          }
+          if (currentActivityInfo.actUserAreaLevel === 'province') {
+            this.levelInfo.schoolProvince = currentActivityInfo.actUserAreaCode
+          }
+          if (currentActivityInfo.actUserAreaLevel === 'city') {
+            this.levelInfo.schoolCity = currentActivityInfo.actUserAreaCode
+          }
+          if (currentActivityInfo.actUserAreaLevel === 'school') {
+            this.levelInfo.schoolId = currentActivityInfo.actUserAreaCode
+          }
+          console.log(this.levelInfo, this.groupHostInfo, 'activityManagerName')
+        }
+      })
+    },
+    // 查询邀请的人员
+    async queryJyUserPage() {
+      const params = {
+        category: 1,
+        categoryId: this.$route.query.activityId,
+        joinType: 0
+      }
+      await this.fetchJyUserPage(params).then(res => {
+        if (res.data.code === 200) {
+          const userlist = res.data.result.records.map((item) => {
+            return {
+              ucName: item.userInfo.realname,
+              id: item.userInfo.userId
+            }
+          })
+          console.log(userlist, 'userlist')
+          this.selectMember = userlist
         }
       })
     },
@@ -362,7 +404,7 @@ export default {
         this.$message.warning('请选择主讲人')
         return false
       }
-      if (!this.levelInfo.schoolProvince) {
+      if (!(this.levelInfo.schoolProvince || this.levelInfo.schoolCity || this.levelInfo.schoolId)) {
         this.$message.warning('请选择培训范围')
         return false
       }
@@ -406,6 +448,7 @@ export default {
         : ''
       this.form.creatorId = this.uuid
       this.form.isPublic = this.isApply || this.isInvite ? 0 : 1
+      this.form.isSupportApply = this.isApply ? 0 : 1 // 报名
       this.form.joinCode =
         this.levelInfo.schoolId ||
         this.levelInfo.schoolCity ||
@@ -468,6 +511,9 @@ export default {
       if (!this.ruleCkeck()) {
         return
       }
+      delete this.form.joinCode
+      delete this.form.joinLevel
+
       this.btnLoading = true
       this.form.activityIntroduction = html2Text(
         this.form.activityDescription
@@ -479,6 +525,16 @@ export default {
       this.form.activityManagerName = this.groupHostInfo.userId
         ? this.groupHostInfo.realname
         : ''
+      this.form.isPublic = this.isApply || this.isInvite ? 0 : 1
+      this.form.isSupportApply = this.isApply ? 0 : 1 // 报名
+      // 如果有改变范围就编辑
+      if (this.levelInfo.schoolProvince) {
+        this.form.joinCode = this.levelInfo.schoolId ||
+          this.levelInfo.schoolCity ||
+          this.levelInfo.schoolProvince
+        this.form.joinLevel = this.levelInfo.schoolLevel
+      }
+
       console.log(this.groupHostInfo, this.form)
       this.form.creatorId = this.uuid
       this.updateActivity(this.form).then(res => {
@@ -491,12 +547,14 @@ export default {
       })
       await this.bindActHolder(this.form.id, this.groupHostInfo.userId)
       // await this.resetActivityStep()
+      await this.bindMember(this.form.id)
       this.updatetVideoInteractionId().then(res => {
         console.log(res)
         this.btnLoading = false
-        this.$router.push({
-          name: 'trainingList'
-        })
+        // this.$router.push({
+        //   name: 'trainingList'
+        // })
+        this.stepNum = 'two'
       })
     },
     async bindMember(actId) {
@@ -564,13 +622,15 @@ export default {
     sureInviteMember(array) {
       console.log(array)
       // 邀请的成员
-      this.selectMember = array
-      if (!array.length) {
+      if (array.length) {
+        this.selectMember = array
+      } else {
         this.isInvite = false
       }
       this.$refs.inviteEvent.dialogVisible = false
     },
     handleClose(tag) {
+      console.log(tag)
       for (let index = 0; index < this.selectMember.length; index++) {
         const element = this.selectMember[index]
         if (element.id === tag.id) {
@@ -634,6 +694,14 @@ export default {
     fetchStageId(params) {
       return new Promise((resolve, reject) => {
         getStageId(params).then(res => {
+          resolve(res)
+        })
+      })
+    },
+    fetchJyUserPage(params) {
+      // 获取活动详情
+      return new Promise((resolve, reject) => {
+        fetchJyUserPage(params).then(res => {
           resolve(res)
         })
       })

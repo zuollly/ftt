@@ -22,3 +22,27 @@ export function launchActivityVideo(data) {
     data: data
   })
 }
+// 翻页查询活动中的用户
+export function fetchJyUserPage(data) {
+  return request({
+    url: `/workshop/jyUser/queryPage`,
+    method: 'post',
+    data: data
+  })
+}
+// 删除活动中的用户
+export function deteleJyUserPage(data) {
+  return request({
+    url: `/workshop/jyUser/delete`,
+    method: 'DELETE',
+    data: data
+  })
+}
+
+export function verifyJyUserPage(data) {
+  return request({
+    url: `/workshop/jyUser/apply/verify`,
+    method: 'post',
+    data: data
+  })
+}

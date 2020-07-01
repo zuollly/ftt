@@ -3,35 +3,19 @@
     <el-dialog title="选择范围" width="50%" :visible.sync="dialogTableVisible">
       <div style="margin-top: 20px">
         <el-select v-model="value1" clearable size="small" placeholder="请选择">
-          <el-option
-            v-for="item in options1"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+          <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
         <el-select v-model="teacherParams.cityCode" clearable size="small" placeholder="请选择" @change="handleAreaChange(2)">
-          <el-option
-            v-for="item in options2"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+          <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
         <el-select v-model="teacherParams.countyCode" clearable size="small" placeholder="请选择" @change="handleAreaChange(3)">
-          <el-option
-            v-for="item in options3"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+          <el-option v-for="item in options3" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
         <el-select v-model="teacherParams.schoolId" clearable size="small" placeholder="请选择" @change="handleAreaChange(4)">
-          <el-option
-            v-for="item in options4"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+          <el-option v-for="item in options4" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
       </div>
@@ -88,12 +72,17 @@ export default {
     }
   },
   watch: {
-    'teacherParams.cityCode': function(val) {
+    'teacherParams.cityCode'(val) {
       if (val) {
         this.schoolParams.cityName = this.selectChooseObj(val, this.options2).label
       }
     },
-    'teacherParams.schoolId': function(val) {
+    'teacherParams.countyCode'(val) {
+      if (!val) {
+        this.schoolParams.schoolLevel = 1
+      }
+    },
+    'teacherParams.schoolId'(val) {
       if (val) {
         this.schoolParams.schoolName = this.selectChooseObj(val, this.options4).label
       }
@@ -150,7 +139,7 @@ export default {
       this.schoolParams = schoolParams
     },
     cancel() {
-      this.$emit('leaderInfo', {})
+      this.$emit('leaderInfo', '')
     },
     sure() {
       console.log(this.schoolParams)
@@ -161,7 +150,6 @@ export default {
       this.$emit('leaderInfo', this.schoolParams)
     },
     appoint(row) {
-      // this.$emit('leaderInfo', row)
       console.log(row)
       this.selectMember.push(row)
     },
@@ -196,6 +184,6 @@ export default {
 
 <style lang="scss">
 .el-tag + .el-tag {
-    margin-left: 10px;
-  }
+  margin-left: 10px;
+}
 </style>

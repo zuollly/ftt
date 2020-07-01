@@ -4,7 +4,7 @@
       <el-col :span="16">
         <div class="grid-content bg-purple">
           <div class="media media-box">
-            <p class="statusLable">{{shoplist.activityStatus | activityStatusTurn}}</p>
+            <!-- <p class="statusLable">{{shoplist.activityStatus | activityStatusTurn}}</p> -->
             <!-- <div v-lazy-container="{ selector: 'img'}"><img :key="appConfig.cfg_up_path + shoplist.logo" class="mr-3 imgshow" :data-src="appConfig.cfg_up_path + shoplist.logo" data-error="./static/images/workshopLogo.png" data-loading="./static/images/loading.gif"></div> -->
             <img class="mr-3" :src="shoplist.activityImg || appConfig.cfg_workshop_Logo" alt="">
             <div class="media-list">
@@ -106,7 +106,7 @@ export default {
     enterActivity(row) {
       console.log(row)
       this.$router.push({
-        name: 'activityShow', params: { activityId: row.id }
+        name: 'trainingShow', params: { activityId: row.id }
       }
       )
     }
