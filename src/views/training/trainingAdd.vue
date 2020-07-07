@@ -7,13 +7,7 @@
           <p :class="{'base-title': true, 'active': selectedStep[0]}" @click="baseInfo">基本信息</p>
         </div> -->
         <div class="right">
-          <activity-base-info
-            @stageId='saveStageId'
-            v-if="baseInfoShow"
-            @activityId='saveActivityId'
-            :stepTlist='stepList'
-            :activityId='activityId'
-          ></activity-base-info>
+          <activity-base-info @stageId='saveStageId' v-if="baseInfoShow" @activityId='saveActivityId' :stepTlist='stepList' :activityId='activityId'></activity-base-info>
         </div>
       </div>
     </el-card>
@@ -21,7 +15,7 @@
 </template>
 
 <script>
-import { getStageId, activityStepList, fetchActivityInfo } from '@/api/activityCopy'
+import { getStageId, activityStepList } from '@/api/activityCopy'
 export default {
   components: {
     activityBaseInfo: () => import('./modules/activityBaseInfo.vue')
@@ -103,13 +97,6 @@ export default {
     activityStepList(params) {
       return new Promise((resolve, reject) => {
         activityStepList(params).then(res => {
-          resolve(res)
-        })
-      })
-    },
-    fetchActivityInfo(params) { // 获取活动详情
-      return new Promise((resolve, reject) => {
-        fetchActivityInfo(params).then(res => {
           resolve(res)
         })
       })

@@ -15,27 +15,11 @@ export function fetchActivityCategoryPage(data) {
     data: data
   })
 }
-// 获取活动详情
-// export function fetchActivityById(data) {
-//   return request({
-//     url: `/workshop/jyActivity/queryById`,
-//     method: 'get',
-//     params: data
-//   })
-// }
 
 /* ====== */
 // 关于活动一类 活动列表 发布活动 删除活动 查看活动 编辑活动等
 // import request from '@/utils/request.js' // 引用request.js
 
-// 获取活动详情信息
-export function fetchActivityById(id) {
-  return request({
-    url: '/workshop/jyActivity/queryById',
-    method: 'get', // 请求方法
-    params: id
-  })
-}
 // 活动关联工作坊
 export function activityRelevanceWorkshop(data) {
   return request({
@@ -125,14 +109,6 @@ export function fetchRelevanceJyActivityPage(data) {
     url: '/workshop/jyActivityCategory/queryPage',
     method: 'post', // 请求方法
     data: data
-  })
-}
-// 根据id查询活动信息
-export function fetchJyActivityById(data) {
-  return request({
-    url: '/workshop/jyActivity/queryById',
-    method: 'get', // 请求方法
-    params: data
   })
 }
 

@@ -7,7 +7,9 @@
     <div class="N-content">
       <step-resource v-if="resourcesList.length" :resourcesList='resourcesList' :holderInfo="holderInfo"></step-resource>
       <div v-if="vedioList.length" class="mb-3">
-        <el-button type="success" @click="getIntoVedio" size="small">进入直播</el-button>
+        <el-button type="success" @click="getIntoVedio" size="small">参与互动</el-button>
+        <el-button type="success" @click="viewVedio" size="small">观看直播</el-button>
+
         <div>
           <span style="cursor: pointer" class="mr-5" @click="getAttendMember">教研参与人数：<a>{{videoStatus.attendCount}}</a></span>
           <span>教研直播观看人次：{{videoStatus.liveCount}}</span>
@@ -33,7 +35,6 @@
           </el-pagination>
         </div>
       </div>
-      <comment @commenthandle='commenthandle' v-if="commentList.length" :userId='uuid' :categoryId='commentList[0].stepId' :category='category' :categoryUrl='categoryUrl' :categoryName.sync='channelInfo.title' :loginRouteName='loginRouteName' objType='activity'></comment>
     </div>
     <el-dialog title="参与人数详情" :visible.sync="memberDialogVisible" width="40%">
       <el-row :gutter="20">
@@ -70,6 +71,7 @@
       </span>
     </el-dialog>
     <el-dialog title="回放" :visible.sync="playDialogVisible" width="45%">
+      <playbackMeeting :filePreseeUrl='meetingUrl'></playbackMeeting>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="playDialogVisible = false">知道了</el-button>
       </span>
@@ -78,9 +80,10 @@
 </template>
 
 <script>
-import { oneActivityStepRequirement, fetchCourseInfo, fetchOneHomeWork, StepServerList, contentInfo, oneActivityStep, stepComplete } from '@/api/activityCopy.js'
+import { oneActivityStepRequirement, StepServerList, contentInfo, oneActivityStep } from '@/api/activityCopy.js'
 import { fetchCommentPage } from '@/api/comment'
-import { intoConference, fetchConferenceStatistics, fetchAttendMemberList, fetchConferenceFile } from '@/api/tool.js'
+import { intoConference, fetchConferenceStatistics, fetchAttendMemberList, fetchConferenceFile, fetchConferenceLiveUrl } from '@/api/tool.js'
+import { fetTnteractionAu } from '@/api/train.js'
 import { mapGetters } from 'vuex'
 export default {
   props: ['currentStep', 'holderInfo'],
@@ -90,11 +93,6 @@ export default {
   },
   data() {
     return {
-      currentStepRequirement: [],
-      courseList: [],
-      homeWorkList: [],
-      channelList: [],
-      commentList: [],
       categoryId: '',
       category: 'doc',
       categoryUrl: '',
@@ -130,7 +128,8 @@ export default {
         username: '',
         attend: ''
       },
-      meetingUrl: ''
+      meetingUrl: '',
+      hasAuthority: false
     }
   },
   filters: {
@@ -157,14 +156,16 @@ export default {
   },
   watch: {
     currentStep(val) {
+      if (val.stepTypeCode === 'JSTD6') {
+        this.queryTnteractionAu()
+        this.queryConferenceLiveUrl()
+      }
       this.getOneActivityStepInfo({ stepId: this.currentStep.id })
-      this.getOneActivityStepRequirement({ id: val.id })
       this.getOneActivityStepServerList({ id: val.id })
     }
   },
   mounted() {
     this.getOneActivityStepInfo({ stepId: this.currentStep.id })
-    this.getOneActivityStepRequirement({ id: this.currentStep.id })
     this.getOneActivityStepServerList({ id: this.currentStep.id })
   },
   methods: {
@@ -182,74 +183,15 @@ export default {
       str = A + val + B + ';'
       return str
     },
-    getOneActivityStepRequirement(params) { // 获取当前环节的要求
-      this.oneActivityStepRequirement(params).then(res => {
-        if (res.data.code === 200) {
-          this.currentStepRequirement = res.data.result
-        }
-      })
-    },
-    queryChannelInfo() {
-      if (this.channelList[0].serviceId) {
-        this.contentInfo({ id: this.channelList[0].serviceId }).then(res => {
-          console.log(res.data, 98)
-          if (res.data.code === 200) {
-            this.channelInfo = res.data.result
-          }
-        })
-      }
-    },
-    commenthandle(value) {
-      if (value.comment === 'comment' && value.status) {
-        this.checkCommentFinlish()
-      }
-    },
-    checkCommentFinlish() { // 检查评论完成了没有
-      this.fetchCommentPage({
-        // category: '',
-        categoryId: this.currentStep.id,
-        pageCurrent: 1,
-        pageSize: 1000
-      }).then(res => {
-        console.log(res)
-        if (res.data.code === 200) {
-          this.myCommentList = res.data.result.list
-          if (res.data.result.list.length > this.currentStepRequirement[0].stepRequirementData) { // 评论的条数达到要求了
-            this.stepComplete({ activityId: this.$route.params.activityId, stepId: this.currentStepInfo.id, userId: this.uuid })
-          }
-        }
-      })
-    },
     getOneActivityStepServerList(params) { // 获取当前活动的服务
-      this.courseList = []
-      this.homeWorkList = []
-      this.channelList = []
-      this.commentList = []
+      console.log(1001)
       this.resourcesList = []
       this.vedioList = []
       return this.StepServerList(params).then(res => {
         if (res.data.code === 200 && res.data.result.length) {
-          const courseList = []
-          const homeWorkList = []
-          const channelList = []
-          const commentList = []
           const resourcesList = []
           const vedioList = []
           res.data.result.forEach(element => {
-            if (element.serviceTypeCode === 'course') {
-              courseList.push(element)
-            }
-            if (element.serviceTypeCode === 'homeWork') {
-              homeWorkList.push(element)
-            }
-            if (element.serviceTypeCode === 'channel') {
-              channelList.push(element)
-            }
-            if (element.serviceTypeCode === 'comment') {
-              // this.stepServerType = 'comment'
-              commentList.push(element)
-              this.checkCommentFinlish()
-            }
             if (element.serviceTypeCode === 'resourceShow') {
               resourcesList.push(element)
             }
@@ -260,15 +202,8 @@ export default {
               vedioList.push(element)
             }
           })
-          this.courseList = [...courseList]
-          this.homeWorkList = [...homeWorkList]
-          this.channelList = [...channelList]
-          this.commentList = [...commentList]
           this.resourcesList = resourcesList
           this.vedioList = [...vedioList]
-          if (channelList.length) {
-            this.queryChannelInfo()
-          }
           if (vedioList.length) {
             this.queryConferenceStatistics()
             this.queryConferenceFile()
@@ -276,6 +211,7 @@ export default {
         }
       })
     },
+    // 参与互动
     getIntoVedio() {
       const params = {
         serviceId: this.currentStep.id,
@@ -351,6 +287,38 @@ export default {
         }
       })
     },
+    // 查询当前用户能否参与互动
+    queryTnteractionAu() {
+      const params = {
+        serviceId: this.currentStep.id,
+        userId: this.uuid
+      }
+      fetTnteractionAu(params).then(res => {
+        console.log(res, '1900')
+        if (res.data.code === 200) {
+          this.hasAuthority = res.data.result
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
+    },
+    // 观看直播
+    viewVedio() { },
+    // 获取直播地址
+    queryConferenceLiveUrl() {
+      const params = {
+        id: this.currentStep.id,
+        operationType: 'streaming_ls_hls',
+        userId: this.uuid
+      }
+      fetchConferenceLiveUrl(params).then(res => {
+        console.log(res, '1900')
+        if (res.data.code === 200) {
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
+    },
     oneActivityStepRequirement(params) { // 当前环节的要求
       return new Promise((resolve, reject) => {
         oneActivityStepRequirement(params).then(res => {
@@ -358,23 +326,9 @@ export default {
         })
       })
     },
-    fetchCourseInfo(params) { // 获取课程基本信息
-      return new Promise((resolve, reject) => {
-        fetchCourseInfo(params).then(res => {
-          resolve(res)
-        })
-      })
-    },
     StepServerList(params) {
       return new Promise((resolve, reject) => {
         StepServerList(params).then(res => {
-          resolve(res)
-        })
-      })
-    },
-    fetchOneHomeWork(params) {
-      return new Promise((resolve, reject) => {
-        fetchOneHomeWork(params).then(res => {
           resolve(res)
         })
       })
@@ -396,13 +350,6 @@ export default {
     fetchCommentPage(params) { // 获取评论list
       return new Promise((resolve, reject) => {
         fetchCommentPage(params).then(res => {
-          resolve(res)
-        })
-      })
-    },
-    stepComplete(params) {
-      return new Promise((resolve, reject) => {
-        stepComplete(params).then(res => {
           resolve(res)
         })
       })

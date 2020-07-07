@@ -20,7 +20,13 @@
             <div style="width: 55%;height: 30px;line-height: 30px">
               <span class="text-muted">{{item.userName}}</span>
             </div>
-            <div style="width: 20%;height: 30px;line-height: 30px">
+            <div v-if="showType==='0'" style="width: 20%;height: 30px;line-height: 30px">
+              <span class="text-muted">{{item.totalLiness}}</span>
+            </div>
+            <div v-if="showType==='1'" style="width: 20%;height: 30px;line-height: 30px">
+              <span class="text-muted">{{item.monthLiness}}</span>
+            </div>
+            <div v-if="showType==='2'" style="width: 20%;height: 30px;line-height: 30px">
               <span class="text-muted">{{item.weekLiness}}</span>
             </div>
           </div>
@@ -44,7 +50,7 @@ export default {
   components: {
     LayNotData: () => import('@/modules/LayNotData')
   },
-  props: ['homeMemberList'],
+  props: ['homeMemberList', 'showType'],
   methods: {
     getMoreMember() {
       const workshopId = this.$route.params.id
@@ -61,7 +67,7 @@ export default {
 .card-home-member {
   width: 100%;
   padding: 10px;
-  .list-group-con{
+  .list-group-con {
     height: 30px;
   }
 }

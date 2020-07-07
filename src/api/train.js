@@ -46,3 +46,18 @@ export function verifyJyUserPage(data) {
     data: data
   })
 }
+export function fetTnteractionInfo(params) {
+  return request({
+    url: `/tool/conference/query/interaction/info`,
+    method: 'get',
+    params
+  })
+}
+// 查询当前用户能否参与互动
+export function fetTnteractionAu(params) {
+  return request({
+    url: `/tool/conference/query/interaction`,
+    method: 'get',
+    params
+  })
+}

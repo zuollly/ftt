@@ -110,7 +110,7 @@
           </div>
           <!-- <el-button type="text" @click="getMoreMember()">查看更多</el-button> -->
         </div>
-        <homeMember :homeMemberList='homeMemberList'></homeMember>
+        <homeMember :showType='showType' :homeMemberList='homeMemberList'></homeMember>
       </div>
     </el-col>
   </el-row>
@@ -151,10 +151,10 @@ export default {
     ...mapGetters(['workshopInfo', 'uuid', 'workshopPermissionInfo'])
   },
   watch: {
-    workshopInfo: function(val) {
+    workshopInfo(val) {
       console.log(val, 'workshopInfo1')
     },
-    workshopPermissionInfo: function(val) {
+    workshopPermissionInfo(val) {
       console.log(val, 'workshopPermissionInfoworkshopPermissionInfo')
     }
   },
@@ -295,7 +295,7 @@ export default {
 }
 </script>
 <style lang='scss' rel="stylesheet/scss" scoped>
-$name: 'workshop-homeMain-moduel';
+$name: "workshop-homeMain-moduel";
 .#{$name} {
   .headWrapper {
     width: 100%;
@@ -312,46 +312,46 @@ $name: 'workshop-homeMain-moduel';
     >>> .el-button {
       color: #b8b8b8;
     }
-    .ope{
+    .ope {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       height: 50px;
       line-height: 50px;
       width: 100%;
-      .chooseLabel{
+      .chooseLabel {
         cursor: pointer;
       }
-      .active{
-        color: #409EFF;
+      .active {
+        color: #409eff;
       }
     }
     .p {
       height: 50px;
       line-height: 50px;
       padding: 0 10px;
-      border-bottom: 2px #FF5A00 solid;
-      color: #FF5A00;
+      border-bottom: 2px #ff5a00 solid;
+      color: #ff5a00;
       margin: 0;
     }
   }
-  .home-details{
+  .home-details {
     display: flex;
     flex-direction: column;
-    .informationWrapper{
+    .informationWrapper {
       min-height: 300px;
-      .swiperWrapper{
+      .swiperWrapper {
         width: 340px;
         // height: 260px;
         padding: 10px 20px 10px 10px;
-        img{
+        img {
           width: 85%;
         }
       }
-      .contentWrapper{
+      .contentWrapper {
         position: relative;
         // height: 300px;
-        .moreBtn{
+        .moreBtn {
           position: absolute;
           right: 10px;
           top: 0px;
@@ -362,58 +362,58 @@ $name: 'workshop-homeMain-moduel';
         }
       }
     }
-    .informationNotice{
+    .informationNotice {
       height: 330px;
     }
-    .informationMember{
+    .informationMember {
       height: 415px;
     }
-    .informationSource{
+    .informationSource {
       height: 370px;
     }
-    .informationActivity{
+    .informationActivity {
       height: 330px;
     }
-    .informationTeacher{
+    .informationTeacher {
       height: 340px;
     }
-    .staticInfoWrapper{
+    .staticInfoWrapper {
       height: 240px;
-      .staticsWrapper{
-        .totalLinessW{
+      .staticsWrapper {
+        .totalLinessW {
           min-height: 100px;
           padding: 20px 0px 10px 10px;
           border-bottom: 1px solid #e5e5e5;
-          p{
+          p {
             margin-bottom: 10px;
           }
         }
-        .loginCountW{
+        .loginCountW {
           padding: 10px 0px 10px 10px;
         }
-        .p{
+        .p {
           font-size: 20px;
           color: gray;
         }
       }
     }
-    .personal-details{
+    .personal-details {
       position: relative;
       height: 385px;
-      .personal-banner{
+      .personal-banner {
         height: 100px;
-        .personal-img{
+        .personal-img {
           width: 100%;
           height: 100%;
         }
       }
-      .personal-avatars-wrapper{
+      .personal-avatars-wrapper {
         margin: auto;
         display: table;
-        .personal-avatars{
+        .personal-avatars {
           // width: 100px;
           position: relative;
-          .logo{
+          .logo {
             border: 6px solid #ffffff;
             width: 100px;
             height: 100px;
@@ -421,80 +421,79 @@ $name: 'workshop-homeMain-moduel';
             -webkit-box-sizing: border-box;
             box-sizing: border-box;
             margin-top: -37%;
-            img{
+            img {
               width: 100%;
               height: 100%;
               border-radius: 50%;
             }
           }
-          .name{
+          .name {
             font-size: 17px;
           }
-          .subject{
+          .subject {
             font-size: 14px;
-            color: #C4C4C4;
+            color: #c4c4c4;
           }
-          .label{
+          .label {
             text-align: center;
           }
         }
       }
 
-      .personal-statics{
+      .personal-statics {
         width: 100%;
         height: 100px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         padding: 20px 15px 20px 15px;
-        .statics-line{
-          border-right: 1px #F1F1F1 solid;
+        .statics-line {
+          border-right: 1px #f1f1f1 solid;
         }
-        .statics-label{
+        .statics-label {
           width: 30%;
           text-align: center;
           display: flex;
           flex-direction: column;
           justify-content: space-around;
-          .num{
+          .num {
             font-size: 20px;
           }
-          .type{
-            color: #C4C4C4;
+          .type {
+            color: #c4c4c4;
           }
         }
       }
-      .personal-button{
+      .personal-button {
         width: 90%;
         height: 50px;
         margin: 10px auto;
         >>> .el-button {
           width: 100%;
           height: 100%;
-          background-color: #FEAE4D;
+          background-color: #feae4d;
           font-size: 16px;
         }
       }
     }
-
   }
-  .bg-white{
+  .bg-white {
     background: #ffffff;
   }
-  .border-shadow{
-    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  .border-shadow {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   }
-  .main-border{
+  .main-border {
     border: solid #eeeeee 1px;
     padding: 15px 15px 15px 15px;
     box-sizing: border-box;
   }
-  .radius-border{
+  .radius-border {
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
   }
-  .flex-grow-1{
-    flex: 1
+  .flex-grow-1 {
+    flex: 1;
   }
 }
 </style>

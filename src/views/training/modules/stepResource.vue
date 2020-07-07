@@ -39,7 +39,7 @@
 
 <script>
 import { fetchActivityInfo, insertResource, fetchResourcePage } from '@/api/activityCopy.js'
-import { fetchContentPage, fetchContentById, delRelevanceContent } from '@/api/content.js'
+import { fetchContentById, delRelevanceContent } from '@/api/content.js'
 import { getPreviewURL, downloadFile } from '@/api/file.js'
 import { getToken } from '@/utils/storage/cookies'
 import { mapGetters } from 'vuex'
@@ -70,6 +70,9 @@ export default {
     },
     holderInfo: {
       type: Object
+    },
+    stepTlist: {
+      type: Array
     }
   },
   filters: {
@@ -80,7 +83,7 @@ export default {
       'uuid', 'appConfig'
     ])
   },
-  created() {
+  mounted() {
     this.queryResourcePage()
     this.getActivityInfo()
   },
@@ -90,7 +93,7 @@ export default {
       this.fileListShow = []
     },
     getActivityInfo() {
-      const activityId = this.$route.params.activityId
+      const activityId = this.$route.query.activityId || this.$route.params.activityId
       fetchActivityInfo({ id: activityId }).then(res => {
         const currentActivityInfo = res.data.result
         this.activityInfo = currentActivityInfo
@@ -142,7 +145,7 @@ export default {
       }
       const fileTempList = this.fileList.map(el => {
         return {
-          categoryId: this.resourcesList[0].serviceId,
+          categoryId: this.resourcesList[0].serviceId || this.stepTlist[0].id,
           createId: this.uuid,
           createTime: el.createTime,
           fileCategory: el.fileCategory,
@@ -160,7 +163,7 @@ export default {
           console.log(res, 'res')
           this.dialogVisible = false
           this.params.pageCurrent = 1
-          this.params.categoryId = this.resourcesList[0].serviceId
+          this.params.categoryId = this.resourcesList[0].stepId
           fetchResourcePage(this.params).then(res => {
             if (res.data.code === 200) {
               this.tableData = res.data.result.records || []
@@ -180,12 +183,12 @@ export default {
       const data = {
         pageCurrent: this.params.pageCurrent,
         pageSize: this.params.pageSize,
-        moduleId: this.resourcesList[0].stepId
+        categoryId: this.resourcesList[0].stepId
       }
-      fetchContentPage(data).then(res => {
+      fetchResourcePage(data).then(res => {
         if (res.data.code === 200) {
-          this.tableData = res.data.result ? res.data.result.list : []
-          this.total = res.data.result ? res.data.result.total : 0
+          this.tableData = res.data.result.records || []
+          this.total = res.data.result.total || []
         }
       })
     },

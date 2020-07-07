@@ -145,7 +145,6 @@ export default {
   },
   watch: {
     async stepTlist(val) {
-      console.log(9998888)
       await this.stepServer()
       // await this.resetActivityStep()
       // await this.getVideoInteractionId().then(res => {
@@ -351,12 +350,12 @@ export default {
       this.resourcesList = []
       return this.StepServerList(params).then(res => {
         if (res.data.code === 200 && res.data.result.length) {
+          console.log(res.data.result, 998)
           const resourcesList = []
           res.data.result.forEach(element => {
             resourcesList.push(element)
           })
           this.resourcesList = resourcesList
-          console.log(this.resourcesList, 'resourceList---')
         }
       })
     },
