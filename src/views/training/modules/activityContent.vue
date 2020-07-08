@@ -25,7 +25,6 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <!-- <a @click="enterMeeting(scope.row)">{{scope.row.pxFile.fileUrl}}</a> -->
               <el-button type="primary" size="mini" @click="enterMeeting(scope.row)">回放</el-button>
             </template>
           </el-table-column>
@@ -70,7 +69,7 @@
         <el-button type="primary" @click="memberDialogVisible = false">知道了</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="回放" :visible.sync="playDialogVisible" width="45%">
+    <el-dialog :title="vedioTitle" :visible.sync="playDialogVisible" width="45%">
       <playbackMeeting :filePreseeUrl='meetingUrl'></playbackMeeting>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="playDialogVisible = false">知道了</el-button>
@@ -89,7 +88,8 @@ export default {
   props: ['currentStep', 'holderInfo'],
   components: {
     stepResource: () => import('./stepResource.vue'),
-    comment: () => import('@/components/comment/index.vue')
+    comment: () => import('@/components/comment/index.vue'),
+    playbackMeeting: () => import('./playbackMeeting.vue')
   },
   data() {
     return {
@@ -129,7 +129,9 @@ export default {
         attend: ''
       },
       meetingUrl: '',
-      hasAuthority: false
+      meetingUrlTemp: '',
+      hasAuthority: false,
+      vedioTitle: '回放'
     }
   },
   filters: {
@@ -227,6 +229,7 @@ export default {
       })
     },
     enterMeeting(item) {
+      this.vedioTitle = '回放'
       this.meetingUrl = item.pxFile.fileUrl
       this.playDialogVisible = true
     },
@@ -303,7 +306,11 @@ export default {
       })
     },
     // 观看直播
-    viewVedio() { },
+    viewVedio() {
+      this.vedioTitle = '直播'
+      this.meetingUrl = this.meetingUrlTemp
+      this.playDialogVisible = true
+    },
     // 获取直播地址
     queryConferenceLiveUrl() {
       const params = {
@@ -314,6 +321,7 @@ export default {
       fetchConferenceLiveUrl(params).then(res => {
         console.log(res, '1900')
         if (res.data.code === 200) {
+          this.meetingUrlTemp = res.data.data.liveurl
         } else {
           this.$message.error(res.data.msg)
         }

@@ -112,7 +112,9 @@ export default {
           res.data.result.forEach(element => {
             element.choose = false
           })
-          this.stepList = res.data.result
+          this.stepList = res.data.result.filter((item) => {
+            return !(item.stepTypeCode === 'JSTD5' && item.stepName.indexOf('回顾') > 0)
+          })
         }
       })
     },
